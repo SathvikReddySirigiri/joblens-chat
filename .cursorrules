@@ -1,0 +1,30 @@
+Project: JobLens Chat — ISM 6225 group assignment "Build a Data-Grounded Business Chatbot".
+Stack (pinned, do not change versions): C#, .NET 10 (net10.0), ASP.NET Core MVC,
+ModelContextProtocol.AspNetCore 2.2.0, Microsoft.Data.Sqlite 10.0.12,
+Microsoft.Extensions.AI 10.10.0, Microsoft.Extensions.AI.OpenAI 10.10.0, OpenAI 2.14.0.
+Do NOT use Entity Framework. Use ADO.NET with Microsoft.Data.Sqlite.
+
+Domain: job/internship scam intelligence for university career centers (synthetic data only).
+Tables: Companies (PK CompanyId) and ScamReports (PK ReportId, FK CompanyId → Companies).
+
+Architecture rules:
+- Request flow: Browser → MVC Controller → ChatOrchestrator → MCP client → HTTP /mcp → MCP tools → Repository → SQLite.
+- No SQL in controllers or Razor views. All SQL lives in Data/ScamRepository.cs.
+- Every SQL command is parameterized ($param). Never concatenate user input into SQL.
+- MCP tools are read-only, narrow, described, validated, and return bounded output (max 20 rows).
+- Never create an execute_sql, run_query, or any arbitrary-SQL tool. No write tools.
+- ChatOrchestrator never calls the repository directly — only through MCP tools.
+- SQLite file: App_Data/joblens.db locally; HOME/data/JobLens/joblens.db on Azure. Never under wwwroot.
+- Secrets (AI keys) only in dotnet user-secrets locally and Azure environment variables. Never in appsettings.json or Git.
+- Every POST uses [ValidateAntiForgeryToken]. Server-side validation on all input. Friendly errors, details only in logs.
+- AllowedHosts: localhost values in development; exact Azure hostname in production. Never "*".
+
+UI rules (light theme, same look as our JobLens static prototype):
+- CSS variables in wwwroot/css/site.css :root — bg #F8FAFC, surface #FFFFFF, border #E2E8F0, text #1E293B,
+  muted #64748B, primary #3B82F6, primary-hover #2563EB, primary-light #DBEAFE,
+  low #16A34A/#DCFCE7, medium #D97706/#FEF3C7, high #DC2626/#FEE2E2.
+- Font Inter (Google Fonts). Rounded corners, soft shadows, generous spacing, responsive to 360px.
+- No Bootstrap. No inline styles. Accessible labels, focus states, aria-live for chat transcript.
+
+Code style: nullable enabled, file-scoped namespaces, sealed classes/records where sensible,
+async with CancellationToken, short comments explaining WHY.

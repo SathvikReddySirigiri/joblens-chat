@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "About & Architecture";
+}
+
+<section class="hero">
+    <p class="pill">Data-grounded business chatbot</p>
+    <h1>Ask about job scams. Get answers grounded in data.</h1>
+    <p>Career-center staff need a fast way to see which companies and domains to warn students about. Students need to know whether a recruiter email is safe to answer. JobLens Chat will answer those questions from synthetic scam reports, not from guesses.</p>
+    <a class="btn btn-primary" asp-controller="Chat" asp-action="Index">Open the chatbot</a>
+</section>
+
+<section class="section" aria-labelledby="flow-title">
+    <h2 id="flow-title">How a question will move</h2>
+    <ol class="flow">
+        <li class="card"><span class="step">1</span> MVC chat</li>
+        <li class="card"><span class="step">2</span> MCP client</li>
+        <li class="card"><span class="step">3</span> MCP tools</li>
+        <li class="card"><span class="step">4</span> SQLite</li>
+    </ol>
+</section>
