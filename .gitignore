@@ -426,3 +426,6 @@ FodyWeavers.xsd
 
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
+
+# SQLite database — never commit (matches JobLensChat/App_Data/*.db)
+**/App_Data/*.db

@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] · JobLens Chat</title>
+    <meta name="description" content="JobLens Chat helps university career-center staff and students ask questions about job and internship scams, with answers grounded in synthetic report data." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    @{
+        var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    }
+    <header class="site-header">
+        <div class="container navbar">
+            <a class="brand" asp-controller="Home" asp-action="Index">🛡️ JobLens Chat</a>
+            <nav aria-label="Main">
+                <ul class="nav-links">
+                    <li>
+                        <a class="nav-link @(controller == "Home" ? "active" : null)"
+                           asp-controller="Home"
+                           asp-action="Index"
+                           aria-current="@(controller == "Home" ? "page" : null)">About &amp; Architecture</a>
+                    </li>
+                    <li>
+                        <a class="nav-link @(controller == "Chat" ? "active" : null)"
+                           asp-controller="Chat"
+                           asp-action="Index"
+                           aria-current="@(controller == "Chat" ? "page" : null)">Chat</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        @RenderBody()
+    </main>
+    <footer class="site-footer">
+        <div class="container">
+            <p>JobLens Chat · ISM 6225 · App Dev for Analytics · C# MVC + MCP + SQLite · Synthetic data only</p>
+        </div>
+    </footer>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
