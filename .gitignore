@@ -433,3 +433,10 @@ FodyWeavers.xsd
 **/App_Data/*.db-wal
 *.db-shm
 *.db-wal
+
+# Local secrets and build output — never commit
+bin/
+obj/
+appsettings.*.local.json
+secrets.json
+.env

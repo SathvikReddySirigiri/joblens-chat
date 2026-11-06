@@ -1,8 +1,99 @@
+@model ChatViewModel
 @{
     ViewData["Title"] = "Chat";
+    var toolDescriptions = new Dictionary<string, string>(StringComparer.Ordinal)
+    {
+        ["get_domain_report"] = "Reports filed for one exact recruiter domain.",
+        ["search_scam_reports"] = "Filtered search of scam reports.",
+        ["summarize_scams"] = "Totals, averages, and counts for scam reports.",
+        ["top_impersonated_companies"] = "Companies ranked by approved impersonation reports.",
+        ["check_recruiter_email"] = "Risk score for one recruiter email address.",
+    };
 }
 
-<section class="card">
-    <h1>Chat</h1>
-    <p>Chat coming in Phase 5.</p>
-</section>
+<div class="chat-layout">
+    <section class="chat-main" aria-labelledby="chat-title">
+        <header class="chat-header">
+            <h1 id="chat-title">JobLens Chat</h1>
+            <p class="mode-badge @(Model.IsAiMode ? "badge-low" : "badge-medium")">@Model.ProviderLabel</p>
+        </header>
+
+        <div class="transcript" aria-live="polite">
+            @if (Model.Turns.Count == 0)
+            {
+                <p class="transcript-empty">Ask a question about job-scam reports.</p>
+            }
+            else
+            {
+                @foreach (var turn in Model.Turns)
+                {
+                    var isUser = turn.Role == "user";
+                    <article class="message @(isUser ? "message-user" : "message-assistant")">
+                        <p class="message-text">@turn.Text</p>
+                        @if (!isUser)
+                        {
+                            <div class="tool-chips">
+                                @if (turn.ToolsUsed.Count == 0)
+                                {
+                                    <span class="tool-none">No tool used</span>
+                                }
+                                else
+                                {
+                                    @foreach (var tool in turn.ToolsUsed)
+                                    {
+                                        <span class="tool-chip">Tool used: @tool</span>
+                                    }
+                                }
+                            </div>
+                        }
+                    </article>
+                }
+            }
+        </div>
+
+        <form asp-controller="Chat" asp-action="Ask" method="post" id="ask-form" class="composer">
+            <label asp-for="Question"></label>
+            <textarea asp-for="Question" maxlength="500" rows="3" aria-describedby="Question-error char-count"></textarea>
+            <span asp-validation-for="Question" class="field-error"></span>
+            <p class="char-count help" id="char-count">0 / 500</p>
+            <button type="submit" class="btn btn-primary" id="ask-button">Ask</button>
+        </form>
+    </section>
+
+    <aside class="chat-side" aria-label="Chat help">
+        <section aria-labelledby="samples-title">
+            <h2 id="samples-title">Try asking</h2>
+            <ul class="sample-list">
+                @foreach (var sample in Model.SampleQuestions)
+                {
+                    <li>
+                        <button type="button" class="btn btn-secondary sample-question">@sample</button>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <section aria-labelledby="tools-title">
+            <h2 id="tools-title">Available MCP tools</h2>
+            <ul class="tool-catalog">
+                @foreach (var name in Model.AvailableTools)
+                {
+                    <li>
+                        <span class="tool-name">@name</span>
+                        <span class="help">@(toolDescriptions.TryGetValue(name, out var description) ? description : "")</span>
+                    </li>
+                }
+            </ul>
+        </section>
+
+        <form asp-controller="Chat" asp-action="Clear" method="post">
+            <button type="submit" class="btn btn-secondary">Clear conversation</button>
+        </form>
+
+        <p class="help">Answers about scam data come only from MCP tools over our SQLite database (synthetic data).</p>
+    </aside>
+</div>
+
+@section Scripts {
+    <script src="~/js/site.js" asp-append-version="true"></script>
+}

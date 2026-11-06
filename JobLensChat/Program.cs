@@ -5,10 +5,18 @@ using ModelContextProtocol.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// TODO: register session in a later phase.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.Name = ".JobLens.Session";
+});
 builder.Services.AddSingleton<ScamRepository>();
 builder.Services.AddSingleton<RecruiterRiskService>();
+builder.Services.AddScoped<ChatOrchestrator>();
 builder.Services.AddMcpServer()
     .WithHttpTransport(options =>
     {
@@ -28,6 +36,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseSession();
 app.UseAuthorization();
 
 app.MapMcp("/mcp");
