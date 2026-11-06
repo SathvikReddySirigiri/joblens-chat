@@ -197,6 +197,8 @@ textarea:focus {
 
 .badge-low,
 .badge-medium,
+.badge-low,
+.badge-medium,
 .badge-high,
 .badge-neutral {
   display: inline-block;
@@ -335,6 +337,41 @@ textarea:focus {
   font-weight: 600;
 }
 
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+}
+
+.data-table th,
+.data-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.data-table th {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.card + .card { margin-top: var(--space-5); }
+
+.reason-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.page-header { padding-bottom: var(--space-4); }
+
 .step {
   display: inline-flex;
   align-items: center;
@@ -349,6 +386,7 @@ textarea:focus {
 
 @media (max-width: 900px) {
   .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .summary-grid { grid-template-columns: 1fr; }
   h1 { font-size: 2rem; }
 }
 

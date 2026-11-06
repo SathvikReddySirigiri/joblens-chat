@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "joblens-local": {
+      "url": "http://localhost:5080/mcp"
+    }
+  }
+}
