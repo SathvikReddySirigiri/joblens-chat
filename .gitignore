@@ -429,3 +429,7 @@ FodyWeavers.xsd
 
 # SQLite database — never commit (matches JobLensChat/App_Data/*.db)
 **/App_Data/*.db
+**/App_Data/*.db-shm
+**/App_Data/*.db-wal
+*.db-shm
+*.db-wal

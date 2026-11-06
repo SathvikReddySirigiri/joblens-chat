@@ -1,0 +1,174 @@
+@model DataCheckViewModel
+@{
+    ViewData["Title"] = "Data check";
+}
+
+<section class="page-header">
+    <h1>Data check</h1>
+    <p class="help">Development only. These figures come from the seeded SQLite database.</p>
+    <p><strong>Database path:</strong> <code>@Model.DatabasePath</code></p>
+</section>
+
+<section class="card">
+    <h2>Counts</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th scope="col">Companies</th>
+                <th scope="col">Reports</th>
+                <th scope="col">Approved</th>
+                <th scope="col">Pending</th>
+                <th scope="col">Rejected</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.Counts.Companies</td>
+                <td>@Model.Counts.ScamReports</td>
+                <td>@Model.Counts.Approved</td>
+                <td>@Model.Counts.Pending</td>
+                <td>@Model.Counts.Rejected</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section class="card">
+    <h2>Top 5 impersonated companies</h2>
+    <p class="help">Approved reports only.</p>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th scope="col">Rank</th>
+                <th scope="col">Company</th>
+                <th scope="col">Official domain</th>
+                <th scope="col">Industry</th>
+                <th scope="col">Approved reports</th>
+                <th scope="col">Amount requested</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var company in Model.TopCompanies)
+            {
+                <tr>
+                    <td>@company.Rank</td>
+                    <td>@company.CompanyName</td>
+                    <td>@company.OfficialDomain</td>
+                    <td>@company.Industry</td>
+                    <td>@company.ApprovedReports</td>
+                    <td>@company.TotalAmountRequestedUsd.ToString("0.00")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+<section class="card">
+    <h2>Summary</h2>
+    <p>@Model.Summary.TotalReports reports. Total requested @Model.Summary.TotalAmountRequestedUsd.ToString("0.00"). Average @Model.Summary.AverageAmountRequestedUsd.ToString("0.00").</p>
+    <div class="summary-grid">
+        <div>
+            <h3>By scam type</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.Summary.ByScamType)
+                    {
+                        <tr>
+                            <td>@row.Category</td>
+                            <td>@row.Count</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h3>By channel</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Channel</th>
+                        <th scope="col">Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.Summary.ByChannel)
+                    {
+                        <tr>
+                            <td>@row.Category</td>
+                            <td>@row.Count</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    <h2>amaz0n-careers.net</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Company</th>
+                <th scope="col">Email</th>
+                <th scope="col">Type</th>
+                <th scope="col">Channel</th>
+                <th scope="col">Status</th>
+                <th scope="col">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var report in Model.AmazonLookalikeReports)
+            {
+                <tr>
+                    <td>@report.ReportedDate</td>
+                    <td>@report.CompanyName</td>
+                    <td>@report.RecruiterEmail</td>
+                    <td>@report.ScamType</td>
+                    <td>@report.Channel</td>
+                    <td>@report.Status</td>
+                    <td>@report.AmountRequestedUsd.ToString("0.00")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+<section class="card">
+    <h2>Recruiter risk checks</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th scope="col">Email</th>
+                <th scope="col">Score</th>
+                <th scope="col">Verdict</th>
+                <th scope="col">Reasons</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var check in Model.RiskChecks)
+            {
+                <tr>
+                    <td>@check.Email</td>
+                    <td>@check.Score</td>
+                    <td><span class="badge-@check.Verdict.ToLowerInvariant()">@check.Verdict</span></td>
+                    <td>
+                        <ul class="reason-list">
+                            @foreach (var reason in check.Reasons)
+                            {
+                                <li>@reason</li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
