@@ -11,26 +11,39 @@
 
 <section class="card">
     <h2>Counts</h2>
+    <p class="help">Seven tables. User rows are counts only. Password hashes are not shown.</p>
+    @if (TempData["ResetMessage"] is string resetMessage)
+    {
+        <p class="help" role="status">@resetMessage</p>
+    }
     <table class="data-table">
         <thead>
             <tr>
                 <th scope="col">Companies</th>
+                <th scope="col">Recruiters</th>
                 <th scope="col">Reports</th>
-                <th scope="col">Approved</th>
-                <th scope="col">Pending</th>
-                <th scope="col">Rejected</th>
+                <th scope="col">Job postings</th>
+                <th scope="col">Interview reviews</th>
+                <th scope="col">Check logs</th>
+                <th scope="col">Users</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>@Model.Counts.Companies</td>
+                <td>@Model.Counts.Recruiters</td>
                 <td>@Model.Counts.ScamReports</td>
-                <td>@Model.Counts.Approved</td>
-                <td>@Model.Counts.Pending</td>
-                <td>@Model.Counts.Rejected</td>
+                <td>@Model.Counts.JobPostings</td>
+                <td>@Model.Counts.InterviewReviews</td>
+                <td>@Model.Counts.CheckLogs</td>
+                <td>@Model.Counts.Users</td>
             </tr>
         </tbody>
     </table>
+    <p class="help">Report status: @Model.Counts.Approved approved, @Model.Counts.Pending pending, @Model.Counts.Rejected rejected.</p>
+    <form method="post" asp-controller="DataCheck" asp-action="Reset">
+        <button type="submit" class="btn btn-secondary">Reset demo data</button>
+    </form>
 </section>
 
 <section class="card">

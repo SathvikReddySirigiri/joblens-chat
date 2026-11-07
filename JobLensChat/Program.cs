@@ -15,6 +15,19 @@ builder.Services.AddSession(options =>
     options.Cookie.Name = ".JobLens.Session";
 });
 builder.Services.AddSingleton<ScamRepository>();
+builder.Services.AddSingleton<CompanyRepository>();
+builder.Services.AddSingleton<ScamReportRepository>();
+builder.Services.AddSingleton<JobPostingRepository>();
+builder.Services.AddSingleton<InterviewReviewRepository>();
+builder.Services.AddSingleton<CheckLogRepository>();
+builder.Services.AddSingleton<DashboardRepository>();
+builder.Services.AddSingleton<RecruiterRepository>();
+builder.Services.AddSingleton<UserRepository>();
+builder.Services.AddScoped<CompanyService>();
+builder.Services.AddScoped<ScamReportService>();
+builder.Services.AddScoped<JobPostingService>();
+builder.Services.AddScoped<InterviewReviewService>();
+builder.Services.AddScoped<RecruiterService>();
 builder.Services.AddSingleton<RecruiterRiskService>();
 builder.Services.AddScoped<ChatOrchestrator>();
 builder.Services.AddMcpServer()

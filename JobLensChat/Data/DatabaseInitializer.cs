@@ -3,7 +3,7 @@ using Microsoft.Data.Sqlite;
 
 namespace JobLensChat.Data;
 
-public static class DatabaseInitializer
+public static partial class DatabaseInitializer
 {
     public static async Task InitializeAsync(
         IConfiguration configuration,
@@ -27,15 +27,29 @@ public static class DatabaseInitializer
             await transaction.CommitAsync(cancellationToken);
         }
 
+        // New tables seed on their own so an existing 10-company database still receives them.
+        await BackfillDescriptionsAsync(connection, cancellationToken);
+        await SeedJobPostingsIfEmptyAsync(connection, cancellationToken);
+        await SeedReviewsIfEmptyAsync(connection, cancellationToken);
+        await SeedCheckLogsIfEmptyAsync(connection, cancellationToken);
+        await SeedRecruitersIfEmptyAsync(connection, cancellationToken);
+        var (moderatorPassword, studentPassword) = DemoPasswords(configuration, logger);
+        await SeedUsersIfEmptyAsync(connection, moderatorPassword, studentPassword, cancellationToken);
+
         var counts = await ReadCountsAsync(connection, cancellationToken);
         logger.LogInformation(
-            "JobLens database ready at {DatabasePath}. Companies={Companies}, Reports={Reports}, Approved={Approved}, Pending={Pending}, Rejected={Rejected}.",
+            "JobLens database ready at {DatabasePath}. Companies={Companies}, Recruiters={Recruiters}, Reports={Reports}, Approved={Approved}, Pending={Pending}, Rejected={Rejected}, JobPostings={JobPostings}, InterviewReviews={InterviewReviews}, CheckLogs={CheckLogs}, Users={Users}.",
             path,
             counts.Companies,
+            counts.Recruiters,
             counts.ScamReports,
             counts.Approved,
             counts.Pending,
-            counts.Rejected);
+            counts.Rejected,
+            counts.JobPostings,
+            counts.InterviewReviews,
+            counts.CheckLogs,
+            counts.Users);
     }
 
     private static async Task CreateSchemaAsync(SqliteConnection connection, CancellationToken cancellationToken)
@@ -66,8 +80,102 @@ public static class DatabaseInitializer
             CREATE INDEX IF NOT EXISTS IX_ScamReports_Domain ON ScamReports(Domain);
             CREATE INDEX IF NOT EXISTS IX_ScamReports_CompanyId ON ScamReports(CompanyId);
             CREATE INDEX IF NOT EXISTS IX_ScamReports_ReportedDate ON ScamReports(ReportedDate);
+
+            CREATE TABLE IF NOT EXISTS JobPostings (
+                PostingId INTEGER PRIMARY KEY AUTOINCREMENT,
+                CompanyId INTEGER NOT NULL REFERENCES Companies(CompanyId) ON DELETE RESTRICT,
+                Title TEXT NOT NULL,
+                Location TEXT NOT NULL,
+                State TEXT NOT NULL CHECK (length(State) = 2),
+                IsRemote INTEGER NOT NULL CHECK (IsRemote IN (0, 1)),
+                IsPaid INTEGER NOT NULL CHECK (IsPaid IN (0, 1)),
+                PayRatePerHour REAL NULL CHECK (PayRatePerHour IS NULL OR PayRatePerHour >= 0),
+                Description TEXT NOT NULL,
+                PostedDate TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS InterviewReviews (
+                ReviewId INTEGER PRIMARY KEY AUTOINCREMENT,
+                CompanyId INTEGER NOT NULL REFERENCES Companies(CompanyId) ON DELETE RESTRICT,
+                Role TEXT NOT NULL,
+                Rating INTEGER NOT NULL CHECK (Rating BETWEEN 1 AND 5),
+                Experience TEXT NOT NULL,
+                WasLegit INTEGER NOT NULL CHECK (WasLegit IN (0, 1)),
+                ReviewDate TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS CheckLogs (
+                CheckId INTEGER PRIMARY KEY AUTOINCREMENT,
+                CheckType TEXT NOT NULL CHECK (CheckType IN ('Recruiter', 'Offer')),
+                InputSummary TEXT NOT NULL,
+                RiskScore INTEGER NOT NULL CHECK (RiskScore BETWEEN 0 AND 100),
+                Verdict TEXT NOT NULL CHECK (Verdict IN ('LOW', 'MEDIUM', 'HIGH')),
+                CreatedAt TEXT NOT NULL
+            );
+
+            CREATE INDEX IF NOT EXISTS IX_JobPostings_CompanyId ON JobPostings(CompanyId);
+            CREATE INDEX IF NOT EXISTS IX_JobPostings_PostedDate ON JobPostings(PostedDate);
+            CREATE INDEX IF NOT EXISTS IX_InterviewReviews_CompanyId ON InterviewReviews(CompanyId);
+            CREATE INDEX IF NOT EXISTS IX_InterviewReviews_ReviewDate ON InterviewReviews(ReviewDate);
+            CREATE INDEX IF NOT EXISTS IX_CheckLogs_CreatedAt ON CheckLogs(CreatedAt);
+
+            CREATE TABLE IF NOT EXISTS Recruiters (
+                RecruiterId INTEGER PRIMARY KEY AUTOINCREMENT,
+                Email TEXT NOT NULL UNIQUE,
+                Domain TEXT NOT NULL,
+                CompanyId INTEGER NULL REFERENCES Companies(CompanyId) ON DELETE SET NULL,
+                FirstSeen TEXT NOT NULL,
+                Notes TEXT NOT NULL DEFAULT ''
+            );
+
+            CREATE TABLE IF NOT EXISTS Users (
+                UserId INTEGER PRIMARY KEY AUTOINCREMENT,
+                Email TEXT NOT NULL UNIQUE,
+                DisplayName TEXT NOT NULL,
+                PasswordHash TEXT NOT NULL,
+                Role TEXT NOT NULL CHECK (Role IN ('Student', 'Moderator')),
+                CreatedAt TEXT NOT NULL
+            );
+
+            CREATE INDEX IF NOT EXISTS IX_Recruiters_CompanyId ON Recruiters(CompanyId);
+            CREATE INDEX IF NOT EXISTS IX_Recruiters_Domain ON Recruiters(Domain);
             """;
         await command.ExecuteNonQueryAsync(cancellationToken);
+        await EnsureDescriptionColumnAsync(connection, cancellationToken);
+        await EnsureOwnershipColumnsAsync(connection, cancellationToken);
+    }
+
+    internal static async Task CreateEmptyDatabaseAsync(string path, CancellationToken cancellationToken = default)
+    {
+        var folder = Path.GetDirectoryName(path);
+        if (!string.IsNullOrEmpty(folder))
+        {
+            Directory.CreateDirectory(folder);
+        }
+
+        await using var connection = new SqliteConnection(SqliteConnections.ForPath(path));
+        await connection.OpenAsync(cancellationToken);
+        await CreateSchemaAsync(connection, cancellationToken);
+    }
+
+    internal static async Task ResetAsync(
+        IConfiguration configuration,
+        IWebHostEnvironment environment,
+        ILogger logger,
+        CancellationToken cancellationToken = default)
+    {
+        var path = DatabasePath.Resolve(configuration, environment);
+        // Pool handles keep the file locked on Windows after the last request closes.
+        SqliteConnection.ClearAllPools();
+        foreach (var candidate in new[] { path, path + "-wal", path + "-shm" })
+        {
+            if (File.Exists(candidate))
+            {
+                File.Delete(candidate);
+            }
+        }
+
+        await InitializeAsync(configuration, environment, logger, cancellationToken);
     }
 
     private static async Task SeedAsync(
@@ -161,7 +269,12 @@ public static class DatabaseInitializer
                 (SELECT COUNT(*) FROM ScamReports),
                 (SELECT COUNT(*) FROM ScamReports WHERE Status = 'Approved'),
                 (SELECT COUNT(*) FROM ScamReports WHERE Status = 'Pending'),
-                (SELECT COUNT(*) FROM ScamReports WHERE Status = 'Rejected');
+                (SELECT COUNT(*) FROM ScamReports WHERE Status = 'Rejected'),
+                (SELECT COUNT(*) FROM JobPostings),
+                (SELECT COUNT(*) FROM InterviewReviews),
+                (SELECT COUNT(*) FROM CheckLogs),
+                (SELECT COUNT(*) FROM Recruiters),
+                (SELECT COUNT(*) FROM Users);
             """;
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
         await reader.ReadAsync(cancellationToken);
@@ -170,7 +283,12 @@ public static class DatabaseInitializer
             reader.GetInt32(1),
             reader.GetInt32(2),
             reader.GetInt32(3),
-            reader.GetInt32(4));
+            reader.GetInt32(4),
+            reader.GetInt32(5),
+            reader.GetInt32(6),
+            reader.GetInt32(7),
+            reader.GetInt32(8),
+            reader.GetInt32(9));
     }
 
     private static async Task<int> ScalarAsync(SqliteConnection connection, string sql, CancellationToken cancellationToken)

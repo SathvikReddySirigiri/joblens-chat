@@ -20,17 +20,20 @@ public sealed class DataCheckController : Controller
     private readonly RecruiterRiskService _riskService;
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<DataCheckController> _logger;
 
     public DataCheckController(
         ScamRepository repository,
         RecruiterRiskService riskService,
         IWebHostEnvironment environment,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        ILogger<DataCheckController> logger)
     {
         _repository = repository;
         _riskService = riskService;
         _environment = environment;
         _configuration = configuration;
+        _logger = logger;
     }
 
     [HttpGet("/DataCheck")]
@@ -56,5 +59,28 @@ public sealed class DataCheckController : Controller
             risks);
 
         return View(model);
+    }
+
+    [HttpPost("/DataCheck/Reset")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Reset(CancellationToken cancellationToken)
+    {
+        if (!_environment.IsDevelopment())
+        {
+            return NotFound();
+        }
+
+        try
+        {
+            await DatabaseInitializer.ResetAsync(_configuration, _environment, _logger, cancellationToken);
+            TempData["ResetMessage"] = "Demo data was reset.";
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Demo data reset failed.");
+            TempData["ResetMessage"] = "Demo data could not be reset. See the server log for details.";
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 }
