@@ -1,58 +1,99 @@
-# joblens-chat
+# JobLens Chat
 
-JobLens Chat is a .NET 10 ASP.NET Core MVC app for ISM 6225 · App Dev for Analytics · Fall 2026. Career-center staff and students will ask questions about synthetic job-scam reports. The chatbot will answer only from read-only MCP tools.
-
-This phase is the project skeleton. Home and Chat are placeholder pages. There is no database and no MCP server yet.
+JobLens Chat is a .NET 10 ASP.NET Core MVC app for **ISM 6225 · App Dev for Analytics**. It helps university career-center staff and students explore **synthetic** job and internship scam reports through CRUD screens, risk checks, and a data-grounded chatbot that answers only from read-only MCP tools.
 
 Team: Naga Pavan Sathvik Reddy Sirigiri · Isabella Cuello Penaloza · Lakshmi Reethika Guduri
 
-## Run
+## Features
+
+- Seeded SQLite database (companies, scam reports, recruiters, job postings, interview reviews, check logs, demo users)
+- CRUD for companies, scam reports, recruiters, job postings, and interview reviews
+- Check Recruiter (deterministic risk score + live RDAP / EDGAR signals)
+- Offer Analyzer (paste or PDF/DOCX upload, PII redaction, AI + rule fallback)
+- Smart Search (plain-English → structured job filters)
+- Live Scam Insights Dashboard (Chart.js)
+- Chat grounded via MCP tools on `/mcp` (no free-form SQL)
+
+## Solution structure
+
+```
+joblens-chat/
+├── JobLens.slnx
+├── .cursorrules
+├── global.json
+├── docs/
+│   ├── architecture/
+│   ├── demo/
+│   ├── evidence/
+│   ├── testing/
+│   └── README.md
+├── src/
+│   ├── JobLens.Domain/           entities + constants
+│   ├── JobLens.Application/      interfaces, DTOs, services, AddApplication()
+│   ├── JobLens.Infrastructure/   SQLite, seed, HTTP clients, AI, documents, AddInfrastructure()
+│   └── JobLens.Web/              MVC, Views, wwwroot, Mcp/, ChatOrchestrator, Program.cs
+└── tests/
+    └── JobLens.Tests/
+```
+
+Dependency rule: **Web → Application ← Infrastructure; Application → Domain.**
+
+## How to run
 
 ```powershell
-dotnet run --project JobLensChat --launch-profile http
+dotnet run --project src/JobLens.Web --launch-profile http
 ```
 
 - Home: http://localhost:5080/
 - Chat: http://localhost:5080/Chat
+- MCP: http://localhost:5080/mcp
+- HTTPS profile: https://localhost:7080 (HTTP still on 5080)
 
-The HTTPS profile is https://localhost:7080, with HTTP still on http://localhost:5080. The SDK is pinned in `global.json` to 10.0.401 (latest patch of that band).
+SDK band is pinned in `global.json` (10.0.401).
 
-## Packages
+AI keys and seed password overrides use **user-secrets** (or Azure app settings), never `appsettings.json`.
 
-Pinned in `JobLensChat/JobLensChat.csproj`. This phase references them and does not call them yet.
-
-- ModelContextProtocol.AspNetCore 2.2.0
-- Microsoft.Data.Sqlite 10.0.12
-- Microsoft.Extensions.AI 10.10.0
-- Microsoft.Extensions.AI.OpenAI 10.10.0
-- OpenAI 2.14.0
-
-## Layout
-
-```
-joblens-chat/
-├── .cursorrules
-├── global.json
-├── docs/
-├── JobLensChat/          ASP.NET Core MVC app (net10.0)
-└── README.md
+```powershell
+dotnet user-secrets set "Ai:ApiKey" "<your-key>" --project src/JobLens.Web
 ```
 
-Inside `JobLensChat/`:
+## How to test
 
-- `Controllers/` — Home and Chat
-- `Models/` — view models
-- `Views/` — Razor pages
-- `Data/`, `Mcp/`, `Services/` — empty folders for later phases
-- `App_Data/` — local SQLite file later; `*.db` is gitignored
-- `wwwroot/css/site.css` — JobLens light theme
+```powershell
+dotnet test
+```
 
-The pages use that stylesheet. Bootstrap and jQuery are not part of the app.
+## Configuration keys
 
-## Third-party
+| Key | Purpose |
+| --- | --- |
+| `AllowedHosts` | Host allow-list (never `*`) |
+| `Ai:Provider` | `Demo`, `AzureOpenAI`, or `OpenAICompatible` |
+| `Ai:Endpoint` | Azure / compatible endpoint URL |
+| `Ai:Model` | Deployment or model name |
+| `Ai:ApiKey` | Secret — set via user-secrets / env only |
+| `Ai:DisplayName` | Optional label shown in UI |
+| `Mcp:Endpoint` | Chat MCP client URL (default `http://localhost:5080/mcp`) |
+| `Database:Path` | Optional absolute SQLite path override |
+| `Seed:ModeratorPassword` | Override demo moderator password |
+| `Seed:StudentPassword` | Override demo student password |
+| `Logging:LogLevel:*` | Standard ASP.NET Core logging |
 
-Chart.js 4.4.6 (MIT license) is stored locally at `JobLensChat/wwwroot/lib/chartjs/chart.umd.min.js` and is loaded only on the Scam Insights Dashboard. The page does not request it from a CDN at runtime.
+## Demo accounts
+
+Synthetic users are seeded for class demos (hashed passwords; defaults used only when seed keys are unset):
+
+| Email | Role | Default password |
+| --- | --- | --- |
+| `moderator@joblens.demo` | Moderator | `Moderator#2026` |
+| `student1@joblens.demo` … `student4@joblens.demo` | Student | `Student#2026` |
+
+Change passwords for any shared or cloud deployment via `Seed:ModeratorPassword` / `Seed:StudentPassword`.
 
 ## Docs
 
-The proposal and project records are in `docs/`.
+See [docs/README.md](docs/README.md) for the full document index (proposal, test matrix, known answers, demo files, evidence).
+
+## Third-party
+
+Chart.js 4.4.6 (MIT) is stored at `src/JobLens.Web/wwwroot/lib/chartjs/chart.umd.min.js` and loaded only on the Scam Insights Dashboard.

@@ -1,0 +1,7 @@
+﻿<Solution>
+  <Project Path="src/JobLens.Domain/JobLens.Domain.csproj" />
+  <Project Path="src/JobLens.Application/JobLens.Application.csproj" />
+  <Project Path="src/JobLens.Infrastructure/JobLens.Infrastructure.csproj" />
+  <Project Path="src/JobLens.Web/JobLens.Web.csproj" />
+  <Project Path="tests/JobLens.Tests/JobLens.Tests.csproj" />
+</Solution>

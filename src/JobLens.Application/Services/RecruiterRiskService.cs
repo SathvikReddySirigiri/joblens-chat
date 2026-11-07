@@ -1,0 +1,296 @@
+using JobLens.Application.Common;
+using JobLens.Application.Interfaces;
+using JobLens.Domain.Entities;
+using JobLens.Application.Dtos;
+
+namespace JobLens.Application.Services;
+
+/// <summary>
+/// Deterministic recruiter-email risk score. No model calls; every point comes from a fixed rule.
+/// </summary>
+public sealed class RecruiterRiskService(IScamQueryRepository repository, IRdapClient? rdap = null, IEdgarClient? edgar = null)
+{
+    private static readonly HashSet<string> FreeProviders = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "gmail.com",
+        "yahoo.com",
+        "outlook.com",
+        "hotmail.com",
+        "aol.com",
+        "icloud.com",
+        "proton.me",
+        "protonmail.com",
+    };
+
+    public Task<RecruiterRiskResult> CheckAsync(string email, CancellationToken cancellationToken) =>
+        CheckCoreAsync(email, claimedCompany: null, includeEdgar: false, cancellationToken);
+
+    public Task<RecruiterRiskResult> CheckAsync(string email, string? claimedCompany, CancellationToken cancellationToken) =>
+        CheckCoreAsync(email, claimedCompany, includeEdgar: true, cancellationToken);
+
+    private async Task<RecruiterRiskResult> CheckCoreAsync(
+        string email,
+        string? claimedCompany,
+        bool includeEdgar,
+        CancellationToken cancellationToken)
+    {
+        var trimmed = email.Trim();
+        var domain = DomainOf(trimmed);
+        var companies = await repository.GetCompaniesAsync(cancellationToken);
+        var approved = await repository.CountApprovedReportsForDomainAsync(domain, cancellationToken);
+        var reports = await repository.GetReportsByDomainAsync(domain, cancellationToken);
+
+        var reasons = new List<RiskReason>();
+        var databasePenalizedAge = false;
+        var isLookalike = false;
+        var score = 10;
+        string? matchedCompany = null;
+        string? officialDomain = null;
+        var matchedRule = false;
+
+        var official = companies.FirstOrDefault(company => IsOfficial(domain, company.OfficialDomain));
+        if (official is not null)
+        {
+            score -= 40;
+            matchedCompany = official.Name;
+            officialDomain = official.OfficialDomain;
+            reasons.Add(new RiskReason("good", $"Matches the official domain of {official.Name} ({official.OfficialDomain})"));
+            matchedRule = true;
+        }
+
+        if (FreeProviders.Contains(domain))
+        {
+            score += 30;
+            reasons.Add(new RiskReason("bad", $"Free email provider ({domain})."));
+            matchedRule = true;
+        }
+
+        if (official is null)
+        {
+            var lookalike = FindLookalike(domain, companies);
+            if (lookalike is not null)
+            {
+                score += 40;
+                isLookalike = true;
+                matchedCompany = lookalike.Company.Name;
+                officialDomain = lookalike.Company.OfficialDomain;
+                reasons.Add(new RiskReason("bad", $"Look-alike of {lookalike.Company.OfficialDomain}"));
+                matchedRule = true;
+
+                if (lookalike.UsesCharacterTricks)
+                {
+                    score += 10;
+                    reasons.Add(new RiskReason("bad", "Character substitutions in the domain (0, 1, 3, 5, rn, or vv)."));
+                }
+            }
+        }
+
+        if (approved > 0)
+        {
+            var points = Math.Min(approved, 3) * 10;
+            score += points;
+            reasons.Add(new RiskReason("bad", $"{approved} approved scam report(s) for this domain"));
+            matchedRule = true;
+        }
+
+        if (reports.Count > 0)
+        {
+            var youngest = reports.Min(report => report.DomainAgeDays);
+            if (youngest < 30)
+            {
+                score += 20;
+                databasePenalizedAge = true;
+                reasons.Add(new RiskReason("bad", $"Domain was only {youngest} days old when reported"));
+                matchedRule = true;
+            }
+        }
+
+        if (!matchedRule)
+        {
+            score += 10;
+            reasons.Add(new RiskReason("bad", "Unknown domain — verify on the company's official careers page"));
+        }
+
+        var liveRdap = await LookupRdapAsync(domain, cancellationToken);
+        var adjustment = RdapAdjustment(liveRdap, databasePenalizedAge, isLookalike, official is not null);
+        score += adjustment.Points;
+        if (adjustment.Reason is not null)
+        {
+            reasons.Add(adjustment.Reason);
+        }
+
+        score = Math.Clamp(score, 0, 100);
+        var verdict = score <= 34 ? "LOW" : score <= 64 ? "MEDIUM" : "HIGH";
+        EdgarResult? edgarResult = null;
+        if (includeEdgar && edgar is not null)
+        {
+            var edgarName = string.IsNullOrWhiteSpace(claimedCompany) ? matchedCompany : claimedCompany;
+            if (!string.IsNullOrWhiteSpace(edgarName))
+            {
+                edgarResult = await edgar.MatchCompany(edgarName, cancellationToken);
+            }
+        }
+
+        return new RecruiterRiskResult(
+            trimmed,
+            domain,
+            score,
+            verdict,
+            matchedCompany,
+            officialDomain,
+            approved,
+            reasons,
+            liveRdap,
+            edgarResult);
+    }
+
+    internal static (int Points, RiskReason? Reason) RdapAdjustment(
+        RdapResult? rdapResult,
+        bool databaseAlreadyPenalizedAge,
+        bool lookalike,
+        bool officialDomain)
+    {
+        var unavailable = rdapResult is null
+            || (!rdapResult.Found && rdapResult.Message.Contains("unavailable", StringComparison.OrdinalIgnoreCase));
+        if (unavailable)
+        {
+            return (0, new RiskReason("info", "Live registry check unavailable"));
+        }
+
+        if (!rdapResult!.Found)
+        {
+            return lookalike
+                ? (10, new RiskReason("bad", "No public registration record found"))
+                : (0, null);
+        }
+
+        if (rdapResult.DomainAgeDays is < 30 && !databaseAlreadyPenalizedAge)
+        {
+            return (20, new RiskReason("bad", $"Live registry: domain is only {rdapResult.DomainAgeDays} days old"));
+        }
+
+        if (rdapResult.DomainAgeDays is > 3650 && !officialDomain)
+        {
+            var year = rdapResult.RegistrationDate is { Length: >= 4 } ? rdapResult.RegistrationDate[..4] : "an earlier year";
+            return (0, new RiskReason("info", $"Long-established domain (registered {year}) — a positive signal, still verify"));
+        }
+
+        return (0, null);
+    }
+
+    private async Task<RdapResult> LookupRdapAsync(string domain, CancellationToken cancellationToken)
+    {
+        if (rdap is null)
+        {
+            return UnavailableRdap(domain);
+        }
+
+        try
+        {
+            return await rdap.LookupAsync(domain, cancellationToken);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            return UnavailableRdap(domain);
+        }
+    }
+
+    private static RdapResult UnavailableRdap(string domain) => new(
+        domain,
+        false,
+        null,
+        null,
+        null,
+        null,
+        null,
+        [],
+        [],
+        "Live domain lookup is temporarily unavailable.",
+        "RDAP (live external lookup, not the JobLens database)",
+        DateTimeOffset.UtcNow);
+
+    private static Lookalike? FindLookalike(string domain, IReadOnlyList<Company> companies)
+    {
+        var folded = FoldConfusables(domain);
+        var normalized = StripPunctuation(folded);
+        var firstToken = FirstToken(folded);
+        var tricks = !string.Equals(folded, domain, StringComparison.Ordinal);
+
+        Company? best = null;
+        var bestRank = int.MaxValue;
+        var bestBrandLength = -1;
+
+        foreach (var company in companies)
+        {
+            var brand = Brand(company.OfficialDomain);
+            if (brand.Length == 0)
+            {
+                continue;
+            }
+
+            var contained = normalized.Contains(brand, StringComparison.Ordinal);
+            var distance = Levenshtein.Distance(firstToken, brand);
+            if (!contained && distance > 2)
+            {
+                continue;
+            }
+
+            // A contained brand outranks a mere edit-distance hit. Longer brands win ties.
+            var rank = contained ? 0 : distance;
+            if (best is null || rank < bestRank || (rank == bestRank && brand.Length > bestBrandLength))
+            {
+                best = company;
+                bestRank = rank;
+                bestBrandLength = brand.Length;
+            }
+        }
+
+        return best is null ? null : new Lookalike(best, tricks);
+    }
+
+    private static string DomainOf(string email)
+    {
+        var at = email.LastIndexOf('@');
+        var domain = at >= 0 && at < email.Length - 1 ? email[(at + 1)..] : email;
+        return domain.Trim().ToLowerInvariant();
+    }
+
+    private static bool IsOfficial(string domain, string official)
+    {
+        var host = official.Trim().ToLowerInvariant();
+        return domain.Equals(host, StringComparison.Ordinal)
+            || domain.EndsWith("." + host, StringComparison.Ordinal);
+    }
+
+    private static string Brand(string officialDomain)
+    {
+        var host = officialDomain.Trim().ToLowerInvariant();
+        var dot = host.IndexOf('.');
+        return dot > 0 ? host[..dot] : host;
+    }
+
+    // 0/1/3/5 and the two-letter swaps are the tricks. Punctuation is removed afterwards for the contains check.
+    private static string FoldConfusables(string domain)
+    {
+        return domain
+            .Replace("0", "o", StringComparison.Ordinal)
+            .Replace("1", "l", StringComparison.Ordinal)
+            .Replace("3", "e", StringComparison.Ordinal)
+            .Replace("5", "s", StringComparison.Ordinal)
+            .Replace("rn", "m", StringComparison.Ordinal)
+            .Replace("vv", "w", StringComparison.Ordinal);
+    }
+
+    private static string StripPunctuation(string value) => value.Replace("-", "", StringComparison.Ordinal).Replace(".", "", StringComparison.Ordinal);
+
+    // Leftmost token split on '.' and '-'. "amaz0n-careers.net" folds to "amazoon", distance 1 from "amazon".
+    // The full hyphenated label is too long to fall within distance 2 of the brand.
+    private static string FirstToken(string foldedDomain)
+    {
+        var token = foldedDomain;
+        var cut = token.IndexOfAny(['.', '-']);
+        return cut >= 0 ? token[..cut] : token;
+    }
+
+    private sealed record Lookalike(Company Company, bool UsesCharacterTricks);
+}
