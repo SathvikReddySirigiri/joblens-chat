@@ -1,0 +1,286 @@
+@model DataCounts
+@{
+    ViewData["Title"] = "About Us";
+    ViewData["PageTitle"] = "About Us";
+    ViewData["PageSubtitle"] = "Who built JobLens, what problem it solves, and how the data model fits together.";
+    ViewData["UseMermaid"] = true;
+}
+
+<section class="page-header">
+    <partial name="_PageHeader" />
+</section>
+
+<section class="card" aria-labelledby="mission-title">
+    <h2 id="mission-title">Mission</h2>
+    <p>Students and career-center staff face recruiter emails and offer letters that look legitimate but ask for money, equipment purchases, or personal data. Impersonation of real employers is common, and staff need a shared place to record what they have seen.</p>
+    <p>JobLens is a data-grounded assistant for that workflow: check a recruiter, analyze an offer, browse synthetic scam reports, and ask the chatbot questions that must be answered from MCP tools over SQLite—not from free-form invention.</p>
+    <p>The product is built for a university analytics course (ISM 6225). All report data is synthetic training data. It is not legal advice and does not accuse real companies of fraud; reports describe impersonation patterns that use company names as cover.</p>
+</section>
+
+@* EDIT: confirm contributions *@
+<section class="section" aria-labelledby="team-title">
+    <h2 id="team-title">Team</h2>
+    <div class="team-grid">
+        <article class="card team-card">
+            <div class="team-avatar" data-team-avatar>
+                <img src="~/images/team/sathvik.jpg" alt="Portrait of Naga Pavan Sathvik Reddy Sirigiri" width="120" height="120" data-avatar-fallback="NS" />
+                <span class="avatar-initials" hidden aria-hidden="true">NS</span>
+            </div>
+            <h3>Naga Pavan Sathvik Reddy Sirigiri</h3>
+            <p class="role-line">MCP &amp; Backend Lead</p>
+            <ul class="contrib-list">
+                <li>MCP server and tools</li>
+                <li>Chatbot orchestration (Azure OpenAI + Demo fallback)</li>
+                <li>RDAP / EDGAR integrations and recruiter risk scoring</li>
+                <li>Clean Architecture refactor and Azure deployment</li>
+            </ul>
+        </article>
+        <article class="card team-card">
+            <div class="team-avatar" data-team-avatar>
+                <img src="~/images/team/isabella.jpg" alt="Portrait of Isabella Cuello Penaloza" width="120" height="120" data-avatar-fallback="IC" />
+                <span class="avatar-initials" hidden aria-hidden="true">IC</span>
+            </div>
+            <h3>Isabella Cuello Penaloza</h3>
+            <p class="role-line">Data &amp; Analytics Lead</p>
+            <ul class="contrib-list">
+                <li>SQLite schema and synthetic seed data</li>
+                <li>Known answers and data validation</li>
+                <li>Dashboard metrics review</li>
+                <li>CRUD business rules</li>
+            </ul>
+        </article>
+        <article class="card team-card">
+            <div class="team-avatar" data-team-avatar>
+                <img src="~/images/team/lakshmi.jpg" alt="Portrait of Lakshmi Reethika Guduri" width="120" height="120" data-avatar-fallback="LG" />
+                <span class="avatar-initials" hidden aria-hidden="true">LG</span>
+            </div>
+            <h3>Lakshmi Reethika Guduri</h3>
+            <p class="role-line">MVC &amp; Experience + Testing &amp; Documentation Lead</p>
+            <ul class="contrib-list">
+                <li>Page design and accessibility</li>
+                <li>CRUD screens</li>
+                <li>Test matrix and evidence</li>
+                <li>Documentation and presentation</li>
+            </ul>
+        </article>
+    </div>
+</section>
+
+<section class="card tech-box" aria-labelledby="tech-title">
+    <h2 id="tech-title">Technical details</h2>
+    <p class="form-actions">
+        <a class="btn btn-primary"
+           href="https://github.com/SathvikReddySirigiri/joblens-chat#readme"
+           target="_blank"
+           rel="noopener">Read the GitHub README</a>
+        <a class="btn btn-secondary"
+           href="https://github.com/SathvikReddySirigiri/joblens-chat/blob/main/docs/DOCUMENTATION.md"
+           target="_blank"
+           rel="noopener">Full documentation</a>
+    </p>
+
+    <h3>External APIs used</h3>
+    <ul>
+        <li><strong>RDAP</strong> domain registry lookups via hosts such as <code>rdap.org</code> and registry-specific RDAP endpoints (no API key).</li>
+        <li><strong>SEC EDGAR</strong> company ticker list from <code>www.sec.gov</code> (public company_tickers.json; User-Agent required).</li>
+        <li><strong>Azure OpenAI</strong> chat completions when configured (endpoint host from <code>Ai:Endpoint</code>; key only in user-secrets / App Service settings).</li>
+    </ul>
+
+    <h3>CRUD overview</h3>
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th scope="col">Entity</th>
+                    <th scope="col">Create</th>
+                    <th scope="col">Read</th>
+                    <th scope="col">Update / Delete</th>
+                    <th scope="col">Who</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Scam reports</td>
+                    <td>Yes</td>
+                    <td>Yes (visibility by role)</td>
+                    <td>Own pending (student); any (moderator)</td>
+                    <td>Signed-in students create; moderators approve/reject</td>
+                </tr>
+                <tr>
+                    <td>Interview reviews</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Own (student); any (moderator)</td>
+                    <td>Signed-in users</td>
+                </tr>
+                <tr>
+                    <td>Companies</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Moderators only</td>
+                </tr>
+                <tr>
+                    <td>Recruiters</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Moderators only</td>
+                </tr>
+                <tr>
+                    <td>Job postings</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Yes</td>
+                    <td>Moderators only</td>
+                </tr>
+                <tr>
+                    <td>Check logs</td>
+                    <td>System</td>
+                    <td>Via counts / tools</td>
+                    <td>No UI delete</td>
+                    <td>Written when checks run</td>
+                </tr>
+                <tr>
+                    <td>Users</td>
+                    <td>Register (Student)</td>
+                    <td>Self via cookie</td>
+                    <td>Seed / staff</td>
+                    <td>Public register; moderators seeded</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Data management</h3>
+    <p>SQLite file lives under <code>App_Data/joblens.db</code> locally (never under wwwroot) and under a persistent path on Azure. Live row counts:</p>
+    <ul>
+        <li>Companies: @Model.Companies</li>
+        <li>ScamReports: @Model.ScamReports (@Model.Approved approved, @Model.Pending pending, @Model.Rejected rejected)</li>
+        <li>JobPostings: @Model.JobPostings</li>
+        <li>InterviewReviews: @Model.InterviewReviews</li>
+        <li>Recruiters: @Model.Recruiters</li>
+        <li>CheckLogs: @Model.CheckLogs</li>
+        <li>Users: @Model.Users</li>
+    </ul>
+
+    <h3>Challenges &amp; solutions</h3>
+    <ul>
+        <li><strong>GitHub Models retired</strong> → switchable AI provider (<code>Demo</code>, Azure OpenAI, OpenAI-compatible).</li>
+        <li><strong>Azure quota limits</strong> → choose a deployment/SKU the subscription can host; Demo mode always works without a key.</li>
+        <li><strong>RDAP timeouts</strong> → registry-first async client with bounded timeouts and graceful empty panels.</li>
+        <li><strong>AI overclaiming “legitimate”</strong> → system prompt requires tool evidence and forbids inventing facts.</li>
+        <li><strong>Growing MVC project</strong> → Clean Architecture layers (Domain / Application / Infrastructure / Web) with thin controllers.</li>
+    </ul>
+</section>
+
+<section class="section" aria-labelledby="erd-title">
+    <h2 id="erd-title">Entity relationship diagram</h2>
+    <div class="card mermaid-panel">
+        <pre class="mermaid" role="img" aria-label="Entity relationship diagram of JobLens tables">
+erDiagram
+    COMPANIES ||--o{ SCAMREPORTS : has
+    COMPANIES ||--o{ JOBPOSTINGS : has
+    COMPANIES ||--o{ INTERVIEWREVIEWS : has
+    COMPANIES |o--o{ RECRUITERS : optional
+    USERS |o--o{ SCAMREPORTS : CreatedBy
+    USERS |o--o{ INTERVIEWREVIEWS : CreatedBy
+    COMPANIES {
+        int CompanyId PK
+        string Name
+        string OfficialDomain
+        string Industry
+        string HqState
+    }
+    SCAMREPORTS {
+        int ReportId PK
+        int CompanyId FK
+        int CreatedByUserId FK
+        string RecruiterEmail
+        string Domain
+        string Status
+    }
+    JOBPOSTINGS {
+        int PostingId PK
+        int CompanyId FK
+        string Title
+        string PostedDate
+    }
+    INTERVIEWREVIEWS {
+        int ReviewId PK
+        int CompanyId FK
+        int CreatedByUserId FK
+        int Rating
+    }
+    RECRUITERS {
+        int RecruiterId PK
+        int CompanyId FK
+        string Email
+        string Domain
+    }
+    USERS {
+        int UserId PK
+        string Email
+        string Role
+    }
+    CHECKLOGS {
+        int CheckId PK
+        string CheckType
+        int RiskScore
+        string Verdict
+    }
+        </pre>
+    </div>
+    <div class="table-wrap" aria-label="Text alternative for the ERD">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th scope="col">Table</th>
+                    <th scope="col">Key columns</th>
+                    <th scope="col">Relationships</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Companies</td>
+                    <td>CompanyId (PK), Name, OfficialDomain, Industry, HqState</td>
+                    <td>Parent of reports, postings, reviews; optional parent of recruiters</td>
+                </tr>
+                <tr>
+                    <td>ScamReports</td>
+                    <td>ReportId (PK), CompanyId (FK), CreatedByUserId (FK), Status, Domain</td>
+                    <td>Belongs to Companies; optional creator Users</td>
+                </tr>
+                <tr>
+                    <td>JobPostings</td>
+                    <td>PostingId (PK), CompanyId (FK), Title, PostedDate</td>
+                    <td>Belongs to Companies</td>
+                </tr>
+                <tr>
+                    <td>InterviewReviews</td>
+                    <td>ReviewId (PK), CompanyId (FK), CreatedByUserId (FK), Rating</td>
+                    <td>Belongs to Companies; optional creator Users</td>
+                </tr>
+                <tr>
+                    <td>Recruiters</td>
+                    <td>RecruiterId (PK), Email, Domain, CompanyId (FK, nullable)</td>
+                    <td>Optional link to Companies</td>
+                </tr>
+                <tr>
+                    <td>Users</td>
+                    <td>UserId (PK), Email, Role, PasswordHash</td>
+                    <td>Owns CreatedBy on reports and reviews</td>
+                </tr>
+                <tr>
+                    <td>CheckLogs</td>
+                    <td>CheckId (PK), CheckType, RiskScore, Verdict, CreatedAt</td>
+                    <td>Standalone audit of checks</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_MermaidScripts" />
+}

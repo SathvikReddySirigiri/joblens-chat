@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Page not found";
+    ViewData["PageTitle"] = "Page not found";
+    ViewData["PageSubtitle"] = "That address is not part of JobLens.";
+}
+<section class="page-header">
+    <partial name="_PageHeader" />
+</section>
+<section class="card">
+    <p>Check the link, or use the navigation to open Home, Check Recruiter, or Chat.</p>
+    <p class="form-actions">
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Back to home</a>
+        <a class="btn btn-secondary" asp-controller="CheckRecruiter" asp-action="Index">Check a recruiter</a>
+    </p>
+</section>

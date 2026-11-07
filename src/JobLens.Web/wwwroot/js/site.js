@@ -129,4 +129,47 @@
             });
         });
     });
+
+    // Disable submit buttons after first click to prevent double POSTs.
+    document.querySelectorAll("form").forEach(function (form) {
+        form.addEventListener("submit", function () {
+            if (form.getAttribute("data-no-busy") === "true" || form.id === "ask-form") {
+                return;
+            }
+            var buttons = form.querySelectorAll("button[type='submit'], input[type='submit']");
+            buttons.forEach(function (button) {
+                if (button.disabled) {
+                    return;
+                }
+                button.disabled = true;
+                button.setAttribute("aria-busy", "true");
+                if (button.tagName === "BUTTON") {
+                    if (!button.getAttribute("data-original-label")) {
+                        button.setAttribute("data-original-label", button.textContent || "");
+                    }
+                    button.textContent = "Working…";
+                }
+            });
+        });
+    });
+
+    // Team photos: show initials when the JPG is missing.
+    document.querySelectorAll("[data-team-avatar]").forEach(function (wrap) {
+        var img = wrap.querySelector("img");
+        var initials = wrap.querySelector(".avatar-initials");
+        if (!img || !initials) {
+            return;
+        }
+
+        function showInitials() {
+            img.hidden = true;
+            initials.hidden = false;
+            initials.removeAttribute("aria-hidden");
+        }
+
+        img.addEventListener("error", showInitials);
+        if (img.complete && img.naturalWidth === 0) {
+            showInitials();
+        }
+    });
 })();

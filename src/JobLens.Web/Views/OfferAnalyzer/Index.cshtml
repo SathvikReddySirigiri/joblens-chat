@@ -1,10 +1,11 @@
 @model OfferAnalyzerPageVm
 @{
-    ViewData["Title"] = "Offer analyzer";
+    ViewData["Title"] = "Offer Analyzer";
+    ViewData["PageTitle"] = "Offer Analyzer";
+    ViewData["PageSubtitle"] = "Paste an offer or upload a PDF or Word file. The text is redacted in memory and is not saved.";
 }
 <section class="page-header">
-    <h1>Offer analyzer</h1>
-    <p class="help">Paste an offer or upload a PDF or Word file. The text is redacted in memory and is not saved.</p>
+    <partial name="_PageHeader" />
 </section>
 <section class="card">
     <div class="tab-list" role="tablist" aria-label="Offer input">

@@ -1,0 +1,22 @@
+<script src="~/lib/mermaid/mermaid.min.js" asp-append-version="true"></script>
+<script>
+    (function () {
+        if (!window.mermaid) {
+            return;
+        }
+        mermaid.initialize({
+            startOnLoad: true,
+            securityLevel: "strict",
+            theme: "default",
+            themeVariables: {
+                background: "#FFFFFF",
+                primaryColor: "#DBEAFE",
+                primaryTextColor: "#1E293B",
+                primaryBorderColor: "#3B82F6",
+                lineColor: "#64748B",
+                secondaryColor: "#F8FAFC",
+                tertiaryColor: "#FFFFFF"
+            }
+        });
+    })();
+</script>

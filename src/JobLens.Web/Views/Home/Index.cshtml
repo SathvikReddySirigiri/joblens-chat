@@ -1,36 +1,122 @@
 ﻿@model DataCounts
 @{
-    ViewData["Title"] = "About & Architecture";
+    ViewData["Title"] = "Home";
 }
 
-<section class="hero">
-    <p class="pill">Data-grounded business chatbot</p>
-    <h1>Ask about job scams. Get answers grounded in data.</h1>
-    <p>Career-center staff need a fast way to see which companies and domains to warn students about. Students need to know whether a recruiter email is safe to answer. JobLens Chat will answer those questions from synthetic scam reports, not from guesses.</p>
+<section class="hero home-hero" aria-labelledby="home-hero-title">
+    <p class="pill">Job &amp; internship scam shield for students and career centers</p>
+    <h1 id="home-hero-title">We verify the recruiter, not just the job.</h1>
+    <p class="lead">JobLens checks recruiter emails, domains, and synthetic scam reports so career centers and students can decide what to trust before anyone sends money or personal data.</p>
     <div class="header-actions">
-        <a class="btn btn-primary" asp-controller="Chat" asp-action="Index">Open the chatbot</a>
-        <a class="btn btn-secondary" asp-controller="Dashboard" asp-action="Index">View dashboard</a>
+        <a class="btn btn-primary" asp-controller="CheckRecruiter" asp-action="Index">Check a recruiter</a>
+        <a class="btn btn-secondary" asp-controller="Chat" asp-action="Index">Ask the JobLens chat</a>
+    </div>
+    <form class="quick-check" method="get" asp-controller="CheckRecruiter" asp-action="Index" aria-label="Quick recruiter check">
+        <label class="visually-hidden" for="home-email">Recruiter email</label>
+        <input id="home-email" name="email" type="email" placeholder="recruiter@example.com" autocomplete="off" required />
+        <button class="btn btn-primary" type="submit">Check</button>
+    </form>
+</section>
+
+<section class="stats-strip" aria-label="Live database counts">
+    <div class="stat-card">
+        <p class="stat-label">Scam reports</p>
+        <p class="stat-value">@Model.ScamReports</p>
+    </div>
+    <div class="stat-card">
+        <p class="stat-label">Approved reports</p>
+        <p class="stat-value">@Model.Approved</p>
+    </div>
+    <div class="stat-card">
+        <p class="stat-label">Companies tracked</p>
+        <p class="stat-value">@Model.Companies</p>
+    </div>
+    <div class="stat-card">
+        <p class="stat-label">Recruiter checks run</p>
+        <p class="stat-value">@Model.CheckLogs</p>
     </div>
 </section>
 
-<section id="about" class="section" aria-labelledby="counts-title">
-    <h2 id="counts-title">What is in the database</h2>
-    <dl class="summary-grid">
-        <div class="card"><dt>Companies</dt><dd>@Model.Companies</dd></div>
-        <div class="card"><dt>Recruiters</dt><dd>@Model.Recruiters</dd></div>
-        <div class="card"><dt>Scam reports</dt><dd>@Model.ScamReports (@Model.Approved approved, @Model.Pending pending, @Model.Rejected rejected)</dd></div>
-        <div class="card"><dt>Job postings</dt><dd>@Model.JobPostings</dd></div>
-        <div class="card"><dt>Interview reviews</dt><dd>@Model.InterviewReviews</dd></div>
-        <div class="card"><dt>Check logs</dt><dd>@Model.CheckLogs</dd></div>
-    </dl>
+<section class="section" aria-labelledby="features-title">
+    <h2 id="features-title">What JobLens does</h2>
+    <div class="feature-grid">
+        <a class="feature-card" asp-controller="CheckRecruiter" asp-action="Index">
+            <span class="feature-icon" aria-hidden="true">✉</span>
+            <h3>Check Recruiter</h3>
+            <p>Score a recruiter email against domains, look-alikes, and approved reports.</p>
+        </a>
+        <a class="feature-card" asp-controller="OfferAnalyzer" asp-action="Index">
+            <span class="feature-icon" aria-hidden="true">📄</span>
+            <h3>Offer Analyzer</h3>
+            <p>Paste or upload an offer letter; redacted text is scored for common scam patterns.</p>
+        </a>
+        <a class="feature-card" asp-controller="ScamReports" asp-action="Index">
+            <span class="feature-icon" aria-hidden="true">📋</span>
+            <h3>Scam Reports</h3>
+            <p>Browse community reports; students can submit; moderators approve or reject.</p>
+        </a>
+        <a class="feature-card" asp-controller="JobPostings" asp-action="Index">
+            <span class="feature-icon" aria-hidden="true">💼</span>
+            <h3>Job Postings + Smart Search</h3>
+            <p>Filter synthetic postings and ask plain-English search questions.</p>
+        </a>
+        <a class="feature-card" asp-controller="Dashboard" asp-action="Index">
+            <span class="feature-icon" aria-hidden="true">📊</span>
+            <h3>Scam Insights Dashboard</h3>
+            <p>Live charts for trends, companies, channels, and money requested.</p>
+        </a>
+        <a class="feature-card" asp-controller="Chat" asp-action="Index">
+            <span class="feature-icon" aria-hidden="true">💬</span>
+            <h3>AI Chat (MCP tools)</h3>
+            <p>Ask questions grounded only in read-only MCP tools over the database.</p>
+        </a>
+    </div>
 </section>
 
-<section class="section" aria-labelledby="flow-title">
-    <h2 id="flow-title">How a question will move</h2>
-    <ol class="flow">
-        <li class="card"><span class="step">1</span> MVC chat</li>
-        <li class="card"><span class="step">2</span> MCP client</li>
-        <li class="card"><span class="step">3</span> MCP tools</li>
-        <li class="card"><span class="step">4</span> SQLite</li>
+<section class="section" aria-labelledby="how-title">
+    <h2 id="how-title">How it works</h2>
+    <ol class="how-steps">
+        <li class="card">
+            <span class="step">1</span>
+            <h3>Enter a recruiter or offer</h3>
+            <p>Start with an email, claimed company, or offer text from a student or staff member.</p>
+        </li>
+        <li class="card">
+            <span class="step">2</span>
+            <h3>JobLens checks the evidence</h3>
+            <p>We compare domains, synthetic reports, and live registry panels (RDAP and SEC EDGAR).</p>
+        </li>
+        <li class="card">
+            <span class="step">3</span>
+            <h3>Clear verdict and next steps</h3>
+            <p>See a risk score, reasons, and what to do before anyone replies or sends money.</p>
+        </li>
     </ol>
+</section>
+
+<section class="section" aria-labelledby="audience-title">
+    <h2 id="audience-title">Built for</h2>
+    <div class="audience-grid">
+        <article class="card">
+            <h3>Students</h3>
+            <p>Check a cold outreach email or sketchy offer before you share documents or deposit a check.</p>
+        </article>
+        <article class="card">
+            <h3>Career-center moderators</h3>
+            <p>Review pending reports, manage reference data, and see trends on the dashboard.</p>
+        </article>
+        <article class="card">
+            <h3>Employers</h3>
+            <p>Understand how impersonation shows up in reports that use your company name as cover.</p>
+        </article>
+    </div>
+</section>
+
+<section class="cta-band" aria-labelledby="cta-title">
+    <h2 id="cta-title">Got a suspicious recruiter message?</h2>
+    <p>Run a check in seconds, or file a report for the career center to review.</p>
+    <div class="header-actions">
+        <a class="btn btn-primary" asp-controller="CheckRecruiter" asp-action="Index">Check Recruiter</a>
+        <a class="btn btn-secondary" asp-controller="ScamReports" asp-action="Create">Report a scam</a>
+    </div>
 </section>

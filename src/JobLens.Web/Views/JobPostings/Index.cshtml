@@ -20,15 +20,17 @@
         return Url.Action("Index", new { search = keepSearch, company = keepCompany, remote = keepRemote, paid = keepPaid, state = keepState, minPay = keepPay, exclude = keepExclude, q = ViewBag.Question, asked = true }) ?? "#";
     }
 }
-<partial name="_Alerts" />
+@{
+    ViewData["PageTitle"] = "Job postings";
+    ViewData["PageSubtitle"] = "Internships and entry-level roles tied to known companies.";
+}
 <section class="page-header">
-    <div class="page-heading">
-        <h1>Job postings</h1>
-        <p class="help">Internships and entry-level roles tied to known companies.</p>
-    </div>
+    <partial name="_PageHeader" />
     @if (ViewBag.IsModerator == true)
     {
-        <a class="btn btn-primary" asp-action="Create">Add new</a>
+        <div class="header-actions">
+            <a class="btn btn-primary" asp-action="Create">Add new</a>
+        </div>
     }
 </section>
 <section class="card">

@@ -6,15 +6,17 @@
     ViewData["PagerSize"] = page.PageSize;
     ViewData["PagerTotal"] = page.Total;
 }
-<partial name="_Alerts" />
+@{
+    ViewData["PageTitle"] = "Companies";
+    ViewData["PageSubtitle"] = "Official employers that scam reports and job postings refer to.";
+}
 <section class="page-header">
-    <div class="page-heading">
-        <h1>Companies</h1>
-        <p class="help">Official employers that scam reports and job postings refer to.</p>
-    </div>
+    <partial name="_PageHeader" />
     @if (ViewBag.IsModerator == true)
     {
-        <a class="btn btn-primary" asp-action="Create">Add new</a>
+        <div class="header-actions">
+            <a class="btn btn-primary" asp-action="Create">Add new</a>
+        </div>
     }
 </section>
 <section class="card">

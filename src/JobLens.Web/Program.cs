@@ -61,6 +61,10 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+// Keep /mcp clients on raw status codes (401) instead of HTML error pages.
+app.UseWhen(
+    context => !context.Request.Path.StartsWithSegments("/mcp"),
+    branch => branch.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}"));
 app.UseMiddleware<McpAccessKeyMiddleware>();
 app.UseRateLimiter();
 app.UseSession();
