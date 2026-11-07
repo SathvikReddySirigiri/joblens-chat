@@ -7,7 +7,10 @@
     <p class="pill">Data-grounded business chatbot</p>
     <h1>Ask about job scams. Get answers grounded in data.</h1>
     <p>Career-center staff need a fast way to see which companies and domains to warn students about. Students need to know whether a recruiter email is safe to answer. JobLens Chat will answer those questions from synthetic scam reports, not from guesses.</p>
-    <a class="btn btn-primary" asp-controller="Chat" asp-action="Index">Open the chatbot</a>
+    <div class="header-actions">
+        <a class="btn btn-primary" asp-controller="Chat" asp-action="Index">Open the chatbot</a>
+        <a class="btn btn-secondary" asp-controller="Dashboard" asp-action="Index">View dashboard</a>
+    </div>
 </section>
 
 <section id="about" class="section" aria-labelledby="counts-title">

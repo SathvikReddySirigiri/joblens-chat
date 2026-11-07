@@ -18,7 +18,10 @@
         <h1>Scam reports</h1>
         <p class="help">Review synthetic reports of recruiters impersonating real companies.</p>
     </div>
-    <a class="btn btn-primary" asp-action="Create">Add new</a>
+    <div class="header-actions">
+        <a class="btn btn-secondary" asp-controller="Dashboard" asp-action="Index">View dashboard</a>
+        <a class="btn btn-primary" asp-action="Create">Add new</a>
+    </div>
 </section>
 <p class="toolbar-note">
     <a asp-action="Index" asp-route-status="Pending">Moderation queue</a>

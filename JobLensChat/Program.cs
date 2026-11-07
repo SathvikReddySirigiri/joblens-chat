@@ -31,6 +31,7 @@ builder.Services.AddSingleton<CheckLogRepository>();
 builder.Services.AddSingleton<DashboardRepository>();
 builder.Services.AddSingleton<RecruiterRepository>();
 builder.Services.AddSingleton<UserRepository>();
+builder.Services.AddScoped<DashboardService>();
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<ScamReportService>();
 builder.Services.AddScoped<JobPostingService>();

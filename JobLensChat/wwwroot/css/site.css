@@ -30,6 +30,12 @@
   --space-8: 64px;
   --container: 1120px;
   --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --chart-1: #93C5FD;
+  --chart-2: #86EFAC;
+  --chart-3: #FCD34D;
+  --chart-4: #FCA5A5;
+  --chart-5: #C4B5FD;
+  --chart-6: #A5F3FC;
 }
 
 *,
@@ -785,4 +791,54 @@ blockquote {
   margin: var(--space-2) 0 0;
   padding-left: var(--space-3);
   border-left: 3px solid var(--border);
+}
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.kpi-grid,
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--space-4);
+  margin: var(--space-5) 0;
+}
+
+.kpi h2,
+.chart-card h2,
+.insights h2 {
+  margin: 0 0 var(--space-2);
+  font-size: 1rem;
+}
+
+.kpi-value {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.kpi-value a {
+  color: var(--primary);
+}
+
+.chart-box {
+  position: relative;
+  height: 280px;
+}
+
+.chart-table {
+  margin-top: var(--space-3);
+}
+
+.insights ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.insights li + li {
+  margin-top: var(--space-2);
 }
