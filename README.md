@@ -57,6 +57,10 @@ AI keys and seed password overrides use **user-secrets** (or Azure app settings)
 dotnet user-secrets set "Ai:ApiKey" "<your-key>" --project src/JobLens.Web
 ```
 
+### MCP (Cursor)
+
+The app exposes tools at `http://localhost:5080/mcp`. For Cursor, copy `.cursor/mcp.example.json` to `.cursor/mcp.json` and set a local key if you use one. `.cursor/mcp.json` is gitignored so machine-specific MCP settings stay local.
+
 ## How to test
 
 ```powershell

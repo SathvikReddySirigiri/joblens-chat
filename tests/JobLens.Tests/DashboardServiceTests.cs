@@ -1,19 +1,98 @@
 using System.Globalization;
-using JobLens.Infrastructure.Persistence;
-using JobLens.Domain.Entities;
-using JobLens.Application.Dtos;
+using JobLens.Application.Dtos.Dashboard;
 using JobLens.Application.Services;
-using JobLens.Application.Common;
-using JobLens.Infrastructure.External;
-using JobLens.Infrastructure.AI;
-using JobLens.Infrastructure.Documents;
-using JobLens.Infrastructure.Security;
+using JobLens.Domain.Entities;
+using JobLens.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace JobLens.Tests;
 
 public sealed class DashboardServiceTests
 {
+    [Fact]
+    public async Task Seeded_kpis_match_known_totals()
+    {
+        await using var database = await TempDatabase.CreateSeededAsync();
+        var data = await Service(database).GetDashboardAsync("all", CancellationToken.None);
+
+        Assert.Equal(120, data.Kpis.TotalReports);
+        Assert.Equal(23, data.Kpis.PendingReports);
+        Assert.Equal(85, data.Kpis.ApprovedReports);
+        Assert.Equal(87.6, data.Kpis.ApprovalRate);
+        Assert.Equal(94026.00, data.Kpis.TotalAmountRequestedUsd);
+    }
+
+    [Fact]
+    public async Task Seeded_top_impersonated_order_and_scam_types()
+    {
+        await using var database = await TempDatabase.CreateSeededAsync();
+        var data = await Service(database).GetDashboardAsync("all", CancellationToken.None);
+
+        Assert.Equal(
+            ["Amazon", "Microsoft", "Deloitte", "Google", "JPMorgan Chase"],
+            data.TopImpersonatedCompanies.Take(5).Select(row => row.CompanyName).ToArray());
+        Assert.Equal([15, 13, 10, 9, 7], data.TopImpersonatedCompanies.Take(5).Select(row => row.ApprovedReports).ToArray());
+
+        Assert.Equal(
+            [
+                ("Fake check", 23),
+                ("Upfront fee", 21),
+                ("Chat-only interview", 20),
+                ("Equipment purchase", 20),
+                ("Fake staffing agency", 19),
+                ("Identity theft", 17),
+            ],
+            data.ReportsByScamType.Select(row => (row.Category, row.Count)).ToArray());
+    }
+
+    [Fact]
+    public async Task Range_3m_only_includes_months_within_three_months_of_latest_report()
+    {
+        await using var database = await TempDatabase.CreateSeededAsync();
+        var data = await Service(database).GetDashboardAsync("3m", CancellationToken.None);
+        var latest = DateOnly.ParseExact(data.LatestReportedDate!, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        var earliestAllowed = latest.AddMonths(-3);
+
+        Assert.Equal("3m", data.Range);
+        Assert.NotEmpty(data.ReportsPerMonth);
+        foreach (var month in data.ReportsPerMonth)
+        {
+            var start = DateOnly.ParseExact(month.Month + "-01", "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            Assert.True(start >= new DateOnly(earliestAllowed.Year, earliestAllowed.Month, 1));
+            Assert.True(start <= latest);
+        }
+    }
+
+    [Fact]
+    public async Task Seeded_insights_quote_dto_numbers()
+    {
+        await using var database = await TempDatabase.CreateSeededAsync();
+        var data = await Service(database).GetDashboardAsync("all", CancellationToken.None);
+        var texts = data.Insights.Select(insight => insight.Text).ToList();
+        var top = data.TopImpersonatedCompanies[0];
+        var money = data.TopImpersonatedCompanies
+            .OrderByDescending(row => row.TotalAmountRequestedUsd)
+            .First();
+
+        Assert.Contains(texts, text => text.Contains(top.CompanyName, StringComparison.Ordinal)
+            && text.Contains(top.ApprovedReports.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            && text.Contains(top.TotalAmountRequestedUsd.ToString("$#,##0.00", CultureInfo.InvariantCulture), StringComparison.Ordinal));
+        Assert.Contains(texts, text => text.Contains(data.Kpis.PendingReports.ToString(CultureInfo.InvariantCulture), StringComparison.Ordinal)
+            && text.Contains("waiting for moderation", StringComparison.Ordinal));
+        if (money.ApprovedReports < top.ApprovedReports)
+        {
+            Assert.Contains(texts, text => text.Contains(money.CompanyName, StringComparison.Ordinal)
+                && text.Contains("Highest money requested", StringComparison.Ordinal));
+        }
+
+        Assert.Contains(texts, text => text.Contains("HIGH risk", StringComparison.Ordinal)
+            || text.Contains("No recruiter checks", StringComparison.Ordinal));
+    }
+
     [Fact]
     public async Task Approval_rate_excludes_pending_and_uses_approved_over_decided()
     {
@@ -28,7 +107,7 @@ public sealed class DashboardServiceTests
         await ReportAsync(reports, companyId, "Pending", "2026-10-05", 100, "p1@fake.test");
         await ReportAsync(reports, companyId, "Pending", "2026-10-06", 100, "p2@fake.test");
 
-        var snapshot = await Service(database).GetAsync("all", CancellationToken.None);
+        var snapshot = await Service(database).GetDashboardAsync("all", CancellationToken.None);
 
         Assert.Equal(75, snapshot.Kpis.ApprovalRate);
         Assert.Equal(3, snapshot.Kpis.ApprovedReports);
@@ -48,9 +127,9 @@ public sealed class DashboardServiceTests
         await ReportAsync(reports, companyId, "Pending", "2026-10-21", 20, "new2@fake.test");
 
         var service = Service(database);
-        var all = await service.GetAsync("all", CancellationToken.None);
-        var six = await service.GetAsync("6m", CancellationToken.None);
-        var three = await service.GetAsync("3m", CancellationToken.None);
+        var all = await service.GetDashboardAsync("all", CancellationToken.None);
+        var six = await service.GetDashboardAsync("6m", CancellationToken.None);
+        var three = await service.GetDashboardAsync("3m", CancellationToken.None);
 
         Assert.Equal(3, all.Kpis.TotalReports);
         Assert.Equal(2, six.Kpis.TotalReports);
@@ -74,20 +153,21 @@ public sealed class DashboardServiceTests
         await ReportAsync(reports, amazon, "Approved", "2026-10-16", 50, "oct3@fake.test");
         await ReportAsync(reports, amazon, "Pending", "2026-10-22", 0, "oct4@fake.test");
 
-        var today = DateTime.UtcNow.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
         await logs.AddAsync(new CheckLog(0, "Recruiter", "old.test", 80, "HIGH", "2026-01-15"), CancellationToken.None);
-        await logs.AddAsync(new CheckLog(0, "Recruiter", "today.test", 90, "HIGH", today), CancellationToken.None);
-        await logs.AddAsync(new CheckLog(0, "Recruiter", "today.test", 10, "LOW", today), CancellationToken.None);
-        await logs.AddAsync(new CheckLog(0, "Recruiter", "today.test", 20, "LOW", today), CancellationToken.None);
-        await logs.AddAsync(new CheckLog(0, "Recruiter", "today.test", 30, "LOW", today), CancellationToken.None);
+        await logs.AddAsync(new CheckLog(0, "Recruiter", "today.test", 90, "HIGH", "2026-10-28"), CancellationToken.None);
+        await logs.AddAsync(new CheckLog(0, "Recruiter", "today.test", 10, "LOW", "2026-10-28"), CancellationToken.None);
+        await logs.AddAsync(new CheckLog(0, "Recruiter", "today.test", 20, "LOW", "2026-10-29"), CancellationToken.None);
+        await logs.AddAsync(new CheckLog(0, "Recruiter", "today.test", 30, "LOW", "2026-10-29"), CancellationToken.None);
 
-        var snapshot = await Service(database).GetAsync("all", CancellationToken.None);
+        var snapshot = await Service(database).GetDashboardAsync("all", CancellationToken.None);
+        var texts = snapshot.Insights.Select(insight => insight.Text).ToList();
 
+        Assert.Equal(4, snapshot.Kpis.ChecksThisMonth);
         Assert.Equal(40, snapshot.Kpis.HighRiskCheckPct);
-        Assert.Contains("Reports grew 100% from July to October.", snapshot.Insights);
-        Assert.Contains("Amazon is the most impersonated company (3 approved reports, $150.00 requested).", snapshot.Insights);
-        Assert.Contains("3 reports are waiting for moderation.", snapshot.Insights);
-        Assert.Contains("25% of recruiter checks were HIGH risk this month.", snapshot.Insights);
+        Assert.Contains("Reports grew 100% from July to October.", texts);
+        Assert.Contains("Amazon is the most impersonated company (3 approved reports, $150.00 requested).", texts);
+        Assert.Contains("3 reports are waiting for moderation.", texts);
+        Assert.Contains("25% of recruiter checks were HIGH risk this month.", texts);
     }
 
     [Fact]
@@ -109,13 +189,14 @@ public sealed class DashboardServiceTests
         await ReportAsync(reports, walmart, "Pending", "2026-08-08", 500, "w4@fake.test");
         await ReportAsync(reports, walmart, "Pending", "2026-08-09", 500, "w5@fake.test");
 
-        var snapshot = await Service(database).GetAsync("all", CancellationToken.None);
+        var snapshot = await Service(database).GetDashboardAsync("all", CancellationToken.None);
         var top = snapshot.TopImpersonatedCompanies;
+        var texts = snapshot.Insights.Select(insight => insight.Text).ToList();
 
         Assert.Equal(["Microsoft", "Amazon"], top.Select(row => row.CompanyName).ToArray());
         Assert.Equal(3, top[0].ApprovedReports);
         Assert.Equal(1, top[1].ApprovedReports);
-        Assert.Contains("Highest money requested: Amazon ($80) despite fewer reports.", snapshot.Insights);
+        Assert.Contains("Highest money requested: Amazon ($80) despite fewer reports.", texts);
     }
 
     private static DashboardService Service(TempDatabase database) =>

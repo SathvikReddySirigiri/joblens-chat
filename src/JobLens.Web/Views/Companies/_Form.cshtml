@@ -16,7 +16,7 @@
     <label asp-for="Industry">Industry</label>
     <select asp-for="Industry">
         <option value="">Choose an industry</option>
-        @foreach (var industry in Catalog.Industries)
+        @foreach (var industry in FormOptionsCatalog.Industries)
         {
             <option value="@industry">@industry</option>
         }

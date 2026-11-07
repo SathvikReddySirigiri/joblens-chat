@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using JobLens.Application.Dtos;
 using JobLens.Application.Interfaces;
 using JobLens.Domain.Entities;
-using JobLens.Web.Models;
+using JobLens.Web.ViewModels;
 using Microsoft.Extensions.AI;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol;

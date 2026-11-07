@@ -1,4 +1,4 @@
-@using JobLens.Web.Models
+@using JobLens.Web.ViewModels
 @{
     ViewData["Title"] = "Scam reports";
     var page = (PageResult<ScamReport>)ViewBag.Page;
@@ -54,7 +54,7 @@
             <label for="scamType">Scam type</label>
             <select id="scamType" name="scamType">
                 <option value="">Any</option>
-                @foreach (var type in Catalog.ScamTypes)
+                @foreach (var type in FormOptionsCatalog.ScamTypes)
                 {
                     if (ViewBag.ScamType as string == type)
                     {
@@ -71,7 +71,7 @@
             <label for="channel">Channel</label>
             <select id="channel" name="channel">
                 <option value="">Any</option>
-                @foreach (var channel in Catalog.Channels)
+                @foreach (var channel in FormOptionsCatalog.Channels)
                 {
                     if (ViewBag.Channel as string == channel)
                     {

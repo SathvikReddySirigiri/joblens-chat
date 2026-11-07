@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace JobLens.Web.Models;
+namespace JobLens.Web.ViewModels;
 
 public sealed class ChatViewModel
 {

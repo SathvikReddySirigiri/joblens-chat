@@ -157,9 +157,9 @@
 
         var insightList = document.getElementById("dashboard-insights");
         insightList.replaceChildren();
-        data.insights.forEach(function (text) {
+        data.insights.forEach(function (insight) {
             var item = document.createElement("li");
-            item.textContent = text;
+            item.textContent = typeof insight === "string" ? insight : insight.text;
             insightList.appendChild(item);
         });
 
@@ -265,7 +265,7 @@
         });
         setRows("table-status", statuses.map(function (row) { return [row.category, String(row.count), percentOf(row.count, statusTotal)]; }));
 
-        var compare = data.postingsVsReports;
+        var compare = data.companyActivity || data.postingsVsReports || [];
         upsert("chart-compare", {
             type: "bar",
             data: {

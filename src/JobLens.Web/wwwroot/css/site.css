@@ -800,10 +800,17 @@ blockquote {
   gap: var(--space-3);
 }
 
-.kpi-grid,
-.chart-grid {
+/* Dashboard */
+.kpi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--space-4);
+  margin: var(--space-5) 0;
+}
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-4);
   margin: var(--space-5) 0;
 }
@@ -827,11 +834,17 @@ blockquote {
 
 .chart-box {
   position: relative;
-  height: 280px;
+  height: 300px;
 }
 
 .chart-table {
   margin-top: var(--space-3);
+}
+
+.chart-table summary {
+  cursor: pointer;
+  color: var(--primary);
+  font-weight: 600;
 }
 
 .insights ul {
@@ -841,4 +854,14 @@ blockquote {
 
 .insights li + li {
   margin-top: var(--space-2);
+}
+
+@media (max-width: 900px) {
+  .chart-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-box {
+    height: 260px;
+  }
 }

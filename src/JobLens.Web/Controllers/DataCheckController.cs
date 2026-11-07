@@ -1,5 +1,5 @@
 using JobLens.Application.Services;
-using JobLens.Web.Models;
+using JobLens.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobLens.Web.Controllers;

@@ -8,15 +8,21 @@ public sealed class DashboardController(DashboardService dashboards) : Controlle
     [HttpGet("/Dashboard")]
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        var snapshot = await dashboards.GetAsync("all", cancellationToken);
-        return View(snapshot);
+        var data = await dashboards.GetDashboardAsync("all", cancellationToken);
+        return View(data);
     }
 
     [HttpGet("/Dashboard/Data")]
     public async Task<IActionResult> Data(string? range, CancellationToken cancellationToken)
     {
         Response.Headers.CacheControl = "no-store";
-        var snapshot = await dashboards.GetAsync(range, cancellationToken);
-        return Json(snapshot);
+        var label = string.IsNullOrWhiteSpace(range) ? "all" : range.Trim().ToLowerInvariant();
+        if (label is not ("all" or "3m" or "6m"))
+        {
+            label = "all";
+        }
+
+        var data = await dashboards.GetDashboardAsync(label, cancellationToken);
+        return Json(data);
     }
 }

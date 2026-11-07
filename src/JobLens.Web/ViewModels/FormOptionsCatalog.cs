@@ -1,6 +1,7 @@
-namespace JobLens.Web;
+namespace JobLens.Web.ViewModels;
 
-public static class Catalog
+/// <summary>Dropdown and pager options for MVC forms (mirrors Domain constants where applicable).</summary>
+public static class FormOptionsCatalog
 {
     public const int PageSize = Domain.Constants.Paging.PageSize;
 

@@ -1,23 +1,37 @@
 using JobLens.Application.Dtos;
-using JobLens.Domain.Entities;
+using JobLens.Application.Dtos.Dashboard;
+using DashboardCompanyActivity = JobLens.Application.Dtos.Dashboard.CompanyActivity;
 
 namespace JobLens.Application.Interfaces;
 
 public interface IDashboardRepository
 {
-    Task<IReadOnlyList<MonthCount>> ReportsPerMonthAsync(CancellationToken cancellationToken);
-    Task<IReadOnlyList<CategoryCount>> ReportsByScamTypeAsync(CancellationToken cancellationToken);
-    Task<IReadOnlyList<CategoryCount>> ReportsByStatusAsync(CancellationToken cancellationToken);
-    Task<IReadOnlyList<CompanyRanking>> TopImpersonatedCompaniesAsync(CancellationToken cancellationToken);
-    Task<IReadOnlyList<VerdictMonthCount>> ChecksByVerdictPerMonthAsync(CancellationToken cancellationToken);
-    Task<IReadOnlyList<StateCount>> PostingsByStateAsync(CancellationToken cancellationToken);
-    Task<IReadOnlyList<CompanyRating>> AverageRatingByCompanyAsync(CancellationToken cancellationToken);
-    Task<string?> LatestReportedDateAsync(CancellationToken cancellationToken);
-    Task<(DashboardKpis Kpis, int HighChecksThisMonth)> ReadKpisAsync(string? fromDate, string? toDate, string currentMonth, CancellationToken cancellationToken);
-    Task<IReadOnlyList<MonthSeries>> ReportsPerMonthAsync(string? fromDate, string? toDate, CancellationToken cancellationToken);
-    Task<IReadOnlyList<CategoryCount>> CountsByAsync( string column, string? fromDate, string? toDate, CancellationToken cancellationToken);
-    Task<IReadOnlyList<CompanyRanking>> TopApprovedCompaniesAsync( string? fromDate, string? toDate, CancellationToken cancellationToken);
-    Task<CompanyRanking?> HighestApprovedAmountAsync( string? fromDate, string? toDate, CancellationToken cancellationToken);
-    Task<IReadOnlyList<CheckMonth>> ChecksByMonthAsync(string? fromDate, string? toDate, CancellationToken cancellationToken);
-    Task<IReadOnlyList<CompanyCompare>> PostingsVsReportsAsync( string? fromDate, string? toDate, CancellationToken cancellationToken);
+    Task<string?> GetLatestReportDateAsync(CancellationToken cancellationToken);
+
+    Task<string?> GetLatestCheckDateAsync(CancellationToken cancellationToken);
+
+    Task<(DashboardKpis Kpis, int HighChecksThisMonth)> GetKpisAsync(
+        DateRange range,
+        string checksMonth,
+        CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<MonthCount>> GetReportsPerMonthAsync(DateRange range, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<CategoryCount>> GetReportsByScamTypeAsync(DateRange range, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<CategoryCount>> GetReportsByStatusAsync(DateRange range, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<CompanyImpersonation>> GetTopImpersonatedAsync(
+        DateRange range,
+        int top,
+        CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<VerdictMonth>> GetChecksByVerdictPerMonthAsync(DateRange range, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<CategoryCount>> GetReportsByChannelAsync(DateRange range, CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<DashboardCompanyActivity>> GetCompanyActivityAsync(
+        DateRange range,
+        int top,
+        CancellationToken cancellationToken);
 }

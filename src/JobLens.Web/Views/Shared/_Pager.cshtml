@@ -1,6 +1,6 @@
 @{
     var page = ViewData["PagerPage"] as int? ?? 1;
-    var size = ViewData["PagerSize"] as int? ?? JobLens.Web.Catalog.PageSize;
+    var size = ViewData["PagerSize"] as int? ?? JobLens.Web.ViewModels.FormOptionsCatalog.PageSize;
     var total = ViewData["PagerTotal"] as int? ?? 0;
     var from = total == 0 ? 0 : ((page - 1) * size) + 1;
     var to = total == 0 ? 0 : Math.Min(page * size, total);

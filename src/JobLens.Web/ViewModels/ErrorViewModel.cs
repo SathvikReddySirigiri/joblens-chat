@@ -1,4 +1,4 @@
-namespace JobLens.Web.Models;
+namespace JobLens.Web.ViewModels;
 
 public class ErrorViewModel
 {

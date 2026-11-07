@@ -1,4 +1,4 @@
-@model DashboardSnapshot
+@model JobLens.Application.Dtos.Dashboard.DashboardData
 @{
     ViewData["Title"] = "Scam Insights Dashboard";
     var updated = DateTime.UtcNow;
@@ -185,7 +185,7 @@
                     <caption>Postings and approved reports per company</caption>
                     <thead><tr><th scope="col">Company</th><th scope="col">Postings</th><th scope="col">Approved reports</th><th scope="col">Average rating</th></tr></thead>
                     <tbody id="table-compare">
-                        @foreach (var row in Model.PostingsVsReports)
+                        @foreach (var row in Model.CompanyActivity)
                         {
                             <tr>
                                 <td>@row.CompanyName</td>
@@ -206,7 +206,7 @@
     <ul id="dashboard-insights">
         @foreach (var insight in Model.Insights)
         {
-            <li>@insight</li>
+            <li>@insight.Text</li>
         }
     </ul>
 </section>

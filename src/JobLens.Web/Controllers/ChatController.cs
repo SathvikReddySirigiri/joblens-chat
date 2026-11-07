@@ -2,7 +2,7 @@ using JobLens.Application.Interfaces;
 using System.Text.Json;
 using JobLens.Domain.Entities;
 using JobLens.Application.Dtos;
-using JobLens.Web.Models;
+using JobLens.Web.ViewModels;
 using JobLens.Application.Services;
 using JobLens.Application.Common;
 using JobLens.Web.Chat;

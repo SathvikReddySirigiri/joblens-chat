@@ -1,7 +1,7 @@
 using JobLens.Application.Dtos;
 using JobLens.Domain.Entities;
 
-namespace JobLens.Web.Models;
+namespace JobLens.Web.ViewModels;
 
 public sealed record DataCheckViewModel(
     string DatabasePath,

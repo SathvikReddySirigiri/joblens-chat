@@ -22,7 +22,7 @@
     <label asp-for="ScamType">Scam type</label>
     <select asp-for="ScamType">
         <option value="">Choose a type</option>
-        @foreach (var type in Catalog.ScamTypes)
+        @foreach (var type in FormOptionsCatalog.ScamTypes)
         {
             <option value="@type">@type</option>
         }
@@ -33,7 +33,7 @@
     <label asp-for="Channel">Channel</label>
     <select asp-for="Channel">
         <option value="">Choose a channel</option>
-        @foreach (var channel in Catalog.Channels)
+        @foreach (var channel in FormOptionsCatalog.Channels)
         {
             <option value="@channel">@channel</option>
         }

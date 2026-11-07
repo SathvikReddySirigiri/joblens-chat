@@ -432,9 +432,13 @@ FodyWeavers.xsd
 *.db-shm
 *.db-wal
 
-# Local secrets and build output â€” never commit
+# Local Cursor MCP config (copy from .cursor/mcp.example.json)
+.cursor/mcp.json
+
+# Local secrets and build output — never commit
 bin/
 obj/
 appsettings.*.local.json
 secrets.json
 .env
+
