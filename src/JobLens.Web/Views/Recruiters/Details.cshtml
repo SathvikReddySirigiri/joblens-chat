@@ -11,8 +11,11 @@
         <p class="help">Domain @Model.Domain · first seen @Model.FirstSeen</p>
     </div>
     <div class="form-actions">
-        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.RecruiterId">Edit</a>
-        <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.RecruiterId">Delete</a>
+        @if (ViewBag.IsModerator == true)
+        {
+            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.RecruiterId">Edit</a>
+            <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.RecruiterId">Delete</a>
+        }
     </div>
 </section>
 <section class="card">

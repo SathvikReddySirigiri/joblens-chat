@@ -10,8 +10,11 @@
         <p class="help">@Model.OfficialDomain · @Model.Industry · @Model.HqState</p>
     </div>
     <div class="form-actions">
-        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.CompanyId">Edit</a>
-        <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.CompanyId">Delete</a>
+        @if (ViewBag.IsModerator == true)
+        {
+            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.CompanyId">Edit</a>
+            <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.CompanyId">Delete</a>
+        }
     </div>
 </section>
 <section class="card">

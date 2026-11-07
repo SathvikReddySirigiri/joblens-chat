@@ -1,11 +1,6 @@
 using JobLens.Infrastructure.Persistence;
 using JobLens.Application.Services;
-using JobLens.Application.Common;
 using JobLens.Application.Dtos;
-using JobLens.Infrastructure.External;
-using JobLens.Infrastructure.AI;
-using JobLens.Infrastructure.Documents;
-using JobLens.Infrastructure.Security;
 using Xunit;
 
 namespace JobLens.Tests;
@@ -20,22 +15,23 @@ public sealed class CrudRuleTests
         var postings = new JobPostingRepository(database.ConnectionString);
         var companyService = new CompanyService(companies);
         var postingService = new JobPostingService(postings, companies);
-        var company = await companyService.CreateAsync(Company(), CancellationToken.None);
+        var moderator = await TestActors.CreateModeratorAsync(database.ConnectionString);
+        var company = await companyService.CreateAsync(Company(), moderator, CancellationToken.None);
         Assert.True(company.Success);
 
-        var missingRate = await postingService.CreateAsync(Posting(company.Id!.Value, paid: true, pay: null), CancellationToken.None);
+        var missingRate = await postingService.CreateAsync(Posting(company.Id!.Value, paid: true, pay: null), moderator, CancellationToken.None);
         Assert.False(missingRate.Success);
 
-        var paid = await postingService.CreateAsync(Posting(company.Id.Value, paid: true, pay: 22), CancellationToken.None);
+        var paid = await postingService.CreateAsync(Posting(company.Id.Value, paid: true, pay: 22), moderator, CancellationToken.None);
         Assert.True(paid.Success);
         var savedPaid = await postings.GetByIdAsync(paid.Id!.Value, CancellationToken.None);
         Assert.Equal(22, savedPaid!.PayRatePerHour);
 
-        var unpaidWithRate = await postingService.CreateAsync(Posting(company.Id.Value, paid: false, pay: 18), CancellationToken.None);
+        var unpaidWithRate = await postingService.CreateAsync(Posting(company.Id.Value, paid: false, pay: 18), moderator, CancellationToken.None);
         Assert.False(unpaidWithRate.Success);
         Assert.Equal("An unpaid posting cannot include a pay rate. Leave it empty or zero.", unpaidWithRate.ErrorMessage);
 
-        var unpaid = await postingService.CreateAsync(Posting(company.Id.Value, paid: false, pay: 0), CancellationToken.None);
+        var unpaid = await postingService.CreateAsync(Posting(company.Id.Value, paid: false, pay: 0), moderator, CancellationToken.None);
         Assert.True(unpaid.Success);
         var savedUnpaid = await postings.GetByIdAsync(unpaid.Id!.Value, CancellationToken.None);
         Assert.Null(savedUnpaid!.PayRatePerHour);
@@ -47,13 +43,14 @@ public sealed class CrudRuleTests
         await using var database = await TempDatabase.CreateAsync();
         var companies = new CompanyRepository(database.ConnectionString);
         var service = new CompanyService(companies);
+        var moderator = await TestActors.CreateModeratorAsync(database.ConnectionString);
         var created = await service.CreateAsync(new CompanyFormVm
         {
             Name = "Example Campus Co",
             OfficialDomain = "https://www.Example.com/jobs",
             Industry = "Education",
             HqState = "fl",
-        }, CancellationToken.None);
+        }, moderator, CancellationToken.None);
 
         Assert.True(created.Success);
         var saved = await companies.GetByIdAsync(created.Id!.Value, CancellationToken.None);
@@ -69,13 +66,15 @@ public sealed class CrudRuleTests
         var reports = new ScamReportRepository(database.ConnectionString);
         var companyService = new CompanyService(companies);
         var reportService = new ScamReportService(reports, companies);
-        var company = await companyService.CreateAsync(Company(), CancellationToken.None);
-        var created = await reportService.CreateAsync(Report(company.Id!.Value), CancellationToken.None);
+        var moderator = await TestActors.CreateModeratorAsync(database.ConnectionString);
+        var student = await TestActors.CreateStudentAsync(database.ConnectionString);
+        var company = await companyService.CreateAsync(Company(), moderator, CancellationToken.None);
+        var created = await reportService.CreateAsync(Report(company.Id!.Value), student, CancellationToken.None);
         Assert.Equal("Pending", (await reports.GetByIdAsync(created.Id!.Value, CancellationToken.None))!.Status);
 
-        var approved = await reportService.ApproveAsync(created.Id.Value, CancellationToken.None);
+        var approved = await reportService.ApproveAsync(created.Id.Value, moderator, CancellationToken.None);
         Assert.True(approved.Success);
-        var second = await reportService.ApproveAsync(created.Id.Value, CancellationToken.None);
+        var second = await reportService.ApproveAsync(created.Id.Value, moderator, CancellationToken.None);
         Assert.False(second.Success);
         Assert.Equal("Only pending reports can be approved or rejected.", second.ErrorMessage);
         Assert.Equal("Approved", (await reports.GetByIdAsync(created.Id.Value, CancellationToken.None))!.Status);
@@ -89,10 +88,12 @@ public sealed class CrudRuleTests
         var reports = new ScamReportRepository(database.ConnectionString);
         var companyService = new CompanyService(companies);
         var reportService = new ScamReportService(reports, companies);
-        var company = await companyService.CreateAsync(Company(), CancellationToken.None);
-        await reportService.CreateAsync(Report(company.Id!.Value), CancellationToken.None);
+        var moderator = await TestActors.CreateModeratorAsync(database.ConnectionString);
+        var student = await TestActors.CreateStudentAsync(database.ConnectionString);
+        var company = await companyService.CreateAsync(Company(), moderator, CancellationToken.None);
+        await reportService.CreateAsync(Report(company.Id!.Value), student, CancellationToken.None);
 
-        var blocked = await companyService.DeleteAsync(company.Id.Value, CancellationToken.None);
+        var blocked = await companyService.DeleteAsync(company.Id.Value, moderator, CancellationToken.None);
         Assert.False(blocked.Success);
         Assert.Equal("This company has 1 related records and cannot be deleted.", blocked.ErrorMessage);
         Assert.NotNull(await companies.GetByIdAsync(company.Id.Value, CancellationToken.None));

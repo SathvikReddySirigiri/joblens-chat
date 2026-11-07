@@ -20,12 +20,13 @@ public sealed class RecruiterAndPasswordTests
         var repository = new RecruiterRepository(database.ConnectionString);
         var service = new RecruiterService(repository);
 
+        var moderator = await TestActors.CreateModeratorAsync(database.ConnectionString);
         var created = await service.CreateAsync(new RecruiterFormVm
         {
             Email = "HR@Amazon.com",
             FirstSeen = "2026-02-01",
             Notes = "Campus contact",
-        }, CancellationToken.None);
+        }, moderator, CancellationToken.None);
 
         Assert.True(created.Success);
         var saved = await repository.GetByIdAsync(created.Id!.Value, CancellationToken.None);
@@ -36,7 +37,7 @@ public sealed class RecruiterAndPasswordTests
         var duplicate = await service.CreateAsync(new RecruiterFormVm
         {
             Email = "hr@amazon.com",
-        }, CancellationToken.None);
+        }, moderator, CancellationToken.None);
 
         Assert.False(duplicate.Success);
         Assert.Equal("A recruiter with this email already exists.", duplicate.ErrorMessage);

@@ -26,7 +26,10 @@
         <h1>Job postings</h1>
         <p class="help">Internships and entry-level roles tied to known companies.</p>
     </div>
-    <a class="btn btn-primary" asp-action="Create">Add new</a>
+    @if (ViewBag.IsModerator == true)
+    {
+        <a class="btn btn-primary" asp-action="Create">Add new</a>
+    }
 </section>
 <section class="card">
     <form method="post" asp-action="Ask" class="toolbar" aria-label="Plain English search">

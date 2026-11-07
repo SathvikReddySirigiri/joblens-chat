@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<HomeService>();
         services.AddScoped<DataCheckService>();
         services.AddScoped<CheckRecruiterFacade>();
+        services.AddScoped<AccountService>();
         services.AddSingleton<PiiRedactor>();
         return services;
     }

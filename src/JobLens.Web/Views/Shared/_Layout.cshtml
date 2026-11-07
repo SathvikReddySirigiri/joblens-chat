@@ -63,10 +63,35 @@
                         <a class="nav-link" asp-controller="Home" asp-action="Index" asp-fragment="about">About</a>
                     </li>
                 </ul>
+                <div class="nav-auth">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+                        <span class="nav-user">Hi, @User.Identity?.Name</span>
+                        if (!string.IsNullOrEmpty(role))
+                        {
+                            <span class="role-badge">@role</span>
+                        }
+                        <form method="post" asp-controller="Account" asp-action="Logout" class="nav-logout">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-secondary btn-nav">Log out</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a class="nav-link @(controller == "Account" ? "active" : null)"
+                           asp-controller="Account"
+                           asp-action="Login">Log in</a>
+                        <a class="btn btn-primary btn-nav"
+                           asp-controller="Account"
+                           asp-action="Register">Register</a>
+                    }
+                </div>
             </nav>
         </div>
     </header>
     <main class="container">
+        <partial name="_Alerts" />
         @RenderBody()
     </main>
     <footer class="site-footer">

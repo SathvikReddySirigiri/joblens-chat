@@ -1,5 +1,7 @@
 using JobLens.Application.Dtos;
 using JobLens.Application.Services;
+using JobLens.Web.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobLens.Web.Controllers;
@@ -7,14 +9,17 @@ namespace JobLens.Web.Controllers;
 public sealed class CompaniesController(CompanyService companies) : Controller
 {
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Index(string? search, int page = 1, CancellationToken cancellationToken = default)
     {
         ViewBag.Page = await companies.BrowseAsync(search, page, cancellationToken);
         ViewBag.Search = search;
+        ViewBag.IsModerator = User.IsInRole(ActingUser.ModeratorRole);
         return View();
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
     {
         var company = await companies.GetByIdAsync(id, cancellationToken);
@@ -24,13 +29,16 @@ public sealed class CompaniesController(CompanyService companies) : Controller
         }
 
         ViewBag.Activity = await companies.GetActivityAsync(id, cancellationToken);
+        ViewBag.IsModerator = User.IsInRole(ActingUser.ModeratorRole);
         return View(company);
     }
 
     [HttpGet]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     public IActionResult Create() => View(new CompanyFormVm());
 
     [HttpPost]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(CompanyFormVm form, CancellationToken cancellationToken)
     {
@@ -39,7 +47,7 @@ public sealed class CompaniesController(CompanyService companies) : Controller
             return View(form);
         }
 
-        var result = await companies.CreateAsync(form, cancellationToken);
+        var result = await companies.CreateAsync(form, ActingUserFactory.Require(User), cancellationToken);
         if (!result.Success)
         {
             ModelState.AddModelError(string.Empty, result.ErrorMessage ?? "The company could not be saved.");
@@ -51,6 +59,7 @@ public sealed class CompaniesController(CompanyService companies) : Controller
     }
 
     [HttpGet]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
     {
         var company = await companies.GetByIdAsync(id, cancellationToken);
@@ -70,6 +79,7 @@ public sealed class CompaniesController(CompanyService companies) : Controller
     }
 
     [HttpPost]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, CompanyFormVm form, CancellationToken cancellationToken)
     {
@@ -79,7 +89,7 @@ public sealed class CompaniesController(CompanyService companies) : Controller
             return View(form);
         }
 
-        var result = await companies.UpdateAsync(form, cancellationToken);
+        var result = await companies.UpdateAsync(form, ActingUserFactory.Require(User), cancellationToken);
         if (!result.Success)
         {
             ModelState.AddModelError(string.Empty, result.ErrorMessage ?? "The company could not be saved.");
@@ -91,6 +101,7 @@ public sealed class CompaniesController(CompanyService companies) : Controller
     }
 
     [HttpGet]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var company = await companies.GetByIdAsync(id, cancellationToken);
@@ -104,10 +115,11 @@ public sealed class CompaniesController(CompanyService companies) : Controller
     }
 
     [HttpPost]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken cancellationToken)
     {
-        var result = await companies.DeleteAsync(id, cancellationToken);
+        var result = await companies.DeleteAsync(id, ActingUserFactory.Require(User), cancellationToken);
         if (!result.Success)
         {
             TempData["Error"] = result.ErrorMessage;

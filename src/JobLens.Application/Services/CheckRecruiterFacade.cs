@@ -25,7 +25,7 @@ public sealed class CheckRecruiterFacade(
         await logs.AddAsync(
             new CheckLog(0, "Recruiter", result.Domain, result.Score, result.Verdict, FieldRules.Today()),
             cancellationToken);
-        var related = await reports.BrowseAsync(result.Domain, "Approved", null, null, null, "date", true, 1, cancellationToken);
+        var related = await reports.BrowseAsync(result.Domain, "Approved", null, null, null, "date", true, 1, viewer: null, cancellationToken);
         var recruiter = await recruiters.GetByEmailAsync(result.Email, cancellationToken);
         return (result, related.Items.Take(5).ToList(), recruiter);
     }

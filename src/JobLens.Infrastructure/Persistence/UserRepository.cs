@@ -45,6 +45,31 @@ public sealed class UserRepository : IUserRepository
             reader.GetString(5));
     }
 
+    public async Task<UserAccount?> GetByIdAsync(int userId, CancellationToken cancellationToken)
+    {
+        await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);
+        await using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT UserId, Email, DisplayName, PasswordHash, Role, CreatedAt
+            FROM Users
+            WHERE UserId = $id;
+            """;
+        command.Parameters.AddWithValue("$id", userId);
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        if (!await reader.ReadAsync(cancellationToken))
+        {
+            return null;
+        }
+
+        return new UserAccount(
+            reader.GetInt32(0),
+            reader.GetString(1),
+            reader.GetString(2),
+            reader.GetString(3),
+            reader.GetString(4),
+            reader.GetString(5));
+    }
+
     public async Task<int> CreateAsync(UserAccount user, CancellationToken cancellationToken)
     {
         await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);
@@ -62,4 +87,19 @@ public sealed class UserRepository : IUserRepository
         var id = await command.ExecuteScalarAsync(cancellationToken);
         return Convert.ToInt32(id, System.Globalization.CultureInfo.InvariantCulture);
     }
+
+    public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken)
+    {
+        await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);
+        await using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT COUNT(*)
+            FROM Users
+            WHERE Email = $email COLLATE NOCASE;
+            """;
+        command.Parameters.AddWithValue("$email", email.Trim());
+        var count = Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken), System.Globalization.CultureInfo.InvariantCulture);
+        return count > 0;
+    }
 }
+

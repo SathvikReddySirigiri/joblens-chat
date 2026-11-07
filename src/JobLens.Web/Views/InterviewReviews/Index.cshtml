@@ -14,7 +14,10 @@
         <h1>Interview reviews</h1>
         <p class="help">Student notes on whether an interview felt legitimate.</p>
     </div>
-    <a class="btn btn-primary" asp-action="Create">Add new</a>
+    @if (ViewBag.IsSignedIn == true)
+    {
+        <a class="btn btn-primary" asp-action="Create">Add new</a>
+    }
 </section>
 <section class="card">
     <form method="get" class="toolbar" aria-label="Filter reviews">

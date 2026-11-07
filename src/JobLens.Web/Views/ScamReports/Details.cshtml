@@ -11,8 +11,14 @@
         <p class="help">@Model.CompanyName · @Model.ReportedDate</p>
     </div>
     <div class="form-actions">
-        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.ReportId">Edit</a>
-        <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.ReportId">Delete</a>
+        @if (ViewBag.CanEdit == true)
+        {
+            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.ReportId">Edit</a>
+        }
+        @if (ViewBag.CanDelete == true)
+        {
+            <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.ReportId">Delete</a>
+        }
     </div>
 </section>
 <section class="card">
@@ -27,13 +33,15 @@
         <div><dt>Domain age</dt><dd>@Model.DomainAgeDays days</dd></div>
         <div><dt>Description</dt><dd>@Model.Description</dd></div>
     </dl>
-    @if (Model.Status == "Pending")
+    @if (ViewBag.CanModerate == true && Model.Status == "Pending")
     {
         <div class="form-actions">
             <form method="post" asp-action="Approve" asp-route-id="@Model.ReportId">
+                @Html.AntiForgeryToken()
                 <button class="btn btn-primary" type="submit">Approve</button>
             </form>
             <form method="post" asp-action="Reject" asp-route-id="@Model.ReportId">
+                @Html.AntiForgeryToken()
                 <button class="btn btn-secondary" type="submit">Reject</button>
             </form>
         </div>

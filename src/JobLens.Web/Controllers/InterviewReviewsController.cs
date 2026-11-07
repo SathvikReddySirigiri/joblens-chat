@@ -1,6 +1,8 @@
 using JobLens.Application.Common;
 using JobLens.Application.Dtos;
 using JobLens.Application.Services;
+using JobLens.Web.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobLens.Web.Controllers;
@@ -8,6 +10,7 @@ namespace JobLens.Web.Controllers;
 public sealed class InterviewReviewsController(InterviewReviewService reviews, CompanyService companies) : Controller
 {
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Index(int? company, int? rating, bool? legit, int page = 1, CancellationToken cancellationToken = default)
     {
         ViewBag.Page = await reviews.BrowseAsync(company, rating, legit, page, cancellationToken);
@@ -15,17 +18,28 @@ public sealed class InterviewReviewsController(InterviewReviewService reviews, C
         ViewBag.Company = company;
         ViewBag.Rating = rating;
         ViewBag.Legit = legit;
+        ViewBag.IsSignedIn = User.Identity?.IsAuthenticated == true;
         return View();
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
     {
         var review = await reviews.GetByIdAsync(id, cancellationToken);
-        return review is null ? NotFound() : View(review);
+        if (review is null)
+        {
+            return NotFound();
+        }
+
+        var actor = ActingUserFactory.TryCreate(User);
+        ViewBag.CanEdit = reviews.CanEdit(review, actor);
+        ViewBag.CanDelete = reviews.CanDelete(review, actor);
+        return View(review);
     }
 
     [HttpGet]
+    [Authorize(Policy = AuthPolicies.SignedIn)]
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
         await LoadCompaniesAsync(cancellationToken);
@@ -33,6 +47,7 @@ public sealed class InterviewReviewsController(InterviewReviewService reviews, C
     }
 
     [HttpPost]
+    [Authorize(Policy = AuthPolicies.SignedIn)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(InterviewReviewFormVm form, CancellationToken cancellationToken)
     {
@@ -42,7 +57,7 @@ public sealed class InterviewReviewsController(InterviewReviewService reviews, C
             return View(form);
         }
 
-        var result = await reviews.CreateAsync(form, cancellationToken);
+        var result = await reviews.CreateAsync(form, ActingUserFactory.Require(User), cancellationToken);
         if (!result.Success)
         {
             ModelState.AddModelError(string.Empty, result.ErrorMessage ?? "The review could not be saved.");
@@ -55,12 +70,18 @@ public sealed class InterviewReviewsController(InterviewReviewService reviews, C
     }
 
     [HttpGet]
+    [Authorize(Policy = AuthPolicies.SignedIn)]
     public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
     {
         var review = await reviews.GetByIdAsync(id, cancellationToken);
         if (review is null)
         {
             return NotFound();
+        }
+
+        if (!reviews.CanEdit(review, ActingUserFactory.Require(User)))
+        {
+            return Forbid();
         }
 
         await LoadCompaniesAsync(cancellationToken);
@@ -77,6 +98,7 @@ public sealed class InterviewReviewsController(InterviewReviewService reviews, C
     }
 
     [HttpPost]
+    [Authorize(Policy = AuthPolicies.SignedIn)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, InterviewReviewFormVm form, CancellationToken cancellationToken)
     {
@@ -87,7 +109,7 @@ public sealed class InterviewReviewsController(InterviewReviewService reviews, C
             return View(form);
         }
 
-        var result = await reviews.UpdateAsync(form, cancellationToken);
+        var result = await reviews.UpdateAsync(form, ActingUserFactory.Require(User), cancellationToken);
         if (!result.Success)
         {
             ModelState.AddModelError(string.Empty, result.ErrorMessage ?? "The review could not be saved.");
@@ -100,17 +122,29 @@ public sealed class InterviewReviewsController(InterviewReviewService reviews, C
     }
 
     [HttpGet]
+    [Authorize(Policy = AuthPolicies.SignedIn)]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var review = await reviews.GetByIdAsync(id, cancellationToken);
-        return review is null ? NotFound() : View(review);
+        if (review is null)
+        {
+            return NotFound();
+        }
+
+        if (!reviews.CanDelete(review, ActingUserFactory.Require(User)))
+        {
+            return Forbid();
+        }
+
+        return View(review);
     }
 
     [HttpPost]
+    [Authorize(Policy = AuthPolicies.SignedIn)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken cancellationToken)
     {
-        var result = await reviews.DeleteAsync(id, cancellationToken);
+        var result = await reviews.DeleteAsync(id, ActingUserFactory.Require(User), cancellationToken);
         TempData[result.Success ? "Success" : "Error"] = result.Success ? "Review deleted." : result.ErrorMessage;
         return result.Success ? RedirectToAction(nameof(Index)) : RedirectToAction(nameof(Delete), new { id });
     }

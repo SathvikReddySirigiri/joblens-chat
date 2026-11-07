@@ -11,8 +11,11 @@
         <p class="help">@Model.CompanyName · @Model.PostedDate</p>
     </div>
     <div class="form-actions">
-        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.PostingId">Edit</a>
-        <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.PostingId">Delete</a>
+        @if (ViewBag.IsModerator == true)
+        {
+            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.PostingId">Edit</a>
+            <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.PostingId">Delete</a>
+        }
     </div>
 </section>
 @if (activity.ApprovedReports > 0 && company is not null)

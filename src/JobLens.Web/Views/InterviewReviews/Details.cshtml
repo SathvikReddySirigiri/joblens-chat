@@ -9,8 +9,14 @@
         <p class="help">@Model.CompanyName · @Model.ReviewDate</p>
     </div>
     <div class="form-actions">
-        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.ReviewId">Edit</a>
-        <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.ReviewId">Delete</a>
+        @if (ViewBag.CanEdit == true)
+        {
+            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.ReviewId">Edit</a>
+        }
+        @if (ViewBag.CanDelete == true)
+        {
+            <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.ReviewId">Delete</a>
+        }
     </div>
 </section>
 <section class="card">

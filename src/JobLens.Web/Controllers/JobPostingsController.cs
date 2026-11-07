@@ -1,6 +1,8 @@
 using JobLens.Application.Common;
 using JobLens.Application.Dtos;
 using JobLens.Application.Services;
+using JobLens.Web.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobLens.Web.Controllers;
@@ -11,6 +13,7 @@ public sealed class JobPostingsController(
     SmartSearchService smartSearch) : Controller
 {
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Index(
         string? search,
         int? company,
@@ -39,6 +42,7 @@ public sealed class JobPostingsController(
         ViewBag.Question = q;
         ViewBag.Asked = asked;
         ViewBag.Filter = filter;
+        ViewBag.IsModerator = User.IsInRole(ActingUser.ModeratorRole);
         return View();
     }
 
@@ -69,6 +73,7 @@ public sealed class JobPostingsController(
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
     {
         var posting = await postings.GetByIdAsync(id, cancellationToken);
@@ -80,10 +85,12 @@ public sealed class JobPostingsController(
         var company = await companies.GetByIdAsync(posting.CompanyId, cancellationToken);
         ViewBag.Company = company;
         ViewBag.Activity = await companies.GetActivityAsync(posting.CompanyId, cancellationToken);
+        ViewBag.IsModerator = User.IsInRole(ActingUser.ModeratorRole);
         return View(posting);
     }
 
     [HttpGet]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
         await LoadCompaniesAsync(cancellationToken);
@@ -91,6 +98,7 @@ public sealed class JobPostingsController(
     }
 
     [HttpPost]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(JobPostingFormVm form, CancellationToken cancellationToken)
     {
@@ -100,7 +108,7 @@ public sealed class JobPostingsController(
             return View(form);
         }
 
-        var result = await postings.CreateAsync(form, cancellationToken);
+        var result = await postings.CreateAsync(form, ActingUserFactory.Require(User), cancellationToken);
         if (!result.Success)
         {
             ModelState.AddModelError(string.Empty, result.ErrorMessage ?? "The posting could not be saved.");
@@ -113,6 +121,7 @@ public sealed class JobPostingsController(
     }
 
     [HttpGet]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
     {
         var posting = await postings.GetByIdAsync(id, cancellationToken);
@@ -138,6 +147,7 @@ public sealed class JobPostingsController(
     }
 
     [HttpPost]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, JobPostingFormVm form, CancellationToken cancellationToken)
     {
@@ -148,7 +158,7 @@ public sealed class JobPostingsController(
             return View(form);
         }
 
-        var result = await postings.UpdateAsync(form, cancellationToken);
+        var result = await postings.UpdateAsync(form, ActingUserFactory.Require(User), cancellationToken);
         if (!result.Success)
         {
             ModelState.AddModelError(string.Empty, result.ErrorMessage ?? "The posting could not be saved.");
@@ -161,6 +171,7 @@ public sealed class JobPostingsController(
     }
 
     [HttpGet]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var posting = await postings.GetByIdAsync(id, cancellationToken);
@@ -168,10 +179,11 @@ public sealed class JobPostingsController(
     }
 
     [HttpPost]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken cancellationToken)
     {
-        var result = await postings.DeleteAsync(id, cancellationToken);
+        var result = await postings.DeleteAsync(id, ActingUserFactory.Require(User), cancellationToken);
         TempData[result.Success ? "Success" : "Error"] = result.Success ? "Job posting deleted." : result.ErrorMessage;
         return result.Success ? RedirectToAction(nameof(Index)) : RedirectToAction(nameof(Delete), new { id });
     }

@@ -1,6 +1,8 @@
 using JobLens.Application.Common;
 using JobLens.Application.Dtos;
 using JobLens.Application.Services;
+using JobLens.Web.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobLens.Web.Controllers;
@@ -8,23 +10,33 @@ namespace JobLens.Web.Controllers;
 public sealed class RecruitersController(RecruiterService recruiters, CompanyService companies) : Controller
 {
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Index(string? search, int? company, int page = 1, CancellationToken cancellationToken = default)
     {
         ViewBag.Page = await recruiters.BrowseAsync(search, company, page, cancellationToken);
         ViewBag.Companies = await companies.GetAllAsync(cancellationToken);
         ViewBag.Search = search;
         ViewBag.Company = company;
+        ViewBag.IsModerator = User.IsInRole(ActingUser.ModeratorRole);
         return View();
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
     {
         var recruiter = await recruiters.GetByIdAsync(id, cancellationToken);
-        return recruiter is null ? NotFound() : View(recruiter);
+        if (recruiter is null)
+        {
+            return NotFound();
+        }
+
+        ViewBag.IsModerator = User.IsInRole(ActingUser.ModeratorRole);
+        return View(recruiter);
     }
 
     [HttpGet]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
         await LoadCompaniesAsync(cancellationToken);
@@ -32,6 +44,7 @@ public sealed class RecruitersController(RecruiterService recruiters, CompanySer
     }
 
     [HttpPost]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(RecruiterFormVm form, CancellationToken cancellationToken)
     {
@@ -41,7 +54,7 @@ public sealed class RecruitersController(RecruiterService recruiters, CompanySer
             return View(form);
         }
 
-        var result = await recruiters.CreateAsync(form, cancellationToken);
+        var result = await recruiters.CreateAsync(form, ActingUserFactory.Require(User), cancellationToken);
         if (!result.Success)
         {
             ModelState.AddModelError(string.Empty, result.ErrorMessage ?? "The recruiter could not be saved.");
@@ -54,6 +67,7 @@ public sealed class RecruitersController(RecruiterService recruiters, CompanySer
     }
 
     [HttpGet]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
     {
         var recruiter = await recruiters.GetByIdAsync(id, cancellationToken);
@@ -74,6 +88,7 @@ public sealed class RecruitersController(RecruiterService recruiters, CompanySer
     }
 
     [HttpPost]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, RecruiterFormVm form, CancellationToken cancellationToken)
     {
@@ -84,7 +99,7 @@ public sealed class RecruitersController(RecruiterService recruiters, CompanySer
             return View(form);
         }
 
-        var result = await recruiters.UpdateAsync(form, cancellationToken);
+        var result = await recruiters.UpdateAsync(form, ActingUserFactory.Require(User), cancellationToken);
         if (!result.Success)
         {
             ModelState.AddModelError(string.Empty, result.ErrorMessage ?? "The recruiter could not be saved.");
@@ -97,6 +112,7 @@ public sealed class RecruitersController(RecruiterService recruiters, CompanySer
     }
 
     [HttpGet]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var recruiter = await recruiters.GetByIdAsync(id, cancellationToken);
@@ -104,10 +120,11 @@ public sealed class RecruitersController(RecruiterService recruiters, CompanySer
     }
 
     [HttpPost]
+    [Authorize(Policy = AuthPolicies.ModeratorOnly)]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken cancellationToken)
     {
-        var result = await recruiters.DeleteAsync(id, cancellationToken);
+        var result = await recruiters.DeleteAsync(id, ActingUserFactory.Require(User), cancellationToken);
         TempData[result.Success ? "Success" : "Error"] = result.Success ? "Recruiter deleted." : result.ErrorMessage;
         return result.Success ? RedirectToAction(nameof(Index)) : RedirectToAction(nameof(Delete), new { id });
     }

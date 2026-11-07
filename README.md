@@ -55,11 +55,31 @@ AI keys and seed password overrides use **user-secrets** (or Azure app settings)
 
 ```powershell
 dotnet user-secrets set "Ai:ApiKey" "<your-key>" --project src/JobLens.Web
+dotnet user-secrets set "Mcp:AccessKey" "<your-local-mcp-key>" --project src/JobLens.Web
 ```
 
-### MCP (Cursor)
+### MCP access key (`X-Api-Key`)
 
-The app exposes tools at `http://localhost:5080/mcp`. For Cursor, copy `.cursor/mcp.example.json` to `.cursor/mcp.json` and set a local key if you use one. `.cursor/mcp.json` is gitignored so machine-specific MCP settings stay local.
+When `Mcp:AccessKey` is set (user-secrets locally, app settings on Azure), every request to `/mcp` must send header `X-Api-Key` with that value. Leave it empty only for local demos; Development logs a warning if `/mcp` is open.
+
+**Cursor:** copy `.cursor/mcp.example.json` to `.cursor/mcp.json` (gitignored) and set the same key under `headers.X-Api-Key`:
+
+```json
+{
+  "mcpServers": {
+    "joblens-local": {
+      "url": "http://localhost:5080/mcp",
+      "headers": {
+        "X-Api-Key": "<your-local-mcp-key>"
+      }
+    }
+  }
+}
+```
+
+**VS Code (GitHub Copilot MCP / `mcp.json`):** same shape — `url` plus a `headers` object with `X-Api-Key`.
+
+**MCP Inspector:** start against `http://localhost:5080/mcp` and add a custom header `X-Api-Key` with your secret (Inspector UI: Headers / Custom Headers, depending on version).
 
 ## How to test
 
@@ -78,6 +98,7 @@ dotnet test
 | `Ai:ApiKey` | Secret — set via user-secrets / env only |
 | `Ai:DisplayName` | Optional label shown in UI |
 | `Mcp:Endpoint` | Chat MCP client URL (default `http://localhost:5080/mcp`) |
+| `Mcp:AccessKey` | Secret for `/mcp` (`X-Api-Key`) — user-secrets / Azure only; empty in appsettings |
 | `Database:Path` | Optional absolute SQLite path override |
 | `Seed:ModeratorPassword` | Override demo moderator password |
 | `Seed:StudentPassword` | Override demo student password |

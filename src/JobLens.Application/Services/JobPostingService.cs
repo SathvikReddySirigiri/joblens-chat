@@ -7,8 +7,15 @@ namespace JobLens.Application.Services;
 
 public sealed class JobPostingService(IJobPostingRepository postings, ICompanyRepository companies)
 {
-    public async Task<ServiceResult> CreateAsync(JobPostingFormVm form, CancellationToken cancellationToken)
+    private const string ModeratorOnlyMessage = "Only moderators can create, edit, or delete job postings.";
+
+    public async Task<ServiceResult> CreateAsync(JobPostingFormVm form, ActingUser actor, CancellationToken cancellationToken)
     {
+        if (!actor.IsModerator)
+        {
+            return ServiceResult.Fail(ModeratorOnlyMessage);
+        }
+
         var prepared = await TryPrepareAsync(form, cancellationToken);
         if (prepared is null)
         {
@@ -22,8 +29,13 @@ public sealed class JobPostingService(IJobPostingRepository postings, ICompanyRe
         return ServiceResult.Ok(id);
     }
 
-    public async Task<ServiceResult> UpdateAsync(JobPostingFormVm form, CancellationToken cancellationToken)
+    public async Task<ServiceResult> UpdateAsync(JobPostingFormVm form, ActingUser actor, CancellationToken cancellationToken)
     {
+        if (!actor.IsModerator)
+        {
+            return ServiceResult.Fail(ModeratorOnlyMessage);
+        }
+
         if (await postings.GetByIdAsync(form.PostingId, cancellationToken) is null)
         {
             return ServiceResult.Fail("Posting not found.");
@@ -42,8 +54,13 @@ public sealed class JobPostingService(IJobPostingRepository postings, ICompanyRe
         return updated ? ServiceResult.Ok(form.PostingId) : ServiceResult.Fail("Posting not found.");
     }
 
-    public async Task<ServiceResult> DeleteAsync(int postingId, CancellationToken cancellationToken)
+    public async Task<ServiceResult> DeleteAsync(int postingId, ActingUser actor, CancellationToken cancellationToken)
     {
+        if (!actor.IsModerator)
+        {
+            return ServiceResult.Fail(ModeratorOnlyMessage);
+        }
+
         var deleted = await postings.DeleteAsync(postingId, cancellationToken);
         return deleted ? ServiceResult.Ok(postingId) : ServiceResult.Fail("Posting not found.");
     }

@@ -7,8 +7,15 @@ namespace JobLens.Application.Services;
 
 public sealed class RecruiterService(IRecruiterRepository recruiters)
 {
-    public async Task<ServiceResult> CreateAsync(RecruiterFormVm form, CancellationToken cancellationToken)
+    private const string ModeratorOnlyMessage = "Only moderators can create, edit, or delete recruiters.";
+
+    public async Task<ServiceResult> CreateAsync(RecruiterFormVm form, ActingUser actor, CancellationToken cancellationToken)
     {
+        if (!actor.IsModerator)
+        {
+            return ServiceResult.Fail(ModeratorOnlyMessage);
+        }
+
         if (!TryNormalize(form, out var email, out var domain, out var firstSeen, out var notes, out var error))
         {
             return ServiceResult.Fail(error);
@@ -23,8 +30,13 @@ public sealed class RecruiterService(IRecruiterRepository recruiters)
         return ServiceResult.Ok(id);
     }
 
-    public async Task<ServiceResult> UpdateAsync(RecruiterFormVm form, CancellationToken cancellationToken)
+    public async Task<ServiceResult> UpdateAsync(RecruiterFormVm form, ActingUser actor, CancellationToken cancellationToken)
     {
+        if (!actor.IsModerator)
+        {
+            return ServiceResult.Fail(ModeratorOnlyMessage);
+        }
+
         if (await recruiters.GetByIdAsync(form.RecruiterId, cancellationToken) is null)
         {
             return ServiceResult.Fail("Recruiter not found.");
@@ -44,8 +56,13 @@ public sealed class RecruiterService(IRecruiterRepository recruiters)
         return updated ? ServiceResult.Ok(form.RecruiterId) : ServiceResult.Fail("Recruiter not found.");
     }
 
-    public async Task<ServiceResult> DeleteAsync(int recruiterId, CancellationToken cancellationToken)
+    public async Task<ServiceResult> DeleteAsync(int recruiterId, ActingUser actor, CancellationToken cancellationToken)
     {
+        if (!actor.IsModerator)
+        {
+            return ServiceResult.Fail(ModeratorOnlyMessage);
+        }
+
         var deleted = await recruiters.DeleteAsync(recruiterId, cancellationToken);
         return deleted ? ServiceResult.Ok(recruiterId) : ServiceResult.Fail("Recruiter not found.");
     }

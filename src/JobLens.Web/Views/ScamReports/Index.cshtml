@@ -20,13 +20,19 @@
     </div>
     <div class="header-actions">
         <a class="btn btn-secondary" asp-controller="Dashboard" asp-action="Index">View dashboard</a>
-        <a class="btn btn-primary" asp-action="Create">Add new</a>
+        @if (ViewBag.IsSignedIn == true)
+        {
+            <a class="btn btn-primary" asp-action="Create">Add new</a>
+        }
     </div>
 </section>
-<p class="toolbar-note">
-    <a asp-action="Index" asp-route-status="Pending">Moderation queue</a>
-    <span class="badge-medium">@ViewBag.PendingCount pending</span>
-</p>
+@if (ViewBag.IsModerator == true)
+{
+    <p class="toolbar-note">
+        <a asp-action="Index" asp-route-status="Pending">Moderation queue</a>
+        <span class="badge-medium">@ViewBag.PendingCount pending</span>
+    </p>
+}
 <section class="card">
     <form method="get" class="toolbar" aria-label="Filter reports">
         <div class="field">
@@ -143,13 +149,15 @@ else
                         <td>@report.AmountRequestedUsd.ToString("$#,##0.00")</td>
                         <td class="row-actions">
                             <a asp-action="Details" asp-route-id="@report.ReportId">Details</a>
-                            @if (report.Status == "Pending")
+                            @if (ViewBag.IsModerator == true && report.Status == "Pending")
                             {
                                 <form method="post" asp-action="Approve" asp-route-id="@report.ReportId">
+                                    @Html.AntiForgeryToken()
                                     <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
                                     <button class="btn btn-secondary" type="submit">Approve</button>
                                 </form>
                                 <form method="post" asp-action="Reject" asp-route-id="@report.ReportId">
+                                    @Html.AntiForgeryToken()
                                     <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
                                     <button class="btn btn-secondary" type="submit">Reject</button>
                                 </form>

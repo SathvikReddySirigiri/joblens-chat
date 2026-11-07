@@ -220,5 +220,6 @@ public sealed class DashboardServiceTests
             status,
             date,
             "Synthetic report used by the dashboard test.",
+            createdByUserId: null,
             CancellationToken.None);
 }

@@ -13,7 +13,10 @@
         <h1>Recruiters</h1>
         <p class="help">Email addresses seen in reports, plus known official-domain contacts.</p>
     </div>
-    <a class="btn btn-primary" asp-action="Create">Add new</a>
+    @if (ViewBag.IsModerator == true)
+    {
+        <a class="btn btn-primary" asp-action="Create">Add new</a>
+    }
 </section>
 <section class="card">
     <form method="get" class="toolbar" aria-label="Filter recruiters">

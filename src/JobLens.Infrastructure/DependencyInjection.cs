@@ -3,6 +3,7 @@ using JobLens.Infrastructure.AI;
 using JobLens.Infrastructure.Documents;
 using JobLens.Infrastructure.External;
 using JobLens.Infrastructure.Persistence;
+using JobLens.Infrastructure.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -35,6 +36,7 @@ public static class DependencyInjection
         services.AddSingleton<IDashboardRepository, DashboardRepository>();
         services.AddSingleton<IRecruiterRepository, RecruiterRepository>();
         services.AddSingleton<IUserRepository, UserRepository>();
+        services.AddSingleton<IPasswordHasher, AspNetPasswordHasher>();
         services.AddSingleton<IAiClientFactory, AiClientFactory>();
         services.AddSingleton<IOfferTextExtractor, OfferTextExtractor>();
         services.AddSingleton<IDatabaseAdmin, DatabaseAdmin>();

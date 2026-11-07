@@ -7,8 +7,15 @@ namespace JobLens.Application.Services;
 
 public sealed class CompanyService(ICompanyRepository companies)
 {
-    public async Task<ServiceResult> CreateAsync(CompanyFormVm form, CancellationToken cancellationToken)
+    private const string ModeratorOnlyMessage = "Only moderators can create, edit, or delete companies.";
+
+    public async Task<ServiceResult> CreateAsync(CompanyFormVm form, ActingUser actor, CancellationToken cancellationToken)
     {
+        if (!actor.IsModerator)
+        {
+            return ServiceResult.Fail(ModeratorOnlyMessage);
+        }
+
         if (!TryNormalize(form, null, out var name, out var domain, out var industry, out var state, out var error))
         {
             return ServiceResult.Fail(error);
@@ -28,8 +35,13 @@ public sealed class CompanyService(ICompanyRepository companies)
         return ServiceResult.Ok(id);
     }
 
-    public async Task<ServiceResult> UpdateAsync(CompanyFormVm form, CancellationToken cancellationToken)
+    public async Task<ServiceResult> UpdateAsync(CompanyFormVm form, ActingUser actor, CancellationToken cancellationToken)
     {
+        if (!actor.IsModerator)
+        {
+            return ServiceResult.Fail(ModeratorOnlyMessage);
+        }
+
         if (await companies.GetByIdAsync(form.CompanyId, cancellationToken) is null)
         {
             return ServiceResult.Fail("Company not found.");
@@ -54,8 +66,13 @@ public sealed class CompanyService(ICompanyRepository companies)
         return updated ? ServiceResult.Ok(form.CompanyId) : ServiceResult.Fail("Company not found.");
     }
 
-    public async Task<ServiceResult> DeleteAsync(int companyId, CancellationToken cancellationToken)
+    public async Task<ServiceResult> DeleteAsync(int companyId, ActingUser actor, CancellationToken cancellationToken)
     {
+        if (!actor.IsModerator)
+        {
+            return ServiceResult.Fail(ModeratorOnlyMessage);
+        }
+
         if (await companies.GetByIdAsync(companyId, cancellationToken) is null)
         {
             return ServiceResult.Fail("Company not found.");

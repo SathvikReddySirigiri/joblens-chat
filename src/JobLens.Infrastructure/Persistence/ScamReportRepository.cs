@@ -83,6 +83,7 @@ public sealed partial class ScamReportRepository : IScamReportRepository
         string status,
         string reportedDate,
         string description,
+        int? createdByUserId,
         CancellationToken cancellationToken)
     {
         await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);
@@ -90,10 +91,10 @@ public sealed partial class ScamReportRepository : IScamReportRepository
         command.CommandText = """
             INSERT INTO ScamReports (
                 CompanyId, RecruiterEmail, Domain, ScamType, Channel,
-                AmountRequestedUsd, DomainAgeDays, Status, ReportedDate, Description)
+                AmountRequestedUsd, DomainAgeDays, Status, ReportedDate, Description, CreatedByUserId)
             VALUES (
                 $companyId, $email, $domain, $scamType, $channel,
-                $amount, $age, $status, $reportedDate, $description);
+                $amount, $age, $status, $reportedDate, $description, $createdBy);
             SELECT last_insert_rowid();
             """;
         command.Parameters.AddWithValue("$companyId", companyId);
@@ -106,6 +107,7 @@ public sealed partial class ScamReportRepository : IScamReportRepository
         command.Parameters.AddWithValue("$status", status);
         command.Parameters.AddWithValue("$reportedDate", reportedDate);
         command.Parameters.AddWithValue("$description", description);
+        command.Parameters.AddWithValue("$createdBy", (object?)createdByUserId ?? DBNull.Value);
         var id = await command.ExecuteScalarAsync(cancellationToken);
         return Convert.ToInt32(id, System.Globalization.CultureInfo.InvariantCulture);
     }

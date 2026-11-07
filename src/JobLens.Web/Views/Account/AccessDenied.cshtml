@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Access denied";
+}
+
+<section class="page-header">
+    <h1>Access denied</h1>
+    <p class="help">You do not have permission to open that page.</p>
+</section>
+
+<section class="card">
+    <p>If you need moderator access, ask a career-center staff member. Students can register their own accounts from the Register page.</p>
+    <p class="form-actions">
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Back to home</a>
+        <a class="btn btn-secondary" asp-controller="Account" asp-action="Login">Log in with a different account</a>
+    </p>
+</section>

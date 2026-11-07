@@ -123,10 +123,20 @@ public sealed class ChatOrchestrator(IConfiguration configuration, IAiClientFact
             throw new InvalidOperationException("Mcp:Endpoint is required.");
         }
 
-        var transport = new HttpClientTransport(new HttpClientTransportOptions
+        var transportOptions = new HttpClientTransportOptions
         {
             Endpoint = new Uri(endpoint),
-        });
+        };
+        var accessKey = configuration["Mcp:AccessKey"];
+        if (!string.IsNullOrWhiteSpace(accessKey))
+        {
+            transportOptions.AdditionalHeaders = new Dictionary<string, string>
+            {
+                ["X-Api-Key"] = accessKey,
+            };
+        }
+
+        var transport = new HttpClientTransport(transportOptions);
 
         await using var client = await McpClient.CreateAsync(transport, cancellationToken: ct);
         var tools = await client.ListToolsAsync(cancellationToken: ct);

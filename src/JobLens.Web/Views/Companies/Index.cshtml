@@ -12,7 +12,10 @@
         <h1>Companies</h1>
         <p class="help">Official employers that scam reports and job postings refer to.</p>
     </div>
-    <a class="btn btn-primary" asp-action="Create">Add new</a>
+    @if (ViewBag.IsModerator == true)
+    {
+        <a class="btn btn-primary" asp-action="Create">Add new</a>
+    }
 </section>
 <section class="card">
     <form method="get" class="toolbar" aria-label="Filter companies">

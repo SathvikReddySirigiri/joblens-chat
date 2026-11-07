@@ -16,6 +16,8 @@ public sealed partial class ScamReportRepository : IScamReportRepository
         string? sort,
         bool descending,
         int page,
+        int viewerUserId,
+        bool isModerator,
         CancellationToken cancellationToken)
     {
         var (limit, offset) = SqliteConnections.Page(page, JobLens.Domain.Constants.Paging.PageSize);
@@ -33,7 +35,7 @@ public sealed partial class ScamReportRepository : IScamReportRepository
             FROM ScamReports r
             INNER JOIN Companies c ON c.CompanyId = r.CompanyId
             WHERE {ReportFilter}
-            """, term, status, scamType, channel, companyId, cancellationToken);
+            """, term, status, scamType, channel, companyId, viewerUserId, isModerator, cancellationToken);
         await using var command = connection.CreateCommand();
         command.CommandText = $"""
             {ReportSelect}
@@ -41,7 +43,7 @@ public sealed partial class ScamReportRepository : IScamReportRepository
             ORDER BY {order}, r.ReportId DESC
             LIMIT $limit OFFSET $offset;
             """;
-        BindFilter(command, term, status, scamType, channel, companyId);
+        BindFilter(command, term, status, scamType, channel, companyId, viewerUserId, isModerator);
         command.Parameters.AddWithValue("$limit", limit);
         command.Parameters.AddWithValue("$offset", offset);
         var items = await ReadListAsync(command, cancellationToken);
@@ -52,6 +54,8 @@ public sealed partial class ScamReportRepository : IScamReportRepository
         string domain,
         int excludeId,
         int limit,
+        int viewerUserId,
+        bool isModerator,
         CancellationToken cancellationToken)
     {
         await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);
@@ -60,12 +64,15 @@ public sealed partial class ScamReportRepository : IScamReportRepository
             {ReportSelect}
             WHERE r.Domain = $domain COLLATE NOCASE
               AND r.ReportId <> $excludeId
+              AND ({VisibilityFilter})
             ORDER BY r.ReportedDate DESC, r.ReportId DESC
             LIMIT $limit;
             """;
         command.Parameters.AddWithValue("$domain", domain);
         command.Parameters.AddWithValue("$excludeId", excludeId);
         command.Parameters.AddWithValue("$limit", Math.Clamp(limit, 1, 5));
+        command.Parameters.AddWithValue("$viewerUserId", viewerUserId);
+        command.Parameters.AddWithValue("$isModerator", isModerator ? 1 : 0);
         return await ReadListAsync(command, cancellationToken);
     }
 
@@ -103,12 +110,19 @@ public sealed partial class ScamReportRepository : IScamReportRepository
         return Convert.ToInt32(value, System.Globalization.CultureInfo.InvariantCulture);
     }
 
-    private const string ReportFilter = """
+    private const string VisibilityFilter = """
+        $isModerator = 1
+          OR r.Status = 'Approved'
+          OR ($viewerUserId <> 0 AND r.CreatedByUserId = $viewerUserId)
+        """;
+
+    private const string ReportFilter = $"""
         ($search = '' OR r.RecruiterEmail LIKE $like OR r.Domain LIKE $like OR r.Description LIKE $like OR c.Name LIKE $like)
           AND ($status = '' OR r.Status = $status)
           AND ($scamType = '' OR r.ScamType = $scamType)
           AND ($channel = '' OR r.Channel = $channel)
           AND ($companyId = 0 OR r.CompanyId = $companyId)
+          AND ({VisibilityFilter})
         """;
 
     private static async Task<int> ScalarAsync(
@@ -119,11 +133,13 @@ public sealed partial class ScamReportRepository : IScamReportRepository
         string? scamType,
         string? channel,
         int? companyId,
+        int viewerUserId,
+        bool isModerator,
         CancellationToken cancellationToken)
     {
         await using var command = connection.CreateCommand();
         command.CommandText = sql;
-        BindFilter(command, term, status, scamType, channel, companyId);
+        BindFilter(command, term, status, scamType, channel, companyId, viewerUserId, isModerator);
         var value = await command.ExecuteScalarAsync(cancellationToken);
         return Convert.ToInt32(value, System.Globalization.CultureInfo.InvariantCulture);
     }
@@ -134,7 +150,9 @@ public sealed partial class ScamReportRepository : IScamReportRepository
         string? status,
         string? scamType,
         string? channel,
-        int? companyId)
+        int? companyId,
+        int viewerUserId,
+        bool isModerator)
     {
         command.Parameters.AddWithValue("$search", term);
         command.Parameters.AddWithValue("$like", term.Length == 0 ? "" : "%" + term + "%");
@@ -142,5 +160,7 @@ public sealed partial class ScamReportRepository : IScamReportRepository
         command.Parameters.AddWithValue("$scamType", Clean(scamType));
         command.Parameters.AddWithValue("$channel", Clean(channel));
         command.Parameters.AddWithValue("$companyId", companyId ?? 0);
+        command.Parameters.AddWithValue("$viewerUserId", viewerUserId);
+        command.Parameters.AddWithValue("$isModerator", isModerator ? 1 : 0);
     }
 }

@@ -1,0 +1,47 @@
+@model LoginFormVm
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostEnvironment
+@{
+    ViewData["Title"] = "Log in";
+    var isDev = HostEnvironment.IsDevelopment();
+}
+
+<section class="page-header">
+    <h1>Log in</h1>
+    <p class="help">Sign in with your JobLens account to report scams and manage your own records.</p>
+</section>
+
+<section class="card auth-card">
+    <form method="post" asp-controller="Account" asp-action="Login" novalidate>
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div asp-validation-summary="ModelOnly" class="alert alert-error" role="alert"></div>
+
+        <div class="field">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" autocomplete="username" />
+            <span asp-validation-for="Email" class="field-error"></span>
+        </div>
+
+        <div class="field">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" autocomplete="current-password" />
+            <span asp-validation-for="Password" class="field-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Log in</button>
+            <a class="btn btn-secondary" asp-controller="Account" asp-action="Register">Create a student account</a>
+        </div>
+    </form>
+
+    @if (isDev)
+    {
+        <aside class="demo-hint" aria-label="Demo accounts">
+            <p><strong>Demo:</strong> <code>moderator@joblens.demo</code> / <code>student1@joblens.demo</code> (passwords in README).</p>
+        </aside>
+    }
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

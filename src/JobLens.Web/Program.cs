@@ -1,7 +1,10 @@
 using JobLens.Application;
+using JobLens.Application.Dtos;
 using JobLens.Infrastructure;
 using JobLens.Infrastructure.Persistence;
 using JobLens.Web.Chat;
+using JobLens.Web.Security;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using ModelContextProtocol.AspNetCore;
 using ModelContextProtocol.Server;
 
@@ -16,6 +19,26 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.Name = ".JobLens.Session";
 });
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.Cookie.Name = ".JobLens.Auth";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.SlidingExpiration = true;
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(AuthPolicies.ModeratorOnly, policy => policy.RequireRole(ActingUser.ModeratorRole));
+    options.AddPolicy(AuthPolicies.SignedIn, policy => policy.RequireAuthenticatedUser());
+});
+builder.Services.AddLoginRateLimiter();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<ChatOrchestrator>();
@@ -38,8 +61,13 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseMiddleware<McpAccessKeyMiddleware>();
+app.UseRateLimiter();
 app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
+
+McpAccessKeyStartup.WarnIfOpen(app);
 
 app.MapMcp("/mcp");
 

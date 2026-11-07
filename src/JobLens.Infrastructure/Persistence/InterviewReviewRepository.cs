@@ -64,16 +64,18 @@ public sealed partial class InterviewReviewRepository : IInterviewReviewReposito
         string experience,
         bool wasLegit,
         string reviewDate,
+        int? createdByUserId,
         CancellationToken cancellationToken)
     {
         await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);
         await using var command = connection.CreateCommand();
         command.CommandText = """
-            INSERT INTO InterviewReviews (CompanyId, Role, Rating, Experience, WasLegit, ReviewDate)
-            VALUES ($companyId, $role, $rating, $experience, $legit, $reviewDate);
+            INSERT INTO InterviewReviews (CompanyId, Role, Rating, Experience, WasLegit, ReviewDate, CreatedByUserId)
+            VALUES ($companyId, $role, $rating, $experience, $legit, $reviewDate, $createdBy);
             SELECT last_insert_rowid();
             """;
         BindWrite(command, companyId, role, rating, experience, wasLegit, reviewDate);
+        command.Parameters.AddWithValue("$createdBy", (object?)createdByUserId ?? DBNull.Value);
         var id = await command.ExecuteScalarAsync(cancellationToken);
         return Convert.ToInt32(id, System.Globalization.CultureInfo.InvariantCulture);
     }
