@@ -1,8 +1,7 @@
 using System.ClientModel;
 using System.Text.RegularExpressions;
-using JobLens.Application.Dtos;
 using JobLens.Application.Interfaces;
-using JobLens.Domain.Entities;
+using JobLens.Application.Services;
 using JobLens.Web.ViewModels;
 using Microsoft.Extensions.AI;
 using ModelContextProtocol.Client;
@@ -11,8 +10,15 @@ using ModelContextProtocol.Protocol;
 namespace JobLens.Web.Chat;
 
 // MCP client only. Scam facts come from tools on our /mcp endpoint, never from the repository.
-public sealed class ChatOrchestrator(IConfiguration configuration, IAiClientFactory ai, ILogger<ChatOrchestrator> logger)
+public sealed class ChatOrchestrator(
+    IConfiguration configuration,
+    IAiClientFactory ai,
+    PiiRedactor redactor,
+    IHttpClientFactory httpClientFactory,
+    ILogger<ChatOrchestrator> logger)
 {
+    public const string McpHttpClientName = "mcp";
+
     // Grounding rules sent on every AI request. Tool results are the only source for scam facts.
     private const string SystemPrompt =
         """
@@ -110,12 +116,17 @@ public sealed class ChatOrchestrator(IConfiguration configuration, IAiClientFact
 
     public string ProviderLabel => ai.Label;
 
+    /// <summary>Redacts PII before the question reaches the model or Demo tool routing.</summary>
+    internal string PrepareQuestion(string question) => redactor.Redact(question);
+
     public async Task<ChatResult> AskAsync(string question, CancellationToken cancellationToken)
     {
         // Bound the MCP round-trip and any model call so one request cannot wait indefinitely.
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeout.CancelAfter(TimeSpan.FromSeconds(60));
         var ct = timeout.Token;
+
+        var safeQuestion = PrepareQuestion(question);
 
         var endpoint = configuration["Mcp:Endpoint"];
         if (string.IsNullOrWhiteSpace(endpoint))
@@ -136,15 +147,17 @@ public sealed class ChatOrchestrator(IConfiguration configuration, IAiClientFact
             };
         }
 
-        var transport = new HttpClientTransport(transportOptions);
+        // Factory owns the handler lifetime; do not dispose the named client with the transport.
+        var httpClient = httpClientFactory.CreateClient(McpHttpClientName);
+        var transport = new HttpClientTransport(transportOptions, httpClient, ownsHttpClient: false);
 
         await using var client = await McpClient.CreateAsync(transport, cancellationToken: ct);
         var tools = await client.ListToolsAsync(cancellationToken: ct);
         logger.LogInformation("Discovered MCP tools: {ToolNames}", string.Join(", ", tools.Select(tool => tool.Name)));
 
         return IsAiConfigured
-            ? await AskAiAsync(question, tools, cancellationToken, ct)
-            : await AskDemoAsync(question, tools, ct);
+            ? await AskAiAsync(safeQuestion, tools, cancellationToken, ct)
+            : await AskDemoAsync(safeQuestion, tools, ct);
     }
 
     private async Task<ChatResult> AskAiAsync(
@@ -196,7 +209,10 @@ public sealed class ChatOrchestrator(IConfiguration configuration, IAiClientFact
                 status?.ToString() ?? "none",
                 FindClientResult(ex)?.Message ?? ex.Message);
 
-            var demo = await AskDemoAsync(question, mcpTools, cancellationToken);
+            // The shared 60s token may already be canceled; give Demo its own short window.
+            using var demoTimeout = CancellationTokenSource.CreateLinkedTokenSource(userCancellationToken);
+            demoTimeout.CancelAfter(TimeSpan.FromSeconds(20));
+            var demo = await AskDemoAsync(question, mcpTools, demoTimeout.Token);
             return demo with
             {
                 Answer = "AI mode is temporarily unavailable, so this answer uses Demo mode.\n\n" + demo.Answer,
@@ -274,7 +290,7 @@ public sealed class ChatOrchestrator(IConfiguration configuration, IAiClientFact
         }
         else if (text.Contains("company profile", StringComparison.Ordinal) || text.Contains("overview of", StringComparison.Ordinal))
         {
-            var profileCompany = Companies.FirstOrDefault(company => text.Contains(company, StringComparison.OrdinalIgnoreCase)) ?? "Amazon";
+            var profileCompany = Companies.FirstOrDefault(company => ContainsWholePhrase(text, company)) ?? "Amazon";
             name = "get_company_profile";
             arguments = new Dictionary<string, object?> { ["companyName"] = profileCompany };
         }
@@ -386,44 +402,44 @@ public sealed class ChatOrchestrator(IConfiguration configuration, IAiClientFact
         return 5;
     }
 
-    private static Dictionary<string, object?> SearchArguments(string question)
+    internal static Dictionary<string, object?> SearchArguments(string question)
     {
         var arguments = new Dictionary<string, object?>();
 
-        var scamType = ScamTypes.FirstOrDefault(name => question.Contains(name, StringComparison.OrdinalIgnoreCase));
+        var scamType = ScamTypes.FirstOrDefault(name => ContainsWholePhrase(question, name));
         if (scamType is not null)
         {
             arguments["scamType"] = scamType;
         }
 
-        var company = Companies.FirstOrDefault(name => question.Contains(name, StringComparison.OrdinalIgnoreCase));
+        var company = Companies.FirstOrDefault(name => ContainsWholePhrase(question, name));
         if (company is not null)
         {
             arguments["companyName"] = company;
         }
 
-        var channel = Channels.FirstOrDefault(name => question.Contains(name, StringComparison.OrdinalIgnoreCase));
+        var channel = Channels.FirstOrDefault(name => ContainsWholePhrase(question, name));
         if (channel is not null)
         {
             arguments["channel"] = channel;
         }
 
-        if (ContainsWord(question, "approved"))
+        if (ContainsWholePhrase(question, "approved"))
         {
             arguments["status"] = "Approved";
         }
-        else if (ContainsWord(question, "pending"))
+        else if (ContainsWholePhrase(question, "pending"))
         {
             arguments["status"] = "Pending";
         }
-        else if (ContainsWord(question, "rejected"))
+        else if (ContainsWholePhrase(question, "rejected"))
         {
             arguments["status"] = "Rejected";
         }
 
         foreach (var (name, date) in Months)
         {
-            if (Regex.IsMatch(question, $@"\bsince\s+{name}\b", RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1)))
+            if (Regex.IsMatch(question, $@"\bsince\s+{Regex.Escape(name)}\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1)))
             {
                 arguments["fromDate"] = date;
                 break;
@@ -433,6 +449,10 @@ public sealed class ChatOrchestrator(IConfiguration configuration, IAiClientFact
         return arguments;
     }
 
-    private static bool ContainsWord(string question, string word) =>
-        Regex.IsMatch(question, $@"\b{Regex.Escape(word)}\b", RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1));
+    internal static bool ContainsWholePhrase(string question, string phrase) =>
+        Regex.IsMatch(
+            question,
+            $@"\b{Regex.Escape(phrase)}\b",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
+            TimeSpan.FromSeconds(1));
 }

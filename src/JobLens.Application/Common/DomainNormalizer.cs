@@ -44,8 +44,53 @@ public static partial class DomainNormalizer
         return text.Trim().TrimEnd('.');
     }
 
+    /// <summary>
+    /// MCP-style exact hostname check: optional email username strip, lowercase host, max 100 chars.
+    /// </summary>
+    public static bool TryNormalizeDomain(string? domain, out string host, out string error)
+    {
+        host = "";
+        var text = domain?.Trim() ?? "";
+        if (text.Length == 0)
+        {
+            error = "Domain is required.";
+            return false;
+        }
+
+        var at = text.LastIndexOf('@');
+        if (at >= 0)
+        {
+            text = at < text.Length - 1 ? text[(at + 1)..] : "";
+        }
+
+        host = text.Trim().ToLowerInvariant();
+        if (host.Length == 0)
+        {
+            error = "Domain is required.";
+            return false;
+        }
+
+        if (host.Length > 100)
+        {
+            error = "Domain must be 100 characters or fewer.";
+            return false;
+        }
+
+        if (!HostnamePattern().IsMatch(host))
+        {
+            error = "Domain must be an exact hostname such as amaz0n-careers.net, without http://.";
+            return false;
+        }
+
+        error = "";
+        return true;
+    }
+
     [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex EmailPattern();
+
+    [GeneratedRegex(@"^[a-z0-9.-]+\.[a-z]{2,}$", RegexOptions.CultureInvariant)]
+    private static partial Regex HostnamePattern();
 }
 
 // Keep the previous name so existing call sites compile during the move.

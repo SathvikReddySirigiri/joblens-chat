@@ -1,6 +1,7 @@
 using JobLens.Infrastructure.Security;
 using JobLens.Application.Common;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Hosting;
 
 using JobLens.Application.Interfaces;
 
@@ -84,10 +85,29 @@ public static partial class DatabaseInitializer
         await alter.ExecuteNonQueryAsync(cancellationToken);
     }
 
-    private static (string ModeratorPassword, string StudentPassword) DemoPasswords(IConfiguration configuration, ILogger logger)
+    /// <summary>
+    /// Resolves demo passwords. Development may fall back to documented defaults;
+    /// non-Development must set Seed:ModeratorPassword and Seed:StudentPassword.
+    /// </summary>
+    internal static (string ModeratorPassword, string StudentPassword) DemoPasswords(
+        IConfiguration configuration,
+        IWebHostEnvironment environment,
+        ILogger logger)
     {
         var moderator = configuration["Seed:ModeratorPassword"];
         var student = configuration["Seed:StudentPassword"];
+        var missing = string.IsNullOrWhiteSpace(moderator) || string.IsNullOrWhiteSpace(student);
+
+        if (missing
+            && !string.Equals(
+                environment.EnvironmentName,
+                Environments.Development,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException(
+                "Set Seed__ModeratorPassword and Seed__StudentPassword in App Settings");
+        }
+
         var usedFallback = false;
         if (string.IsNullOrWhiteSpace(moderator))
         {
@@ -103,7 +123,8 @@ public static partial class DatabaseInitializer
 
         if (usedFallback)
         {
-            logger.LogWarning("Demo user passwords are the documented class defaults. Set Seed:ModeratorPassword and Seed:StudentPassword before a real deployment.");
+            logger.LogWarning(
+                "Demo user passwords are the documented class defaults. Set Seed:ModeratorPassword and Seed:StudentPassword before a real deployment.");
         }
 
         return (moderator, student);

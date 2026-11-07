@@ -6,7 +6,9 @@ using JobLens.Web.ViewModels;
 using JobLens.Application.Services;
 using JobLens.Application.Common;
 using JobLens.Web.Chat;
+using JobLens.Web.Security;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace JobLens.Web.Controllers;
 
@@ -49,6 +51,7 @@ public sealed class ChatController(ChatOrchestrator orchestrator, ILogger<ChatCo
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [EnableRateLimiting(LoginRateLimiting.ExpensivePolicyName)]
     public async Task<IActionResult> Ask([Bind(nameof(ChatViewModel.Question))] ChatViewModel model, CancellationToken cancellationToken)
     {
         var question = model.Question?.Trim() ?? "";

@@ -1,11 +1,7 @@
-using JobLens.Application.Interfaces;
 using System.ComponentModel;
 using System.Text.Json;
-using System.Text.RegularExpressions;
-using JobLens.Application.Services;
 using JobLens.Application.Common;
-using JobLens.Application.Dtos;
-using JobLens.Web.Chat;
+using JobLens.Application.Interfaces;
 using ModelContextProtocol.Server;
 
 namespace JobLens.Web.Mcp;
@@ -25,7 +21,7 @@ public sealed class DomainTools(IRdapClient rdap, ILogger<DomainTools> logger)
         CancellationToken cancellationToken)
     {
         const string tool = "lookup_domain_registration";
-        if (!TryNormalizeDomain(domain, out var host, out var error))
+        if (!DomainNormalizer.TryNormalizeDomain(domain, out var host, out var error))
         {
             logger.LogInformation("MCP tool {Tool} domain {Domain} found {Found} cache {FromCache}", tool, domain, false, false);
             return error;
@@ -39,44 +35,5 @@ public sealed class DomainTools(IRdapClient rdap, ILogger<DomainTools> logger)
             result.Found,
             result.FromCache);
         return JsonSerializer.Serialize(result, JsonOptions);
-    }
-
-    private static bool TryNormalizeDomain(string? domain, out string host, out string error)
-    {
-        host = "";
-        var text = domain?.Trim() ?? "";
-        if (text.Length == 0)
-        {
-            error = "Domain is required.";
-            return false;
-        }
-
-        var at = text.LastIndexOf('@');
-        if (at >= 0)
-        {
-            text = at < text.Length - 1 ? text[(at + 1)..] : "";
-        }
-
-        host = text.Trim().ToLowerInvariant();
-        if (host.Length == 0)
-        {
-            error = "Domain is required.";
-            return false;
-        }
-
-        if (host.Length > 100)
-        {
-            error = "Domain must be 100 characters or fewer.";
-            return false;
-        }
-
-        if (!Regex.IsMatch(host, "^[a-z0-9.-]+\\.[a-z]{2,}$"))
-        {
-            error = "Domain must be an exact hostname such as amaz0n-careers.net, without http://.";
-            return false;
-        }
-
-        error = "";
-        return true;
     }
 }

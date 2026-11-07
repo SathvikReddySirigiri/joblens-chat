@@ -1,6 +1,9 @@
 using JobLens.Web.Security;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace JobLens.Tests;
@@ -18,7 +21,7 @@ public sealed class McpAccessKeyMiddlewareTests
             return Task.CompletedTask;
         });
 
-        await middleware.InvokeAsync(context, Config("secret-key"));
+        await middleware.InvokeAsync(context, Config("secret-key"), Env(Environments.Development));
 
         Assert.Equal(StatusCodes.Status401Unauthorized, context.Response.StatusCode);
         Assert.False(nextCalled);
@@ -36,7 +39,7 @@ public sealed class McpAccessKeyMiddlewareTests
             return Task.CompletedTask;
         });
 
-        await middleware.InvokeAsync(context, Config("secret-key"));
+        await middleware.InvokeAsync(context, Config("secret-key"), Env(Environments.Development));
 
         Assert.Equal(StatusCodes.Status401Unauthorized, context.Response.StatusCode);
         Assert.False(nextCalled);
@@ -54,14 +57,14 @@ public sealed class McpAccessKeyMiddlewareTests
             return Task.CompletedTask;
         });
 
-        await middleware.InvokeAsync(context, Config("secret-key"));
+        await middleware.InvokeAsync(context, Config("secret-key"), Env(Environments.Development));
 
         Assert.Equal(StatusCodes.Status200OK, context.Response.StatusCode);
         Assert.True(nextCalled);
     }
 
     [Fact]
-    public async Task Request_is_allowed_when_key_not_configured()
+    public async Task Development_allows_request_when_key_not_configured()
     {
         var context = McpContext();
         var nextCalled = false;
@@ -71,10 +74,31 @@ public sealed class McpAccessKeyMiddlewareTests
             return Task.CompletedTask;
         });
 
-        await middleware.InvokeAsync(context, Config(""));
+        await middleware.InvokeAsync(context, Config(""), Env(Environments.Development));
 
         Assert.Equal(StatusCodes.Status200OK, context.Response.StatusCode);
         Assert.True(nextCalled);
+    }
+
+    [Fact]
+    public async Task NonDevelopment_returns_503_when_key_not_configured()
+    {
+        var context = McpContext();
+        context.Response.Body = new MemoryStream();
+        var nextCalled = false;
+        var middleware = new McpAccessKeyMiddleware(_ =>
+        {
+            nextCalled = true;
+            return Task.CompletedTask;
+        });
+
+        await middleware.InvokeAsync(context, Config(""), Env(Environments.Production));
+
+        Assert.Equal(StatusCodes.Status503ServiceUnavailable, context.Response.StatusCode);
+        Assert.False(nextCalled);
+        context.Response.Body.Position = 0;
+        using var reader = new StreamReader(context.Response.Body);
+        Assert.Equal(McpAccessKeyMiddleware.UnavailableMessage, await reader.ReadToEndAsync());
     }
 
     [Fact]
@@ -99,4 +123,16 @@ public sealed class McpAccessKeyMiddlewareTests
                 [McpAccessKeyMiddleware.ConfigKey] = accessKey,
             })
             .Build();
+
+    private static StubEnvironment Env(string name) => new() { EnvironmentName = name };
+
+    private sealed class StubEnvironment : IWebHostEnvironment
+    {
+        public string EnvironmentName { get; set; } = Environments.Development;
+        public string ApplicationName { get; set; } = "JobLens.Tests";
+        public string WebRootPath { get; set; } = "";
+        public string ContentRootPath { get; set; } = "";
+        public IFileProvider WebRootFileProvider { get; set; } = new NullFileProvider();
+        public IFileProvider ContentRootFileProvider { get; set; } = new NullFileProvider();
+    }
 }

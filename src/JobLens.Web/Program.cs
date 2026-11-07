@@ -5,10 +5,22 @@ using JobLens.Infrastructure.Persistence;
 using JobLens.Web.Chat;
 using JobLens.Web.Security;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
 using ModelContextProtocol.AspNetCore;
 using ModelContextProtocol.Server;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    // Azure App Service terminates TLS and forwards the original scheme/client IP.
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+#pragma warning disable ASPDEPR005 // KnownNetworks renamed to KnownIPNetworks in recent ASP.NET Core.
+    options.KnownNetworks.Clear();
+#pragma warning restore ASPDEPR005
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+});
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
@@ -28,7 +40,9 @@ builder.Services
         options.AccessDeniedPath = "/Account/AccessDenied";
         options.Cookie.Name = ".JobLens.Auth";
         options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+            ? CookieSecurePolicy.SameAsRequest
+            : CookieSecurePolicy.Always;
         options.Cookie.SameSite = SameSiteMode.Lax;
         options.SlidingExpiration = true;
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
@@ -41,6 +55,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddLoginRateLimiter();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddHttpClient(ChatOrchestrator.McpHttpClientName);
 builder.Services.AddScoped<ChatOrchestrator>();
 builder.Services.AddMcpServer()
     .WithHttpTransport(options =>
@@ -52,6 +67,8 @@ builder.Services.AddMcpServer()
 
 var app = builder.Build();
 
+app.UseForwardedHeaders();
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -61,7 +78,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-// Keep /mcp clients on raw status codes (401) instead of HTML error pages.
+// Keep /mcp clients on raw status codes (401/503) instead of HTML error pages.
 app.UseWhen(
     context => !context.Request.Path.StartsWithSegments("/mcp"),
     branch => branch.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}"));

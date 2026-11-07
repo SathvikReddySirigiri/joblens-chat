@@ -62,6 +62,37 @@ public sealed class IntelligenceTests
     }
 
     [Fact]
+    public void Rule_analyzer_flags_high_hourly_pay_for_simple_work()
+    {
+        var analysis = OfferAnalyzerService.AnalyzeByRules(
+            "No experience needed for data entry. Pay is $45/hour starting immediately.");
+        Assert.Contains(analysis.RedFlags, flag => flag.Flag == "Pay far above market");
+        Assert.Equal("Medium", analysis.RedFlags.First(flag => flag.Flag == "Pay far above market").Severity);
+        Assert.Equal("MEDIUM", analysis.Verdict);
+
+        var ignored = OfferAnalyzerService.AnalyzeByRules("Senior engineer salary is $45/hour with deep experience.");
+        Assert.DoesNotContain(ignored.RedFlags, flag => flag.Flag == "Pay far above market");
+    }
+
+    [Fact]
+    public void ParseAi_falls_back_to_redacted_offer_and_drops_unquoted_evidence()
+    {
+        var offer = "Please deposit the check before day one. Contact hr@firm.test.";
+        var fallback = OfferAnalyzerService.ParseAi("not-json {{{", offer);
+        Assert.Equal("Rule-based analysis (AI unavailable)", fallback.Mode);
+        Assert.Contains(fallback.RedFlags, flag => flag.Flag.Contains("Check", StringComparison.Ordinal));
+
+        var filtered = OfferAnalyzerService.ParseAi(
+            """
+            {"riskScore":40,"verdict":"MEDIUM","redFlags":[{"flag":"Invented","evidence":"not in the offer","severity":"High"},{"flag":"Check deposit","evidence":"deposit the check","severity":"High"}],"riskyClauses":[],"summary":"ok"}
+            """,
+            offer);
+        Assert.Single(filtered.RedFlags);
+        Assert.Equal("Check deposit", filtered.RedFlags[0].Flag);
+        Assert.Equal("AI analysis", filtered.Mode);
+    }
+
+    [Fact]
     public void Smart_search_drops_invalid_state_pay_and_unknown_company()
     {
         var companies = new List<Company> { new(1, "Amazon", "amazon.com", "Technology", "WA") };
@@ -73,6 +104,7 @@ public sealed class IntelligenceTests
         Assert.Null(filter.MinPayPerHour);
         Assert.Null(filter.CompanyId);
         Assert.True(filter.IsRemote);
+        Assert.Equal("intern", filter.Keyword);
 
         var matched = SmartSearchService.Sanitize(
             new SmartSearchService.SearchDraft("analyst", "amazon", "fl", null, true, 20, true),
@@ -83,9 +115,28 @@ public sealed class IntelligenceTests
         Assert.Equal(20, matched.MinPayPerHour);
         Assert.True(matched.ExcludeCompaniesWithApprovedReports);
 
+        var emptyKeyword = SmartSearchService.Sanitize(
+            new SmartSearchService.SearchDraft("", null, "FL", true, null, null, false),
+            "paid remote jobs in FL",
+            companies);
+        Assert.Equal("", emptyKeyword.Keyword);
+        Assert.Equal("FL", emptyKeyword.State);
+        Assert.True(emptyKeyword.IsRemote);
+
         var fallback = SmartSearchService.Sanitize(null, "data analyst intern", companies);
         Assert.Equal("data analyst intern", fallback.Keyword);
         Assert.False(fallback.ExcludeCompaniesWithApprovedReports);
+
+        var rules = SmartSearchService.Sanitize(
+            null,
+            "paid remote data analyst in Florida over 20 an hour no scam reports",
+            companies);
+        Assert.True(rules.IsPaid);
+        Assert.True(rules.IsRemote);
+        Assert.Equal("FL", rules.State);
+        Assert.Equal(20, rules.MinPayPerHour);
+        Assert.True(rules.ExcludeCompaniesWithApprovedReports);
+        Assert.Equal("data analyst", rules.Keyword);
     }
 
     [Fact]

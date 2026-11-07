@@ -12,6 +12,7 @@ namespace JobLens.Infrastructure.External;
 public sealed class RdapClient(HttpClient httpClient, IMemoryCache cache, ILogger<RdapClient> logger) : JobLens.Application.Interfaces.IRdapClient
 {
     public const string SourceLabel = "RDAP (live external lookup, not the JobLens database)";
+    public const int CacheEntrySize = 1;
     private static readonly TimeSpan CacheFor = TimeSpan.FromHours(6);
 
     public async Task<RdapResult> LookupAsync(string domain, CancellationToken cancellationToken)
@@ -31,7 +32,11 @@ public sealed class RdapClient(HttpClient httpClient, IMemoryCache cache, ILogge
             }
 
             // Success and 404 are stable answers. Timeouts and 5xx are not cached.
-            cache.Set(key, fetched, CacheFor);
+            cache.Set(key, fetched, new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = CacheFor,
+                Size = CacheEntrySize,
+            });
             return fetched;
         }
 

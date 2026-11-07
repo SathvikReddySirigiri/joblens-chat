@@ -76,6 +76,25 @@ public sealed partial class ScamReportRepository : IScamReportRepository
         return await ReadListAsync(command, cancellationToken);
     }
 
+    public async Task<IReadOnlyList<ScamReport>> GetApprovedByExactDomainAsync(
+        string domain,
+        int limit,
+        CancellationToken cancellationToken)
+    {
+        await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);
+        await using var command = connection.CreateCommand();
+        command.CommandText = $"""
+            {ReportSelect}
+            WHERE r.Domain = $domain COLLATE NOCASE
+              AND r.Status = 'Approved'
+            ORDER BY r.ReportedDate DESC, r.ReportId DESC
+            LIMIT $limit;
+            """;
+        command.Parameters.AddWithValue("$domain", Clean(domain));
+        command.Parameters.AddWithValue("$limit", Math.Clamp(limit, 1, 5));
+        return await ReadListAsync(command, cancellationToken);
+    }
+
     public async Task<int?> FindDuplicateIdAsync(
         string email,
         string scamType,

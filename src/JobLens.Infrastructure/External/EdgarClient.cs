@@ -101,7 +101,12 @@ public sealed class EdgarClient(HttpClient httpClient, IMemoryCache cache, IConf
             list.Add(new EdgarCompany(title, cikNumber.ToString("D10", CultureInfo.InvariantCulture), ticker));
         }
 
-        cache.Set(CacheKey, list, TimeSpan.FromHours(24));
+        // Size is required whenever MemoryCache.SizeLimit is configured.
+        cache.Set(CacheKey, list, new MemoryCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24),
+            Size = 1,
+        });
         return list;
     }
 

@@ -11,9 +11,15 @@ namespace JobLens.Infrastructure;
 
 public static class DependencyInjection
 {
+    /// <summary>Shared MemoryCache budget; each RDAP/EDGAR entry must set Size.</summary>
+    public const long MemoryCacheSizeLimit = 256;
+
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMemoryCache();
+        services.AddMemoryCache(options =>
+        {
+            options.SizeLimit = MemoryCacheSizeLimit;
+        });
 
         services.AddHttpClient<IRdapClient, RdapClient>(client =>
         {

@@ -30,7 +30,6 @@ public sealed class AccountController(AccountService accounts) : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(LoginFormVm form, CancellationToken cancellationToken)
     {
-        form.ReturnUrl = form.ReturnUrl;
         if (!ModelState.IsValid)
         {
             return View(form);

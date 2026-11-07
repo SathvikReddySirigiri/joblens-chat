@@ -7,6 +7,7 @@ public interface IScamReportRepository
 {
     Task<PageResult<ScamReport>> BrowseAsync( string? search, string? status, string? scamType, string? channel, int? companyId, string? sort, bool descending, int page, int viewerUserId, bool isModerator, CancellationToken cancellationToken);
     Task<IReadOnlyList<ScamReport>> OthersOnDomainAsync( string domain, int excludeId, int limit, int viewerUserId, bool isModerator, CancellationToken cancellationToken);
+    Task<IReadOnlyList<ScamReport>> GetApprovedByExactDomainAsync(string domain, int limit, CancellationToken cancellationToken);
     Task<int?> FindDuplicateIdAsync( string email, string scamType, int? excludeId, CancellationToken cancellationToken);
     Task<int> CountByStatusAsync(string status, CancellationToken cancellationToken);
     Task<IReadOnlyList<ScamReport>> ListAsync( string? search, string? status, string? scamType, int? companyId, int page, int pageSize, CancellationToken cancellationToken);

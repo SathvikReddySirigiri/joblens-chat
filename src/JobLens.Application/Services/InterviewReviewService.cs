@@ -14,10 +14,10 @@ public sealed class InterviewReviewService(IInterviewReviewRepository reviews, I
             return ServiceResult.Fail("You must be signed in to create a review.");
         }
 
-        var prepared = await TryPrepareAsync(form, cancellationToken);
+        var (prepared, error) = await TryPrepareAsync(form, cancellationToken);
         if (prepared is null)
         {
-            return ServiceResult.Fail(_error);
+            return ServiceResult.Fail(error);
         }
 
         var id = await reviews.CreateAsync(
@@ -45,10 +45,10 @@ public sealed class InterviewReviewService(IInterviewReviewRepository reviews, I
             return ServiceResult.Fail("You can only edit your own interview reviews.");
         }
 
-        var prepared = await TryPrepareAsync(form, cancellationToken);
+        var (prepared, error) = await TryPrepareAsync(form, cancellationToken);
         if (prepared is null)
         {
-            return ServiceResult.Fail(_error);
+            return ServiceResult.Fail(error);
         }
 
         var updated = await reviews.UpdateAsync(
@@ -92,44 +92,39 @@ public sealed class InterviewReviewService(IInterviewReviewRepository reviews, I
 
     public bool CanDelete(InterviewReview review, ActingUser? actor) => CanEdit(review, actor);
 
-    private string _error = "";
-
-    private async Task<Prepared?> TryPrepareAsync(InterviewReviewFormVm form, CancellationToken cancellationToken)
+    private async Task<(Prepared? Prepared, string Error)> TryPrepareAsync(
+        InterviewReviewFormVm form,
+        CancellationToken cancellationToken)
     {
         var role = form.Role?.Trim() ?? "";
         var experience = form.Experience?.Trim() ?? "";
         var reviewDate = string.IsNullOrWhiteSpace(form.ReviewDate) ? FieldRules.Today() : form.ReviewDate.Trim();
         if (role.Length is 0 or > 120)
         {
-            _error = "Role is required.";
-            return null;
+            return (null, "Role is required.");
         }
 
         if (form.Rating is < 1 or > 5)
         {
-            _error = "Rating must be from 1 to 5.";
-            return null;
+            return (null, "Rating must be from 1 to 5.");
         }
 
         if (experience.Length is < 20 or > 1000)
         {
-            _error = "Experience must be 20 to 1000 characters.";
-            return null;
+            return (null, "Experience must be 20 to 1000 characters.");
         }
 
         if (!FieldRules.IsDate(reviewDate))
         {
-            _error = "Review date must be yyyy-MM-dd.";
-            return null;
+            return (null, "Review date must be yyyy-MM-dd.");
         }
 
         if (await companies.GetByIdAsync(form.CompanyId, cancellationToken) is null)
         {
-            _error = "Company not found.";
-            return null;
+            return (null, "Company not found.");
         }
 
-        return new Prepared(form.CompanyId, role, form.Rating, experience, form.WasLegit, reviewDate);
+        return (new Prepared(form.CompanyId, role, form.Rating, experience, form.WasLegit, reviewDate), "");
     }
 
     private sealed record Prepared(

@@ -1,11 +1,10 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Text.Json;
+using JobLens.Application.Common;
 using JobLens.Application.Interfaces;
 using JobLens.Application.Services;
-using JobLens.Application.Common;
-using JobLens.Application.Dtos;
-using JobLens.Web.Chat;
+using JobLens.Domain.Constants;
 using ModelContextProtocol.Server;
 
 namespace JobLens.Web.Mcp;
@@ -40,19 +39,22 @@ public sealed class ScamTools(IScamQueryRepository repository, RecruiterRiskServ
     private static readonly string[] Statuses = ["Pending", "Approved", "Rejected"];
 
     [McpServerTool(Name = "get_domain_report")]
-    [Description("Exact lookup: return all scam reports filed for one exact recruiter email domain (for example amaz0n-careers.net), including the company being impersonated and report status. Returns at most 20 reports.")]
+    [Description("Exact lookup: return approved scam report details for one exact recruiter email domain (for example amaz0n-careers.net), including the company being impersonated. Returns at most 20 approved reports.")]
     public async Task<string> GetDomainReport(
         [Description("Exact domain only, without http:// or an email username, e.g. amaz0n-careers.net.")] string domain,
         CancellationToken cancellationToken)
     {
         const string tool = "get_domain_report";
-        if (!TryNormalizeDomain(domain, out var host, out var error))
+        if (!DomainNormalizer.TryNormalizeDomain(domain, out var host, out var error))
         {
             Log(tool, 0, ("domain", domain));
             return error;
         }
 
-        var reports = await repository.GetReportsByDomainAsync(host, cancellationToken);
+        var reports = (await repository.GetReportsByDomainAsync(host, cancellationToken))
+            .Where(report => string.Equals(report.Status, ReportStatus.Approved, StringComparison.Ordinal))
+            .Take(20)
+            .ToList();
         Log(tool, reports.Count, ("domain", host));
 
         if (reports.Count == 0)
@@ -61,7 +63,7 @@ public sealed class ScamTools(IScamQueryRepository repository, RecruiterRiskServ
             {
                 domain = host,
                 reportCount = 0,
-                message = "No scam reports found for this domain.",
+                message = "No approved scam reports found for this domain.",
             });
         }
 
@@ -74,12 +76,12 @@ public sealed class ScamTools(IScamQueryRepository repository, RecruiterRiskServ
     }
 
     [McpServerTool(Name = "search_scam_reports")]
-    [Description("Filtered search of scam reports by scam type, impersonated company, channel, status, and date range. All filters are optional. Returns at most 20 reports, newest first.")]
+    [Description("Filtered search of approved scam report details by scam type, impersonated company, channel, and date range. All filters are optional. Returns at most 20 approved reports, newest first. Use summarize_scams for counts by status.")]
     public async Task<string> SearchScamReports(
         [Description("Optional scam type. One of: Fake check, Equipment purchase, Upfront fee, Chat-only interview, Identity theft, Fake staffing agency.")] string? scamType = null,
         [Description("Optional exact company name, e.g. Amazon, Deloitte.")] string? companyName = null,
         [Description("Optional channel. One of: Email, Telegram, WhatsApp, LinkedIn, Text message.")] string? channel = null,
-        [Description("Optional status. One of: Pending, Approved, Rejected.")] string? status = null,
+        [Description("Optional status. Only Approved report details are returned; Pending or Rejected yields no detail rows.")] string? status = null,
         [Description("Optional inclusive start date, exactly yyyy-MM-dd.")] string? fromDate = null,
         [Description("Optional inclusive end date, exactly yyyy-MM-dd.")] string? toDate = null,
         CancellationToken cancellationToken = default)
@@ -95,23 +97,43 @@ public sealed class ScamTools(IScamQueryRepository repository, RecruiterRiskServ
         }
 
         var company = string.IsNullOrWhiteSpace(companyName) ? null : companyName.Trim();
-        var reports = await repository.SearchReportsAsync(scam, company, channelValue, statusValue, from, to, cancellationToken);
-        Log(tool, reports.Count, ("scamType", scam), ("companyName", company), ("channel", channelValue), ("status", statusValue), ("fromDate", from), ("toDate", to));
+        if (statusValue is not null
+            && !string.Equals(statusValue, ReportStatus.Approved, StringComparison.Ordinal))
+        {
+            Log(tool, 0, ("scamType", scam), ("companyName", company), ("channel", channelValue), ("status", statusValue), ("fromDate", from), ("toDate", to));
+            return Json(new
+            {
+                filters = new { scamType = scam, companyName = company, channel = channelValue, status = statusValue, fromDate = from, toDate = to },
+                resultCount = 0,
+                reports = Array.Empty<object>(),
+                message = "Only approved report details are available through this tool. Use summarize_scams for counts by status.",
+            });
+        }
+
+        var reports = await repository.SearchReportsAsync(
+            scam,
+            company,
+            channelValue,
+            ReportStatus.Approved,
+            from,
+            to,
+            cancellationToken);
+        Log(tool, reports.Count, ("scamType", scam), ("companyName", company), ("channel", channelValue), ("status", ReportStatus.Approved), ("fromDate", from), ("toDate", to));
 
         if (reports.Count == 0)
         {
             return Json(new
             {
-                filters = new { scamType = scam, companyName = company, channel = channelValue, status = statusValue, fromDate = from, toDate = to },
+                filters = new { scamType = scam, companyName = company, channel = channelValue, status = ReportStatus.Approved, fromDate = from, toDate = to },
                 resultCount = 0,
                 reports,
-                message = "No scam reports matched these filters.",
+                message = "No approved scam reports matched these filters.",
             });
         }
 
         return Json(new
         {
-            filters = new { scamType = scam, companyName = company, channel = channelValue, status = statusValue, fromDate = from, toDate = to },
+            filters = new { scamType = scam, companyName = company, channel = channelValue, status = ReportStatus.Approved, fromDate = from, toDate = to },
             resultCount = reports.Count,
             reports,
         });
@@ -171,12 +193,12 @@ public sealed class ScamTools(IScamQueryRepository repository, RecruiterRiskServ
         const string tool = "check_recruiter_email";
         if (!TryEmail(email, out var trimmed, out var error))
         {
-            Log(tool, 0, ("email", email));
+            Log(tool, 0, ("domain", DomainNormalizer.DomainOfEmail(email ?? "")));
             return error;
         }
 
         var result = await riskService.CheckAsync(trimmed, cancellationToken);
-        Log(tool, 1, ("email", trimmed));
+        Log(tool, 1, ("domain", DomainNormalizer.DomainOfEmail(trimmed)));
         return Json(result);
     }
 
@@ -198,45 +220,6 @@ public sealed class ScamTools(IScamQueryRepository repository, RecruiterRiskServ
     }
 
     private static string Json(object value) => JsonSerializer.Serialize(value, JsonOptions);
-
-    private static bool TryNormalizeDomain(string? domain, out string host, out string error)
-    {
-        host = "";
-        var text = domain?.Trim() ?? "";
-        if (text.Length == 0)
-        {
-            error = "Domain is required.";
-            return false;
-        }
-
-        var at = text.LastIndexOf('@');
-        if (at >= 0)
-        {
-            text = at < text.Length - 1 ? text[(at + 1)..] : "";
-        }
-
-        host = text.Trim().ToLowerInvariant();
-        if (host.Length == 0)
-        {
-            error = "Domain is required.";
-            return false;
-        }
-
-        if (host.Length > 100)
-        {
-            error = "Domain must be 100 characters or fewer.";
-            return false;
-        }
-
-        if (!System.Text.RegularExpressions.Regex.IsMatch(host, "^[a-z0-9.-]+\\.[a-z]{2,}$"))
-        {
-            error = "Domain must be an exact hostname such as amaz0n-careers.net, without http://.";
-            return false;
-        }
-
-        error = "";
-        return true;
-    }
 
     private static bool TryEmail(string? email, out string trimmed, out string error)
     {

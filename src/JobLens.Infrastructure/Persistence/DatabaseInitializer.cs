@@ -38,7 +38,7 @@ public static partial class DatabaseInitializer
         await SeedReviewsIfEmptyAsync(connection, cancellationToken);
         await SeedCheckLogsIfEmptyAsync(connection, cancellationToken);
         await SeedRecruitersIfEmptyAsync(connection, cancellationToken);
-        var (moderatorPassword, studentPassword) = DemoPasswords(configuration, logger);
+        var (moderatorPassword, studentPassword) = DemoPasswords(configuration, environment, logger);
         await SeedUsersIfEmptyAsync(connection, moderatorPassword, studentPassword, cancellationToken);
 
         var counts = await ReadCountsAsync(connection, cancellationToken);

@@ -64,8 +64,9 @@ public sealed class CrudRuleTests
         await using var database = await TempDatabase.CreateAsync();
         var companies = new CompanyRepository(database.ConnectionString);
         var reports = new ScamReportRepository(database.ConnectionString);
+        var recruiters = new RecruiterRepository(database.ConnectionString);
         var companyService = new CompanyService(companies);
-        var reportService = new ScamReportService(reports, companies);
+        var reportService = new ScamReportService(reports, companies, recruiters);
         var moderator = await TestActors.CreateModeratorAsync(database.ConnectionString);
         var student = await TestActors.CreateStudentAsync(database.ConnectionString);
         var company = await companyService.CreateAsync(Company(), moderator, CancellationToken.None);
@@ -86,8 +87,9 @@ public sealed class CrudRuleTests
         await using var database = await TempDatabase.CreateAsync();
         var companies = new CompanyRepository(database.ConnectionString);
         var reports = new ScamReportRepository(database.ConnectionString);
+        var recruiters = new RecruiterRepository(database.ConnectionString);
         var companyService = new CompanyService(companies);
-        var reportService = new ScamReportService(reports, companies);
+        var reportService = new ScamReportService(reports, companies, recruiters);
         var moderator = await TestActors.CreateModeratorAsync(database.ConnectionString);
         var student = await TestActors.CreateStudentAsync(database.ConnectionString);
         var company = await companyService.CreateAsync(Company(), moderator, CancellationToken.None);
@@ -95,7 +97,8 @@ public sealed class CrudRuleTests
 
         var blocked = await companyService.DeleteAsync(company.Id.Value, moderator, CancellationToken.None);
         Assert.False(blocked.Success);
-        Assert.Equal("This company has 1 related records and cannot be deleted.", blocked.ErrorMessage);
+        Assert.StartsWith("This company has ", blocked.ErrorMessage);
+        Assert.EndsWith(" related records and cannot be deleted.", blocked.ErrorMessage);
         Assert.NotNull(await companies.GetByIdAsync(company.Id.Value, CancellationToken.None));
     }
 

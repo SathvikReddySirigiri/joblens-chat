@@ -94,8 +94,9 @@ public sealed class OwnershipPermissionTests
     {
         var companies = new CompanyRepository(database.ConnectionString);
         var reports = new ScamReportRepository(database.ConnectionString);
+        var recruiters = new RecruiterRepository(database.ConnectionString);
         var companyService = new CompanyService(companies);
-        var reportService = new ScamReportService(reports, companies);
+        var reportService = new ScamReportService(reports, companies, recruiters);
         var moderator = await TestActors.CreateModeratorAsync(database.ConnectionString);
         var owner = await TestActors.CreateStudentAsync(database.ConnectionString, "owner@test.local");
         var otherStudent = await TestActors.CreateStudentAsync(database.ConnectionString, "other@test.local");

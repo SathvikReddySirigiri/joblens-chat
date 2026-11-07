@@ -60,7 +60,7 @@ dotnet user-secrets set "Mcp:AccessKey" "<your-local-mcp-key>" --project src/Job
 
 ### MCP access key (`X-Api-Key`)
 
-When `Mcp:AccessKey` is set (user-secrets locally, app settings on Azure), every request to `/mcp` must send header `X-Api-Key` with that value. Leave it empty only for local demos; Development logs a warning if `/mcp` is open.
+When `Mcp:AccessKey` is set (user-secrets locally, app settings on Azure), every request to `/mcp` must send header `X-Api-Key` with that value. Leave it empty only for local Development demos (logs a warning). Outside Development, a missing key fails closed: `/mcp` returns 503 and startup logs an error.
 
 **Cursor:** copy `.cursor/mcp.example.json` to `.cursor/mcp.json` (gitignored) and set the same key under `headers.X-Api-Key`:
 
@@ -91,29 +91,46 @@ dotnet test
 
 | Key | Purpose |
 | --- | --- |
-| `AllowedHosts` | Host allow-list (never `*`) |
+| `AllowedHosts` | Host allow-list (never `*`; set the exact Azure hostname in production) |
 | `Ai:Provider` | `Demo`, `AzureOpenAI`, or `OpenAICompatible` |
 | `Ai:Endpoint` | Azure / compatible endpoint URL |
 | `Ai:Model` | Deployment or model name |
-| `Ai:ApiKey` | Secret — set via user-secrets / env only |
+| `Ai:ApiKey` | Secret — set via user-secrets / Azure App Settings only |
 | `Ai:DisplayName` | Optional label shown in UI |
 | `Mcp:Endpoint` | Chat MCP client URL (default `http://localhost:5080/mcp`) |
-| `Mcp:AccessKey` | Secret for `/mcp` (`X-Api-Key`) — user-secrets / Azure only; empty in appsettings |
+| `Mcp:AccessKey` | Secret for `/mcp` (`X-Api-Key`) — required outside Development |
 | `Database:Path` | Optional absolute SQLite path override |
-| `Seed:ModeratorPassword` | Override demo moderator password |
-| `Seed:StudentPassword` | Override demo student password |
+| `Seed:ModeratorPassword` | Demo moderator password — required outside Development (`Seed__ModeratorPassword`) |
+| `Seed:StudentPassword` | Demo student password — required outside Development (`Seed__StudentPassword`) |
 | `Logging:LogLevel:*` | Standard ASP.NET Core logging |
+
+### Azure App Settings (production)
+
+Set these as application settings (double-underscore env form works too):
+
+| Setting | Notes |
+| --- | --- |
+| `AllowedHosts` | Exact App Service hostname |
+| `ASPNETCORE_ENVIRONMENT` | `Production` (or non-Development) |
+| `Ai:Provider` / `Ai:Endpoint` / `Ai:Model` / `Ai:ApiKey` | Only if AI mode is enabled |
+| `Mcp:Endpoint` | In-app MCP URL the chat client calls |
+| `Mcp:AccessKey` | Required; `/mcp` returns 503 if missing |
+| `Seed:ModeratorPassword` | Required; startup throws if missing |
+| `Seed:StudentPassword` | Required; startup throws if missing |
+| `Database:Path` | Optional; otherwise `HOME/data/JobLens/joblens.db` |
+
+Forwarded headers (`X-Forwarded-For` / `X-Forwarded-Proto`) are enabled for App Service. Auth cookies use `SecurePolicy=Always` outside Development. Expensive POSTs (Chat, Offer Analyzer, Check Recruiter) are limited to 10 requests/minute per IP.
 
 ## Demo accounts
 
-Synthetic users are seeded for class demos (hashed passwords; defaults used only when seed keys are unset):
+Synthetic users are seeded for class demos (hashed passwords). Documented defaults apply **only in Development** when seed keys are unset:
 
-| Email | Role | Default password |
+| Email | Role | Default password (Development only) |
 | --- | --- | --- |
 | `moderator@joblens.demo` | Moderator | `Moderator#2026` |
 | `student1@joblens.demo` … `student4@joblens.demo` | Student | `Student#2026` |
 
-Change passwords for any shared or cloud deployment via `Seed:ModeratorPassword` / `Seed:StudentPassword`.
+On Azure / any non-Development host, set `Seed__ModeratorPassword` and `Seed__StudentPassword` in App Settings or startup fails.
 
 ## Docs
 

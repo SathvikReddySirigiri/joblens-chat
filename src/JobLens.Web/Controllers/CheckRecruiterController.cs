@@ -1,7 +1,9 @@
 using JobLens.Application.Dtos;
 using JobLens.Application.Services;
 using JobLens.Domain.Entities;
+using JobLens.Web.Security;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace JobLens.Web.Controllers;
 
@@ -16,6 +18,7 @@ public sealed class CheckRecruiterController(CheckRecruiterFacade checks) : Cont
 
     [HttpPost("/CheckRecruiter")]
     [ValidateAntiForgeryToken]
+    [EnableRateLimiting(LoginRateLimiting.ExpensivePolicyName)]
     public async Task<IActionResult> Check(CheckRecruiterPageVm form, CancellationToken cancellationToken)
     {
         await LoadCompaniesAsync(cancellationToken);

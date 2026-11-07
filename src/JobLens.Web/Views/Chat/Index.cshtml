@@ -56,6 +56,7 @@
         </div>
 
         <form asp-controller="Chat" asp-action="Ask" method="post" id="ask-form" class="composer">
+            <div asp-validation-summary="ModelOnly" class="alert alert-error" role="alert"></div>
             <label asp-for="Question"></label>
             <textarea asp-for="Question" maxlength="500" rows="3" aria-describedby="Question-error char-count"></textarea>
             <span asp-validation-for="Question" class="field-error"></span>

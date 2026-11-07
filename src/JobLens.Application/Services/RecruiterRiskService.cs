@@ -93,9 +93,12 @@ public sealed class RecruiterRiskService(IScamQueryRepository repository, IRdapC
             matchedRule = true;
         }
 
-        if (reports.Count > 0)
+        var approvedAgeReports = reports
+            .Where(report => string.Equals(report.Status, "Approved", StringComparison.Ordinal))
+            .ToList();
+        if (approvedAgeReports.Count > 0)
         {
-            var youngest = reports.Min(report => report.DomainAgeDays);
+            var youngest = approvedAgeReports.Min(report => report.DomainAgeDays);
             if (youngest < 30)
             {
                 score += 20;

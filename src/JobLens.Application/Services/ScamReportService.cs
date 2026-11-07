@@ -1,3 +1,4 @@
+using System.Globalization;
 using JobLens.Application.Common;
 using JobLens.Application.Dtos;
 using JobLens.Application.Interfaces;
@@ -6,7 +7,10 @@ using JobLens.Domain.Entities;
 
 namespace JobLens.Application.Services;
 
-public sealed class ScamReportService(IScamReportRepository reports, ICompanyRepository companies)
+public sealed class ScamReportService(
+    IScamReportRepository reports,
+    ICompanyRepository companies,
+    IRecruiterRepository recruiters)
 {
     private static readonly HashSet<string> ScamTypes = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -25,10 +29,10 @@ public sealed class ScamReportService(IScamReportRepository reports, ICompanyRep
             return ServiceResult.Fail("You must be signed in to create a report.");
         }
 
-        var prepared = await TryPrepareAsync(form, null, cancellationToken);
+        var (prepared, error) = await TryPrepareAsync(form, null, cancellationToken);
         if (prepared is null)
         {
-            return ServiceResult.Fail(_error);
+            return ServiceResult.Fail(error);
         }
 
         var id = await reports.CreateAsync(
@@ -44,6 +48,18 @@ public sealed class ScamReportService(IScamReportRepository reports, ICompanyRep
             prepared.Description,
             actor.UserId,
             cancellationToken);
+
+        if (await recruiters.GetByEmailAsync(prepared.Email, cancellationToken) is null)
+        {
+            await recruiters.CreateAsync(
+                prepared.Email,
+                prepared.Domain,
+                prepared.CompanyId,
+                prepared.ReportedDate,
+                "",
+                cancellationToken);
+        }
+
         return ServiceResult.Ok(id);
     }
 
@@ -60,10 +76,10 @@ public sealed class ScamReportService(IScamReportRepository reports, ICompanyRep
             return ServiceResult.Fail(EditDeniedMessage(existing, actor));
         }
 
-        var prepared = await TryPrepareAsync(form, form.ReportId, cancellationToken);
+        var (prepared, error) = await TryPrepareAsync(form, form.ReportId, cancellationToken);
         if (prepared is null)
         {
-            return ServiceResult.Fail(_error);
+            return ServiceResult.Fail(error);
         }
 
         var updated = await reports.UpdateAsync(
@@ -140,9 +156,10 @@ public sealed class ScamReportService(IScamReportRepository reports, ICompanyRep
 
     public bool CanModerate(ActingUser? actor) => actor?.IsModerator == true;
 
-    private string _error = "";
-
-    private async Task<Prepared?> TryPrepareAsync(ScamReportFormVm form, int? excludeId, CancellationToken cancellationToken)
+    private async Task<(Prepared? Prepared, string Error)> TryPrepareAsync(
+        ScamReportFormVm form,
+        int? excludeId,
+        CancellationToken cancellationToken)
     {
         var email = (form.RecruiterEmail ?? "").Trim().ToLowerInvariant();
         var description = (form.Description ?? "").Trim();
@@ -150,62 +167,64 @@ public sealed class ScamReportService(IScamReportRepository reports, ICompanyRep
         var channel = Canonical(Channels, form.Channel);
         if (!FieldRules.IsEmail(email))
         {
-            _error = "Enter a valid recruiter email address.";
-            return null;
+            return (null, "Enter a valid recruiter email address.");
         }
 
         var domain = FieldRules.DomainOfEmail(email);
         if (domain.Length == 0)
         {
-            _error = "Enter a valid recruiter email address.";
-            return null;
+            return (null, "Enter a valid recruiter email address.");
         }
 
         if (scamType is null)
         {
-            _error = "Choose a scam type.";
-            return null;
+            return (null, "Choose a scam type.");
         }
 
         if (channel is null)
         {
-            _error = "Choose a channel.";
-            return null;
+            return (null, "Choose a channel.");
         }
 
         if (description.Length is < 20 or > 500)
         {
-            _error = "Description must be 20 to 500 characters.";
-            return null;
+            return (null, "Description must be 20 to 500 characters.");
         }
 
-        if (form.AmountRequestedUsd < 0 || form.DomainAgeDays < 0)
+        if (form.AmountRequestedUsd < 0 || form.AmountRequestedUsd > 1_000_000)
         {
-            _error = "Amount and domain age cannot be negative.";
-            return null;
+            return (null, "Amount must be between 0 and 1,000,000.");
+        }
+
+        if (form.DomainAgeDays < 0 || form.DomainAgeDays > 20_000)
+        {
+            return (null, "Domain age must be between 0 and 20,000 days.");
         }
 
         if (await companies.GetByIdAsync(form.CompanyId, cancellationToken) is null)
         {
-            _error = "Company not found.";
-            return null;
+            return (null, "Company not found.");
         }
 
         var reported = string.IsNullOrWhiteSpace(form.ReportedDate) ? FieldRules.Today() : form.ReportedDate.Trim();
         if (!FieldRules.IsDate(reported))
         {
-            _error = "Reported date must be yyyy-MM-dd.";
-            return null;
+            return (null, "Reported date must be yyyy-MM-dd.");
+        }
+
+        if (DateOnly.TryParseExact(reported, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var reportedDate)
+            && reportedDate > DateOnly.FromDateTime(DateTime.UtcNow))
+        {
+            return (null, "Reported date cannot be in the future.");
         }
 
         var duplicateId = await reports.FindDuplicateIdAsync(email, scamType, excludeId, cancellationToken);
         if (duplicateId is not null)
         {
-            _error = $"A report with this recruiter email and scam type already exists (report {duplicateId.Value}).";
-            return null;
+            return (null, $"A report with this recruiter email and scam type already exists (report {duplicateId.Value}).");
         }
 
-        return new Prepared(form.CompanyId, email, domain, scamType, channel, form.AmountRequestedUsd, form.DomainAgeDays, description, reported);
+        return (new Prepared(form.CompanyId, email, domain, scamType, channel, form.AmountRequestedUsd, form.DomainAgeDays, description, reported), "");
     }
 
     private async Task<ServiceResult> ChangeStatusAsync(
@@ -321,6 +340,12 @@ public sealed class ScamReportService(IScamReportRepository reports, ICompanyRep
             viewer?.UserId ?? 0,
             viewer?.IsModerator == true,
             cancellationToken);
+
+    public Task<IReadOnlyList<ScamReport>> GetApprovedByExactDomainAsync(
+        string domain,
+        int limit,
+        CancellationToken cancellationToken) =>
+        reports.GetApprovedByExactDomainAsync(domain, limit, cancellationToken);
 
     public Task<int> CountByStatusAsync(string status, CancellationToken cancellationToken) =>
         reports.CountByStatusAsync(status, cancellationToken);

@@ -8,13 +8,13 @@
     <partial name="_PageHeader" />
 </section>
 <section class="card">
+    <div asp-validation-summary="ModelOnly" class="alert alert-error" role="alert"></div>
     <div class="tab-list" role="tablist" aria-label="Offer input">
         <button class="btn btn-secondary" type="button" role="tab" aria-selected="@(string.IsNullOrEmpty(Model.UploadError) ? "true" : "false")" aria-controls="paste-panel" data-tab="paste-panel">Paste text</button>
         <button class="btn btn-secondary" type="button" role="tab" aria-selected="@(!string.IsNullOrEmpty(Model.UploadError) ? "true" : "false")" aria-controls="upload-panel" data-tab="upload-panel">Upload file</button>
     </div>
     <div id="paste-panel" role="tabpanel" hidden="@(!string.IsNullOrEmpty(Model.UploadError))">
         <form method="post" asp-action="Analyze">
-            <div asp-validation-summary="ModelOnly" class="alert alert-error" role="alert"></div>
             <div class="field">
                 <label asp-for="Text">Offer text</label>
                 <textarea asp-for="Text" maxlength="15000"></textarea>

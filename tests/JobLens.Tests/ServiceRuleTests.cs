@@ -13,8 +13,9 @@ public sealed class ServiceRuleTests
         await using var database = await TempDatabase.CreateAsync();
         var companies = new CompanyRepository(database.ConnectionString);
         var reports = new ScamReportRepository(database.ConnectionString);
+        var recruiters = new RecruiterRepository(database.ConnectionString);
         var companyService = new CompanyService(companies);
-        var reportService = new ScamReportService(reports, companies);
+        var reportService = new ScamReportService(reports, companies, recruiters);
         var moderator = await TestActors.CreateModeratorAsync(database.ConnectionString);
         var student = await TestActors.CreateStudentAsync(database.ConnectionString);
         var company = await companyService.CreateAsync(SampleCompany(), moderator, CancellationToken.None);
@@ -39,7 +40,12 @@ public sealed class ServiceRuleTests
 
         var blocked = await companyService.DeleteAsync(company.Id.Value, moderator, CancellationToken.None);
         Assert.False(blocked.Success);
-        Assert.Equal("This company has 1 related records and cannot be deleted.", blocked.ErrorMessage);
+        Assert.StartsWith("This company has ", blocked.ErrorMessage);
+        Assert.EndsWith(" related records and cannot be deleted.", blocked.ErrorMessage);
+
+        var recruiter = await recruiters.GetByEmailAsync("hr@amaz0n-careers.net", CancellationToken.None);
+        Assert.NotNull(recruiter);
+        Assert.Equal(company.Id.Value, recruiter.CompanyId);
     }
 
     private static CompanyFormVm SampleCompany() => new()

@@ -5,13 +5,18 @@ namespace JobLens.Web.Security;
 
 /// <summary>
 /// Protects /mcp when Mcp:AccessKey is set. Missing/wrong X-Api-Key returns 401.
+/// Outside Development, an empty AccessKey fails closed with 503.
 /// </summary>
 public sealed class McpAccessKeyMiddleware(RequestDelegate next)
 {
     public const string HeaderName = "X-Api-Key";
     public const string ConfigKey = "Mcp:AccessKey";
+    public const string UnavailableMessage = "MCP endpoint is not configured.";
 
-    public async Task InvokeAsync(HttpContext context, IConfiguration configuration)
+    public async Task InvokeAsync(
+        HttpContext context,
+        IConfiguration configuration,
+        IWebHostEnvironment environment)
     {
         if (!context.Request.Path.StartsWithSegments("/mcp"))
         {
@@ -22,7 +27,15 @@ public sealed class McpAccessKeyMiddleware(RequestDelegate next)
         var expected = configuration[ConfigKey];
         if (string.IsNullOrEmpty(expected))
         {
-            await next(context);
+            if (environment.IsDevelopment())
+            {
+                await next(context);
+                return;
+            }
+
+            context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+            context.Response.ContentType = "text/plain; charset=utf-8";
+            await context.Response.WriteAsync(UnavailableMessage);
             return;
         }
 

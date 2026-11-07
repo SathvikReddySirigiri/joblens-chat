@@ -1,6 +1,6 @@
 using JobLens.Application.Common;
-using JobLens.Application.Interfaces;
 using JobLens.Application.Dtos;
+using JobLens.Application.Interfaces;
 using JobLens.Domain.Entities;
 
 namespace JobLens.Application.Services;
@@ -16,10 +16,10 @@ public sealed class JobPostingService(IJobPostingRepository postings, ICompanyRe
             return ServiceResult.Fail(ModeratorOnlyMessage);
         }
 
-        var prepared = await TryPrepareAsync(form, cancellationToken);
+        var (prepared, error) = await TryPrepareAsync(form, cancellationToken);
         if (prepared is null)
         {
-            return ServiceResult.Fail(_error);
+            return ServiceResult.Fail(error);
         }
 
         var id = await postings.CreateAsync(
@@ -41,10 +41,10 @@ public sealed class JobPostingService(IJobPostingRepository postings, ICompanyRe
             return ServiceResult.Fail("Posting not found.");
         }
 
-        var prepared = await TryPrepareAsync(form, cancellationToken);
+        var (prepared, error) = await TryPrepareAsync(form, cancellationToken);
         if (prepared is null)
         {
-            return ServiceResult.Fail(_error);
+            return ServiceResult.Fail(error);
         }
 
         var updated = await postings.UpdateAsync(
@@ -65,9 +65,9 @@ public sealed class JobPostingService(IJobPostingRepository postings, ICompanyRe
         return deleted ? ServiceResult.Ok(postingId) : ServiceResult.Fail("Posting not found.");
     }
 
-    private string _error = "";
-
-    private async Task<Prepared?> TryPrepareAsync(JobPostingFormVm form, CancellationToken cancellationToken)
+    private async Task<(Prepared? Prepared, string Error)> TryPrepareAsync(
+        JobPostingFormVm form,
+        CancellationToken cancellationToken)
     {
         var title = form.Title?.Trim() ?? "";
         var location = form.Location?.Trim() ?? "";
@@ -76,26 +76,22 @@ public sealed class JobPostingService(IJobPostingRepository postings, ICompanyRe
         var posted = string.IsNullOrWhiteSpace(form.PostedDate) ? FieldRules.Today() : form.PostedDate.Trim();
         if (title.Length is 0 or > 120 || location.Length is 0 or > 120)
         {
-            _error = "Title and location are required.";
-            return null;
+            return (null, "Title and location are required.");
         }
 
         if (state.Length != 2)
         {
-            _error = "State must be a 2-letter code.";
-            return null;
+            return (null, "State must be a 2-letter code.");
         }
 
         if (description.Length is < 20 or > 2000)
         {
-            _error = "Description must be 20 to 2000 characters.";
-            return null;
+            return (null, "Description must be 20 to 2000 characters.");
         }
 
         if (!FieldRules.IsDate(posted))
         {
-            _error = "Posted date must be yyyy-MM-dd.";
-            return null;
+            return (null, "Posted date must be yyyy-MM-dd.");
         }
 
         double? pay;
@@ -103,16 +99,14 @@ public sealed class JobPostingService(IJobPostingRepository postings, ICompanyRe
         {
             if (form.PayRatePerHour is null or < 0)
             {
-                _error = "A paid posting needs a pay rate of zero or more.";
-                return null;
+                return (null, "A paid posting needs a pay rate of zero or more.");
             }
 
             pay = form.PayRatePerHour;
         }
         else if (form.PayRatePerHour is > 0)
         {
-            _error = "An unpaid posting cannot include a pay rate. Leave it empty or zero.";
-            return null;
+            return (null, "An unpaid posting cannot include a pay rate. Leave it empty or zero.");
         }
         else
         {
@@ -121,11 +115,10 @@ public sealed class JobPostingService(IJobPostingRepository postings, ICompanyRe
 
         if (await companies.GetByIdAsync(form.CompanyId, cancellationToken) is null)
         {
-            _error = "Company not found.";
-            return null;
+            return (null, "Company not found.");
         }
 
-        return new Prepared(form.CompanyId, title, location, state, form.IsRemote, form.IsPaid, pay, description, posted);
+        return (new Prepared(form.CompanyId, title, location, state, form.IsRemote, form.IsPaid, pay, description, posted), "");
     }
 
     private sealed record Prepared(
@@ -144,5 +137,4 @@ public sealed class JobPostingService(IJobPostingRepository postings, ICompanyRe
 
     public Task<JobPosting?> GetByIdAsync(int postingId, CancellationToken cancellationToken) =>
         postings.GetByIdAsync(postingId, cancellationToken);
-
 }

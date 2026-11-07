@@ -1,6 +1,8 @@
 using JobLens.Application.Dtos;
 using JobLens.Application.Services;
+using JobLens.Web.Security;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace JobLens.Web.Controllers;
 
@@ -11,6 +13,7 @@ public sealed class OfferAnalyzerController(OfferAnalyzerService analyzer) : Con
 
     [HttpPost("/OfferAnalyzer")]
     [ValidateAntiForgeryToken]
+    [EnableRateLimiting(LoginRateLimiting.ExpensivePolicyName)]
     public async Task<IActionResult> Analyze(OfferAnalyzerPageVm form, CancellationToken cancellationToken)
     {
         var text = form.Text?.Trim() ?? "";
@@ -28,6 +31,7 @@ public sealed class OfferAnalyzerController(OfferAnalyzerService analyzer) : Con
     [HttpPost("/OfferAnalyzer/Upload")]
     [ValidateAntiForgeryToken]
     [RequestSizeLimit(2_200_000)]
+    [EnableRateLimiting(LoginRateLimiting.ExpensivePolicyName)]
     public async Task<IActionResult> Upload(IFormFile? file, CancellationToken cancellationToken)
     {
         var page = new OfferAnalyzerPageVm();
