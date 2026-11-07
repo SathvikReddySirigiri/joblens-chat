@@ -26,6 +26,10 @@ public sealed class ChatOrchestrator(IConfiguration configuration, ILogger<ChatO
            Describe reports as 'reported scams that impersonate <Company>', not as the company committing fraud.
         5. Be concise: short paragraphs or bullets, include key numbers, dates, domains, and verdicts from the tool output.
         6. If the question is outside job-scam data, say what you can help with instead.
+        7. The tool lookup_domain_registration returns LIVE external data from RDAP. When you use it, say the information comes from a live public domain registry lookup, not from JobLens reports. Scam-report facts must still come only from the database tools.
+        8. Do not declare a company, domain, or recruiter 'legitimate' or 'safe' based on domain age or a low risk score alone.
+           Describe these as signals (e.g., 'long-established domain — a positive sign') and remind users to verify through the
+           company's official careers page.
         """;
 
     private static readonly Regex EmailPattern = new(
@@ -301,7 +305,13 @@ public sealed class ChatOrchestrator(IConfiguration configuration, ILogger<ChatO
         }
         else if (TryFindDomain(text, out var domain))
         {
-            name = "get_domain_report";
+            var asksRegistration = text.Contains("registered", StringComparison.Ordinal)
+                || text.Contains("registration", StringComparison.Ordinal)
+                || text.Contains("how old", StringComparison.Ordinal)
+                || text.Contains("domain age", StringComparison.Ordinal)
+                || text.Contains("created", StringComparison.Ordinal)
+                || text.Contains("registrar", StringComparison.Ordinal);
+            name = asksRegistration ? "lookup_domain_registration" : "get_domain_report";
             arguments = new Dictionary<string, object?> { ["domain"] = domain };
         }
         else if (text.Contains("top", StringComparison.Ordinal)

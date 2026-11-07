@@ -14,6 +14,14 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.Name = ".JobLens.Session";
 });
+builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient<RdapService>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(20);
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("JobLensChat/1.0 (ISM6225 class project)");
+    client.DefaultRequestHeaders.Accept.ParseAdd("application/rdap+json");
+    client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+});
 builder.Services.AddSingleton<ScamRepository>();
 builder.Services.AddSingleton<RecruiterRiskService>();
 builder.Services.AddScoped<ChatOrchestrator>();

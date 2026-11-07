@@ -6,4 +6,5 @@ public sealed record DataCheckViewModel(
     IReadOnlyList<CompanyRanking> TopCompanies,
     ScamSummary Summary,
     IReadOnlyList<ScamReport> AmazonLookalikeReports,
-    IReadOnlyList<RecruiterRiskResult> RiskChecks);
+    IReadOnlyList<RecruiterRiskResult> RiskChecks,
+    IReadOnlyList<RdapResult> RdapLookups);

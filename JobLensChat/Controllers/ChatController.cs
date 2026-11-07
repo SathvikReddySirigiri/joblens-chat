@@ -19,6 +19,7 @@ public sealed class ChatController(ChatOrchestrator orchestrator, ILogger<ChatCo
         "summarize_scams",
         "top_impersonated_companies",
         "check_recruiter_email",
+        "lookup_domain_registration",
     ];
 
     private static readonly string[] Samples =
@@ -29,6 +30,7 @@ public sealed class ChatController(ChatOrchestrator orchestrator, ILogger<ChatCo
         "Give me a summary of all scam reports.",
         "Show approved Equipment purchase scams since September.",
         "Has safe-company-example.com been reported?",
+        "When was google.com registered, and how old is the domain?",
     ];
 
     [HttpGet]
