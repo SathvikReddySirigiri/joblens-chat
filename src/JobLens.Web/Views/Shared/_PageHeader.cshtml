@@ -1,0 +1,11 @@
+@{
+    var title = ViewData["PageTitle"] as string ?? ViewData["Title"] as string ?? "";
+    var subtitle = ViewData["PageSubtitle"] as string;
+}
+<div class="page-heading">
+    <h1>@title</h1>
+    @if (!string.IsNullOrWhiteSpace(subtitle))
+    {
+        <p class="help">@subtitle</p>
+    }
+</div>

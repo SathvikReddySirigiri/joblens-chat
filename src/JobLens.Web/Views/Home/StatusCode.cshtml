@@ -1,0 +1,15 @@
+@model int
+@{
+    ViewData["Title"] = $"HTTP {Model}";
+    ViewData["PageTitle"] = $"HTTP {Model}";
+    ViewData["PageSubtitle"] = "The server could not complete that request.";
+}
+<section class="page-header">
+    <partial name="_PageHeader" />
+</section>
+<section class="card">
+    <p>Return to the home page and try another path.</p>
+    <p class="form-actions">
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Back to home</a>
+    </p>
+</section>

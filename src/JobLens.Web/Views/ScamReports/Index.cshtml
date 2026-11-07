@@ -12,12 +12,12 @@
         return Url.Action("Index", new { search = ViewBag.Search, status = ViewBag.Status, scamType = ViewBag.ScamType, channel = ViewBag.Channel, company = ViewBag.Company, sort = column, dir = next }) ?? "#";
     }
 }
-<partial name="_Alerts" />
+@{
+    ViewData["PageTitle"] = "Scam reports";
+    ViewData["PageSubtitle"] = "Review synthetic reports of recruiters impersonating real companies.";
+}
 <section class="page-header">
-    <div class="page-heading">
-        <h1>Scam reports</h1>
-        <p class="help">Review synthetic reports of recruiters impersonating real companies.</p>
-    </div>
+    <partial name="_PageHeader" />
     <div class="header-actions">
         <a class="btn btn-secondary" asp-controller="Dashboard" asp-action="Index">View dashboard</a>
         @if (ViewBag.IsSignedIn == true)

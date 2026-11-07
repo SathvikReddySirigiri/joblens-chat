@@ -3,8 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@ViewData["Title"] · JobLens Chat</title>
-    <meta name="description" content="JobLens Chat helps university career-center staff and students ask questions about job and internship scams, with answers grounded in synthetic report data." />
+    <title>@ViewData["Title"] · JobLens</title>
+    <meta name="description" content="JobLens helps university career-center staff and students verify recruiters and explore synthetic job-scam reports with answers grounded in data." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%233B82F6'/%3E%3Cpath d='M32 10 L48 18 V34 C48 44 40 52 32 56 C24 52 16 44 16 34 V18 Z' fill='%23FFFFFF'/%3E%3Cpath d='M26 32 L30 36 L40 24' stroke='%233B82F6' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -13,22 +14,24 @@
 <body>
     @{
         var controller = ViewContext.RouteData.Values["controller"]?.ToString();
-    }
-    @{
+        var action = ViewContext.RouteData.Values["action"]?.ToString();
         var checkSection = controller is "CheckRecruiter" or "OfferAnalyzer";
         var dataSection = controller is "ScamReports" or "Companies" or "Recruiters" or "JobPostings" or "InterviewReviews";
+        var aboutSection = controller is "About";
+        var year = DateTime.UtcNow.Year;
     }
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header">
         <div class="container navbar">
-            <a class="brand" asp-controller="Home" asp-action="Index">🛡️ JobLens Chat</a>
+            <a class="brand" asp-controller="Home" asp-action="Index">JobLens</a>
             <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
             <nav id="site-nav" class="site-nav" aria-label="Main">
                 <ul class="nav-links">
                     <li>
-                        <a class="nav-link @(controller == "Home" ? "active" : null)"
+                        <a class="nav-link @(controller == "Home" && action == "Index" ? "active" : null)"
                            asp-controller="Home"
                            asp-action="Index"
-                           aria-current="@(controller == "Home" ? "page" : null)">Home</a>
+                           aria-current="@(controller == "Home" && action == "Index" ? "page" : null)">Home</a>
                     </li>
                     <li class="nav-item" data-dropdown>
                         <button class="nav-link @(checkSection ? "active" : null)" type="button" data-dropdown-button aria-expanded="false" aria-controls="check-menu">Check</button>
@@ -59,8 +62,12 @@
                            asp-action="Index"
                            aria-current="@(controller == "Chat" ? "page" : null)">Chat</a>
                     </li>
-                    <li>
-                        <a class="nav-link" asp-controller="Home" asp-action="Index" asp-fragment="about">About</a>
+                    <li class="nav-item" data-dropdown>
+                        <button class="nav-link @(aboutSection ? "active" : null)" type="button" data-dropdown-button aria-expanded="false" aria-controls="about-menu">About</button>
+                        <div id="about-menu" class="dropdown-panel" data-dropdown-panel hidden>
+                            <a class="nav-link @(controller == "About" && action == "Index" ? "active" : null)" asp-controller="About" asp-action="Index">About Us</a>
+                            <a class="nav-link @(controller == "About" && action == "Architecture" ? "active" : null)" asp-controller="About" asp-action="Architecture">Architecture</a>
+                        </div>
                     </li>
                 </ul>
                 <div class="nav-auth">
@@ -90,13 +97,23 @@
             </nav>
         </div>
     </header>
-    <main class="container">
-        <partial name="_Alerts" />
+    <main id="main-content" class="container" tabindex="-1">
+        <div aria-live="polite">
+            <partial name="_Alerts" />
+        </div>
         @RenderBody()
     </main>
     <footer class="site-footer">
-        <div class="container">
-            <p>JobLens Chat · ISM 6225 · App Dev for Analytics · C# MVC + MCP + SQLite · Synthetic data only</p>
+        <div class="container footer-grid">
+            <p class="footer-product">JobLens — verify the recruiter, not just the job.</p>
+            <nav class="footer-links" aria-label="Footer">
+                <a asp-controller="About" asp-action="Index">About</a>
+                <a asp-controller="About" asp-action="Architecture">Architecture</a>
+                <a href="https://github.com/SathvikReddySirigiri/joblens-chat" target="_blank" rel="noopener">GitHub repo</a>
+                <a href="https://github.com/SathvikReddySirigiri/joblens-chat/blob/main/docs/DOCUMENTATION.md" target="_blank" rel="noopener">Documentation</a>
+            </nav>
+            <p>ISM 6225 · App Dev for Analytics · @year</p>
+            <p class="footer-disclaimer">Synthetic data — not legal advice.</p>
         </div>
     </footer>
     <script src="~/js/site.js" asp-append-version="true"></script>

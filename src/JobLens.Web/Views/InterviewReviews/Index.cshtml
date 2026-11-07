@@ -8,15 +8,17 @@
     var companies = ViewBag.Companies as IReadOnlyList<Company> ?? Array.Empty<Company>();
     var legit = ViewBag.Legit as bool?;
 }
-<partial name="_Alerts" />
+@{
+    ViewData["PageTitle"] = "Interview reviews";
+    ViewData["PageSubtitle"] = "Student notes on whether an interview felt legitimate.";
+}
 <section class="page-header">
-    <div class="page-heading">
-        <h1>Interview reviews</h1>
-        <p class="help">Student notes on whether an interview felt legitimate.</p>
-    </div>
+    <partial name="_PageHeader" />
     @if (ViewBag.IsSignedIn == true)
     {
-        <a class="btn btn-primary" asp-action="Create">Add new</a>
+        <div class="header-actions">
+            <a class="btn btn-primary" asp-action="Create">Add new</a>
+        </div>
     }
 </section>
 <section class="card">

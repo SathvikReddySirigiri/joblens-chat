@@ -7,15 +7,17 @@
     ViewData["PagerTotal"] = page.Total;
     var companies = ViewBag.Companies as IReadOnlyList<Company> ?? Array.Empty<Company>();
 }
-<partial name="_Alerts" />
+@{
+    ViewData["PageTitle"] = "Recruiters";
+    ViewData["PageSubtitle"] = "Email addresses seen in reports, plus known official-domain contacts.";
+}
 <section class="page-header">
-    <div class="page-heading">
-        <h1>Recruiters</h1>
-        <p class="help">Email addresses seen in reports, plus known official-domain contacts.</p>
-    </div>
+    <partial name="_PageHeader" />
     @if (ViewBag.IsModerator == true)
     {
-        <a class="btn btn-primary" asp-action="Create">Add new</a>
+        <div class="header-actions">
+            <a class="btn btn-primary" asp-action="Create">Add new</a>
+        </div>
     }
 </section>
 <section class="card">

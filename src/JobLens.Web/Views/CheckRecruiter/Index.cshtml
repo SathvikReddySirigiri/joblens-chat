@@ -1,6 +1,6 @@
 @model CheckRecruiterPageVm
 @{
-    ViewData["Title"] = "Check recruiter";
+    ViewData["Title"] = "Check Recruiter";
     var companies = ViewBag.Companies as IReadOnlyList<Company> ?? Array.Empty<Company>();
     var result = Model.Result;
     string Mark(string tone) => tone switch
@@ -10,9 +10,12 @@
         _ => "ℹ",
     };
 }
+@{
+    ViewData["PageTitle"] = "Check recruiter";
+    ViewData["PageSubtitle"] = "Score one recruiter email against official domains, look-alikes, and approved reports.";
+}
 <section class="page-header">
-    <h1>Check recruiter</h1>
-    <p class="help">Score one recruiter email against official domains, look-alikes, and approved reports.</p>
+    <partial name="_PageHeader" />
 </section>
 <section class="card">
     <form method="post" asp-action="Check">
