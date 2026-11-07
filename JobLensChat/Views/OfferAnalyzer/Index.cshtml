@@ -1,10 +1,91 @@
+@model OfferAnalyzerPageVm
 @{
     ViewData["Title"] = "Offer analyzer";
 }
 <section class="page-header">
     <h1>Offer analyzer</h1>
-    <p class="help">This check arrives in Phase 8.</p>
+    <p class="help">Paste an offer or upload a PDF or Word file. The text is redacted in memory and is not saved.</p>
 </section>
 <section class="card">
-    <p>Offer analysis is not available yet.</p>
+    <div class="tab-list" role="tablist" aria-label="Offer input">
+        <button class="btn btn-secondary" type="button" role="tab" aria-selected="@(string.IsNullOrEmpty(Model.UploadError) ? "true" : "false")" aria-controls="paste-panel" data-tab="paste-panel">Paste text</button>
+        <button class="btn btn-secondary" type="button" role="tab" aria-selected="@(!string.IsNullOrEmpty(Model.UploadError) ? "true" : "false")" aria-controls="upload-panel" data-tab="upload-panel">Upload file</button>
+    </div>
+    <div id="paste-panel" role="tabpanel" hidden="@(!string.IsNullOrEmpty(Model.UploadError))">
+        <form method="post" asp-action="Analyze">
+            <div asp-validation-summary="ModelOnly" class="alert alert-error" role="alert"></div>
+            <div class="field">
+                <label asp-for="Text">Offer text</label>
+                <textarea asp-for="Text" maxlength="15000"></textarea>
+                <p class="help">100 to 15,000 characters.</p>
+                <span asp-validation-for="Text" class="field-error"></span>
+            </div>
+            <button class="btn btn-primary" type="submit">Analyze text</button>
+        </form>
+    </div>
+    <div id="upload-panel" role="tabpanel" hidden="@(string.IsNullOrEmpty(Model.UploadError))">
+        <form method="post" asp-action="Upload" enctype="multipart/form-data">
+            @if (!string.IsNullOrEmpty(Model.UploadError))
+            {
+                <p class="alert alert-error" role="alert">@Model.UploadError</p>
+            }
+            <div class="field">
+                <label for="file">PDF or Word file</label>
+                <input id="file" name="file" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                <p class="help">2 MB or smaller. The file is read in memory and not saved.</p>
+            </div>
+            <button class="btn btn-primary" type="submit">Analyze file</button>
+        </form>
+    </div>
 </section>
+@if (Model.Result is { } result)
+{
+    <section class="card verdict-card">
+        <h2>Verdict</h2>
+        <p><partial name="_VerdictBadge" model="result.Verdict" /></p>
+        <p class="score-label">@result.RiskScore / 100</p>
+        <meter class="score-meter" min="0" max="100" value="@result.RiskScore" aria-label="Offer risk score out of 100">@result.RiskScore</meter>
+        <p class="help">@result.Mode</p>
+    </section>
+    <section class="card">
+        <h2>Red flags</h2>
+        @if (result.RedFlags.Count == 0)
+        {
+            <p>No red flags were returned.</p>
+        }
+        else
+        {
+            <ul class="reason-list">
+                @foreach (var flag in result.RedFlags)
+                {
+                    <li>
+                        <strong>@flag.Flag</strong> (@flag.Severity)
+                        <blockquote><mark>@flag.Evidence</mark></blockquote>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+    <section class="card">
+        <h2>Risky clauses</h2>
+        @if (result.RiskyClauses.Count == 0)
+        {
+            <p>No clauses were called out.</p>
+        }
+        else
+        {
+            <ul>
+                @foreach (var clause in result.RiskyClauses)
+                {
+                    <li><strong>@clause.Clause</strong> — @clause.Explanation</li>
+                }
+            </ul>
+        }
+    </section>
+    <section class="card">
+        <h2>Summary</h2>
+        <p>@result.Summary</p>
+        <p><a class="btn btn-primary" asp-controller="ScamReports" asp-action="Create">Report as scam</a></p>
+        <p class="help">Your text was redacted and not stored.</p>
+    </section>
+}

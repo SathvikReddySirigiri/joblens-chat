@@ -185,3 +185,37 @@
         </tbody>
     </table>
 </section>
+
+<section class="card">
+    <h2>RDAP live lookup</h2>
+    <p class="help">Public registry data. These rows are not stored in the JobLens database.</p>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th scope="col">Domain</th>
+                <th scope="col">Found</th>
+                <th scope="col">Registered</th>
+                <th scope="col">Age (days)</th>
+                <th scope="col">Registrar</th>
+                <th scope="col">Expires</th>
+                <th scope="col">Status</th>
+                <th scope="col">Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var lookup in Model.RdapLookups)
+            {
+                <tr>
+                    <td>@lookup.Domain</td>
+                    <td>@(lookup.Found ? "Yes" : "No")</td>
+                    <td>@lookup.RegistrationDate</td>
+                    <td>@lookup.DomainAgeDays</td>
+                    <td>@lookup.Registrar</td>
+                    <td>@lookup.ExpirationDate</td>
+                    <td>@string.Join(", ", lookup.Status)</td>
+                    <td>@lookup.Message</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

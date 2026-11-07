@@ -8,7 +8,8 @@ namespace JobLensChat.Controllers;
 public sealed class JobPostingsController(
     JobPostingService postings,
     JobPostingRepository repository,
-    CompanyRepository companies) : Controller
+    CompanyRepository companies,
+    SmartSearchService smartSearch) : Controller
 {
     [HttpGet]
     public async Task<IActionResult> Index(
@@ -17,17 +18,55 @@ public sealed class JobPostingsController(
         bool? remote,
         bool? paid,
         string? state,
+        double? minPay,
+        bool exclude = false,
+        string? q = null,
+        bool asked = false,
         int page = 1,
         CancellationToken cancellationToken = default)
     {
-        ViewBag.Page = await repository.BrowseAsync(search, company, remote, paid, state, page, cancellationToken);
-        ViewBag.Companies = await companies.GetAllAsync(cancellationToken);
+        var companyList = await companies.GetAllAsync(cancellationToken);
+        var selected = companyList.FirstOrDefault(item => item.CompanyId == company);
+        var filter = new Models.SearchFilter(search, company, selected?.Name, state, remote, paid, minPay, exclude);
+        ViewBag.Page = await repository.SearchPageAsync(filter, page, cancellationToken);
+        ViewBag.Companies = companyList;
         ViewBag.Search = search;
         ViewBag.Company = company;
         ViewBag.Remote = remote;
         ViewBag.Paid = paid;
         ViewBag.State = state;
+        ViewBag.MinPay = minPay;
+        ViewBag.Exclude = exclude;
+        ViewBag.Question = q;
+        ViewBag.Asked = asked;
+        ViewBag.Filter = filter;
         return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Ask(string? q, CancellationToken cancellationToken)
+    {
+        var question = q?.Trim() ?? "";
+        if (question.Length is 0 or > 200)
+        {
+            TempData["Error"] = "Enter a plain-English search of 200 characters or fewer.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var filter = await smartSearch.InterpretAsync(question, cancellationToken);
+        return RedirectToAction(nameof(Index), new
+        {
+            search = filter.Keyword,
+            company = filter.CompanyId,
+            remote = filter.IsRemote,
+            paid = filter.IsPaid,
+            state = filter.State,
+            minPay = filter.MinPayPerHour,
+            exclude = filter.ExcludeCompaniesWithApprovedReports,
+            q = question,
+            asked = true,
+        });
     }
 
     [HttpGet]

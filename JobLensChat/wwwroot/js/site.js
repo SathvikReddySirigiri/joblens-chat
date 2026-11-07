@@ -116,4 +116,17 @@
         field.addEventListener("input", update);
         update();
     });
+
+    document.querySelectorAll("[data-tab]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            var target = document.getElementById(button.getAttribute("data-tab"));
+            document.querySelectorAll("[data-tab]").forEach(function (other) {
+                var selected = other === button;
+                other.setAttribute("aria-selected", selected ? "true" : "false");
+            });
+            document.querySelectorAll("[role='tabpanel']").forEach(function (panel) {
+                panel.hidden = target ? panel !== target : false;
+            });
+        });
+    });
 })();

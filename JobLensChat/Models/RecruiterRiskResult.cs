@@ -8,4 +8,6 @@ public sealed record RecruiterRiskResult(
     string? MatchedCompany,
     string? OfficialDomain,
     int ApprovedReportCount,
-    IReadOnlyList<string> Reasons);
+    IReadOnlyList<RiskReason> Reasons,
+    RdapResult? Rdap = null,
+    EdgarResult? Edgar = null);

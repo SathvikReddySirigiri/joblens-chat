@@ -21,19 +21,22 @@ public sealed class DataCheckController : Controller
     private readonly IWebHostEnvironment _environment;
     private readonly IConfiguration _configuration;
     private readonly ILogger<DataCheckController> _logger;
+    private readonly RdapService _rdap;
 
     public DataCheckController(
         ScamRepository repository,
         RecruiterRiskService riskService,
         IWebHostEnvironment environment,
         IConfiguration configuration,
-        ILogger<DataCheckController> logger)
+        ILogger<DataCheckController> logger,
+        RdapService rdap)
     {
         _repository = repository;
         _riskService = riskService;
         _environment = environment;
         _configuration = configuration;
         _logger = logger;
+        _rdap = rdap;
     }
 
     [HttpGet("/DataCheck")]
@@ -56,7 +59,11 @@ public sealed class DataCheckController : Controller
             await _repository.TopImpersonatedCompaniesAsync(5, null, cancellationToken),
             await _repository.SummarizeAsync(null, null, cancellationToken),
             await _repository.GetReportsByDomainAsync("amaz0n-careers.net", cancellationToken),
-            risks);
+            risks,
+            [
+                await _rdap.LookupAsync("google.com", cancellationToken),
+                await _rdap.LookupAsync("amaz0n-careers.net", cancellationToken),
+            ]);
 
         return View(model);
     }
