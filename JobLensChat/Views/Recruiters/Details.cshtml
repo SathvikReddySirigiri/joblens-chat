@@ -1,0 +1,29 @@
+@model Recruiter
+@{
+    ViewData["Title"] = Model.Email;
+    var verified = !string.IsNullOrEmpty(Model.CompanyOfficialDomain)
+        && string.Equals(Model.Domain, Model.CompanyOfficialDomain, StringComparison.OrdinalIgnoreCase);
+}
+<partial name="_Alerts" />
+<section class="page-header">
+    <div class="page-heading">
+        <h1>@Model.Email</h1>
+        <p class="help">Domain @Model.Domain · first seen @Model.FirstSeen</p>
+    </div>
+    <div class="form-actions">
+        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.RecruiterId">Edit</a>
+        <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.RecruiterId">Delete</a>
+    </div>
+</section>
+<section class="card">
+    @if (verified)
+    {
+        <p><span class="badge-low">Verified official domain</span></p>
+    }
+    <dl class="detail-list">
+        <div><dt>Company</dt><dd>@(Model.CompanyName ?? "None")</dd></div>
+        <div><dt>Reports</dt><dd>@Model.ReportCount</dd></div>
+        <div><dt>Notes</dt><dd>@(string.IsNullOrWhiteSpace(Model.Notes) ? "None" : Model.Notes)</dd></div>
+    </dl>
+    <p><a class="btn btn-secondary" asp-controller="ScamReports" asp-action="Index" asp-route-search="@Model.Email">Reports for this email</a></p>
+</section>

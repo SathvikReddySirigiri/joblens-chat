@@ -1,0 +1,31 @@
+@model CompanyFormVm
+<div asp-validation-summary="ModelOnly" class="alert alert-error" role="alert"></div>
+<input type="hidden" asp-for="CompanyId" />
+<div class="field">
+    <label asp-for="Name">Name</label>
+    <input asp-for="Name" />
+    <span asp-validation-for="Name" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="OfficialDomain">Official domain</label>
+    <input asp-for="OfficialDomain" placeholder="amazon.com" />
+    <p class="help">Saved as a lowercase domain, without http or www.</p>
+    <span asp-validation-for="OfficialDomain" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="Industry">Industry</label>
+    <select asp-for="Industry">
+        <option value="">Choose an industry</option>
+        @foreach (var industry in Catalog.Industries)
+        {
+            <option value="@industry">@industry</option>
+        }
+    </select>
+    <span asp-validation-for="Industry" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="HqState">Headquarters state</label>
+    <input asp-for="HqState" maxlength="2" />
+    <p class="help">Two letters, such as FL.</p>
+    <span asp-validation-for="HqState" class="field-error"></span>
+</div>

@@ -1,0 +1,17 @@
+@model JobPosting
+@{
+    ViewData["Title"] = "Delete job posting";
+}
+<partial name="_Alerts" />
+<section class="page-header">
+    <h1>Delete this posting?</h1>
+    <p class="help">@Model.Title · @Model.CompanyName · @Model.PostedDate. This cannot be undone.</p>
+</section>
+<section class="card">
+    <form method="post" asp-action="DeleteConfirmed" asp-route-id="@Model.PostingId">
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Delete posting</button>
+            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.PostingId">Cancel</a>
+        </div>
+    </form>
+</section>

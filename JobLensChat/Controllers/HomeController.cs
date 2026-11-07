@@ -1,14 +1,15 @@
 using System.Diagnostics;
+using JobLensChat.Data;
 using JobLensChat.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JobLensChat.Controllers;
 
-public class HomeController : Controller
+public sealed class HomeController(ScamRepository repository) : Controller
 {
-    public IActionResult Index()
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        return View();
+        return View(await repository.GetCountsAsync(cancellationToken));
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

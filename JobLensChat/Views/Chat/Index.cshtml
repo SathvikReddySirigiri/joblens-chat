@@ -8,6 +8,10 @@
         ["summarize_scams"] = "Totals, averages, and counts for scam reports.",
         ["top_impersonated_companies"] = "Companies ranked by approved impersonation reports.",
         ["check_recruiter_email"] = "Risk score for one recruiter email address.",
+        ["lookup_domain_registration"] = "Registration date, age, and registrar (live external).",
+        ["search_jobs"] = "Filtered search of job postings, including impersonation flags.",
+        ["get_company_profile"] = "Domain, postings, ratings, and scam reports for one company.",
+        ["analyze_offer"] = "Red-flag check of pasted offer text. The text is not stored.",
     };
 }
 
@@ -90,10 +94,7 @@
             <button type="submit" class="btn btn-secondary">Clear conversation</button>
         </form>
 
-        <p class="help">Answers about scam data come only from MCP tools over our SQLite database (synthetic data).</p>
+        <p class="help">Scam-report answers come from MCP tools over our SQLite database. Offer text is analyzed as data and is not stored.</p>
     </aside>
 </div>
 
-@section Scripts {
-    <script src="~/js/site.js" asp-append-version="true"></script>
-}

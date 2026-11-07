@@ -1,0 +1,23 @@
+@model InterviewReview
+@{
+    ViewData["Title"] = Model.Role;
+}
+<partial name="_Alerts" />
+<section class="page-header">
+    <div class="page-heading">
+        <h1>@Model.Role</h1>
+        <p class="help">@Model.CompanyName · @Model.ReviewDate</p>
+    </div>
+    <div class="form-actions">
+        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.ReviewId">Edit</a>
+        <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.ReviewId">Delete</a>
+    </div>
+</section>
+<section class="card">
+    <p><partial name="_Stars" model="Model.Rating" /></p>
+    <dl class="detail-list">
+        <div><dt>Company</dt><dd><a asp-controller="Companies" asp-action="Details" asp-route-id="@Model.CompanyId">@Model.CompanyName</a></dd></div>
+        <div><dt>Legitimate</dt><dd>@(Model.WasLegit ? "Yes" : "No")</dd></div>
+        <div><dt>Experience</dt><dd>@Model.Experience</dd></div>
+    </dl>
+</section>

@@ -7,7 +7,7 @@ public sealed class ScamRepository
 {
     private const string ReportSelect = """
         SELECT r.ReportId, r.CompanyId, c.Name, r.RecruiterEmail, r.Domain, r.ScamType, r.Channel,
-               r.AmountRequestedUsd, r.DomainAgeDays, r.Status, r.ReportedDate
+               r.AmountRequestedUsd, r.DomainAgeDays, r.Status, r.ReportedDate, r.Description
         FROM ScamReports r
         INNER JOIN Companies c ON c.CompanyId = r.CompanyId
         """;
@@ -213,7 +213,12 @@ public sealed class ScamRepository
                 (SELECT COUNT(*) FROM ScamReports),
                 (SELECT COUNT(*) FROM ScamReports WHERE Status = 'Approved'),
                 (SELECT COUNT(*) FROM ScamReports WHERE Status = 'Pending'),
-                (SELECT COUNT(*) FROM ScamReports WHERE Status = 'Rejected');
+                (SELECT COUNT(*) FROM ScamReports WHERE Status = 'Rejected'),
+                (SELECT COUNT(*) FROM JobPostings),
+                (SELECT COUNT(*) FROM InterviewReviews),
+                (SELECT COUNT(*) FROM CheckLogs),
+                (SELECT COUNT(*) FROM Recruiters),
+                (SELECT COUNT(*) FROM Users);
             """;
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
         await reader.ReadAsync(cancellationToken);
@@ -222,7 +227,12 @@ public sealed class ScamRepository
             reader.GetInt32(1),
             reader.GetInt32(2),
             reader.GetInt32(3),
-            reader.GetInt32(4));
+            reader.GetInt32(4),
+            reader.GetInt32(5),
+            reader.GetInt32(6),
+            reader.GetInt32(7),
+            reader.GetInt32(8),
+            reader.GetInt32(9));
     }
 
     private async Task<IReadOnlyList<CategoryCount>> ReadCategoriesAsync(
@@ -278,7 +288,8 @@ public sealed class ScamRepository
                 reader.GetDouble(7),
                 reader.GetInt32(8),
                 reader.GetString(9),
-                reader.GetString(10)));
+                reader.GetString(10),
+                reader.GetString(11)));
         }
 
         return reports;

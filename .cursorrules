@@ -5,14 +5,17 @@ Microsoft.Extensions.AI 10.10.0, Microsoft.Extensions.AI.OpenAI 10.10.0, OpenAI 
 Do NOT use Entity Framework. Use ADO.NET with Microsoft.Data.Sqlite.
 
 Domain: job/internship scam intelligence for university career centers (synthetic data only).
-Tables: Companies (PK CompanyId) and ScamReports (PK ReportId, FK CompanyId → Companies).
+Tables: Companies (PK CompanyId), ScamReports (PK ReportId, FK CompanyId → Companies), JobPostings, InterviewReviews, CheckLogs.
 
 Architecture rules:
 - Request flow: Browser → MVC Controller → ChatOrchestrator → MCP client → HTTP /mcp → MCP tools → Repository → SQLite.
 - No SQL in controllers or Razor views. All SQL lives in Data/ScamRepository.cs.
 - Every SQL command is parameterized ($param). Never concatenate user input into SQL.
 - MCP tools are read-only, narrow, described, validated, and return bounded output (max 20 rows).
-- Never create an execute_sql, run_query, or any arbitrary-SQL tool. No write tools.
+  Never create an execute_sql, run_query, or any arbitrary-SQL tool, and never add write tools to MCP.
+- Writes (Create/Update/Delete) happen ONLY through MVC controllers → Services (business rules) → Repositories
+  (parameterized SQL). Controllers stay thin; validation in ViewModels + Services.
+- All SQL lives in Data/ repositories. Tables: Companies, ScamReports, JobPostings, InterviewReviews, CheckLogs.
 - ChatOrchestrator never calls the repository directly — only through MCP tools.
 - SQLite file: App_Data/joblens.db locally; HOME/data/JobLens/joblens.db on Azure. Never under wwwroot.
 - Secrets (AI keys) only in dotnet user-secrets locally and Azure environment variables. Never in appsettings.json or Git.

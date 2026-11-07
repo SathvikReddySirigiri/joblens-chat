@@ -1,0 +1,25 @@
+@model Company
+@{
+    ViewData["Title"] = Model.Name;
+    var activity = (CompanyActivity)ViewBag.Activity;
+}
+<partial name="_Alerts" />
+<section class="page-header">
+    <div class="page-heading">
+        <h1>@Model.Name</h1>
+        <p class="help">@Model.OfficialDomain · @Model.Industry · @Model.HqState</p>
+    </div>
+    <div class="form-actions">
+        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.CompanyId">Edit</a>
+        <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.CompanyId">Delete</a>
+    </div>
+</section>
+<section class="card">
+    <dl class="detail-list">
+        <div><dt>Approved reports</dt><dd>@activity.ApprovedReports</dd></div>
+        <div><dt>Pending reports</dt><dd>@activity.PendingReports</dd></div>
+        <div><dt>Job postings</dt><dd>@activity.Postings</dd></div>
+        <div><dt>Interview reviews</dt><dd>@activity.Reviews</dd></div>
+        <div><dt>Average rating</dt><dd>@(activity.AverageRating is null ? "No reviews yet" : activity.AverageRating.Value.ToString("0.00"))</dd></div>
+    </dl>
+</section>

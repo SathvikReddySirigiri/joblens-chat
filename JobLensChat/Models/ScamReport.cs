@@ -11,4 +11,6 @@ public sealed record ScamReport(
     double AmountRequestedUsd,
     int DomainAgeDays,
     string Status,
-    string ReportedDate);
+    string ReportedDate,
+    string Description = "",
+    int? CreatedByUserId = null);

@@ -1,0 +1,8 @@
+@model int
+<span class="stars" aria-hidden="true">
+    @for (var star = 1; star <= 5; star++)
+    {
+        <span class="@(star <= Model ? "star-filled" : "star-empty")">★</span>
+    }
+</span>
+<span class="visually-hidden">@Model out of 5 stars</span>

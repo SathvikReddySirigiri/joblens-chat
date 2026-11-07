@@ -14,8 +14,38 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.Name = ".JobLens.Session";
 });
+builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient<RdapService>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(20);
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("JobLensChat/1.0 (ISM6225 class project)");
+    client.DefaultRequestHeaders.Accept.ParseAdd("application/rdap+json");
+    client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+});
 builder.Services.AddSingleton<ScamRepository>();
-builder.Services.AddSingleton<RecruiterRiskService>();
+builder.Services.AddSingleton<CompanyRepository>();
+builder.Services.AddSingleton<ScamReportRepository>();
+builder.Services.AddSingleton<JobPostingRepository>();
+builder.Services.AddSingleton<InterviewReviewRepository>();
+builder.Services.AddSingleton<CheckLogRepository>();
+builder.Services.AddSingleton<DashboardRepository>();
+builder.Services.AddSingleton<RecruiterRepository>();
+builder.Services.AddSingleton<UserRepository>();
+builder.Services.AddScoped<CompanyService>();
+builder.Services.AddScoped<ScamReportService>();
+builder.Services.AddScoped<JobPostingService>();
+builder.Services.AddScoped<InterviewReviewService>();
+builder.Services.AddScoped<RecruiterService>();
+builder.Services.AddSingleton<AiClientFactory>();
+builder.Services.AddSingleton<PiiRedactor>();
+builder.Services.AddSingleton<OfferTextExtractor>();
+builder.Services.AddHttpClient<EdgarService>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
+builder.Services.AddScoped<OfferAnalyzerService>();
+builder.Services.AddScoped<SmartSearchService>();
+builder.Services.AddScoped<RecruiterRiskService>();
 builder.Services.AddScoped<ChatOrchestrator>();
 builder.Services.AddMcpServer()
     .WithHttpTransport(options =>

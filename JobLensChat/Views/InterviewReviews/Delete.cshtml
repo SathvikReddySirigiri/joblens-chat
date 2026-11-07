@@ -1,0 +1,17 @@
+@model InterviewReview
+@{
+    ViewData["Title"] = "Delete interview review";
+}
+<partial name="_Alerts" />
+<section class="page-header">
+    <h1>Delete this review?</h1>
+    <p class="help">@Model.Role · @Model.CompanyName · @Model.ReviewDate. This cannot be undone.</p>
+</section>
+<section class="card">
+    <form method="post" asp-action="DeleteConfirmed" asp-route-id="@Model.ReviewId">
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Delete review</button>
+            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.ReviewId">Cancel</a>
+        </div>
+    </form>
+</section>

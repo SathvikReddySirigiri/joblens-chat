@@ -1,0 +1,64 @@
+@model ScamReportFormVm
+<div asp-validation-summary="ModelOnly" class="alert alert-error" role="alert"></div>
+<input type="hidden" asp-for="ReportId" />
+<div class="field">
+    <label asp-for="RecruiterEmail">Recruiter email</label>
+    <input asp-for="RecruiterEmail" autocomplete="off" data-domain-source="domain-preview" />
+    <p class="help" id="domain-preview">Domain is taken from the email and is not typed separately.</p>
+    <span asp-validation-for="RecruiterEmail" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="CompanyId">Company</label>
+    <select asp-for="CompanyId">
+        <option value="">Choose a company</option>
+        @foreach (var company in ViewBag.Companies as IReadOnlyList<Company> ?? Array.Empty<Company>())
+        {
+            <option value="@company.CompanyId">@company.Name</option>
+        }
+    </select>
+    <span asp-validation-for="CompanyId" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="ScamType">Scam type</label>
+    <select asp-for="ScamType">
+        <option value="">Choose a type</option>
+        @foreach (var type in Catalog.ScamTypes)
+        {
+            <option value="@type">@type</option>
+        }
+    </select>
+    <span asp-validation-for="ScamType" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="Channel">Channel</label>
+    <select asp-for="Channel">
+        <option value="">Choose a channel</option>
+        @foreach (var channel in Catalog.Channels)
+        {
+            <option value="@channel">@channel</option>
+        }
+    </select>
+    <span asp-validation-for="Channel" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="AmountRequestedUsd">Amount requested (USD)</label>
+    <input asp-for="AmountRequestedUsd" inputmode="decimal" />
+    <span asp-validation-for="AmountRequestedUsd" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="DomainAgeDays">Domain age in days</label>
+    <input asp-for="DomainAgeDays" inputmode="numeric" />
+    <p class="help">If known.</p>
+    <span asp-validation-for="DomainAgeDays" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="ReportedDate">Reported date</label>
+    <input asp-for="ReportedDate" placeholder="yyyy-MM-dd" />
+    <span asp-validation-for="ReportedDate" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="Description">Description</label>
+    <textarea asp-for="Description" maxlength="500" data-counter="description-count"></textarea>
+    <p class="help" id="description-count">20 to 500 characters.</p>
+    <span asp-validation-for="Description" class="field-error"></span>
+</div>

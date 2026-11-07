@@ -1,0 +1,38 @@
+@{
+    var page = ViewData["PagerPage"] as int? ?? 1;
+    var size = ViewData["PagerSize"] as int? ?? JobLensChat.Catalog.PageSize;
+    var total = ViewData["PagerTotal"] as int? ?? 0;
+    var from = total == 0 ? 0 : ((page - 1) * size) + 1;
+    var to = total == 0 ? 0 : Math.Min(page * size, total);
+    var pages = total == 0 ? 1 : (int)Math.Ceiling(total / (double)size);
+
+    string PageUrl(int number)
+    {
+        var values = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+        foreach (var key in Context.Request.Query.Keys)
+        {
+            if (!string.Equals(key, "page", StringComparison.OrdinalIgnoreCase))
+            {
+                values[key] = Context.Request.Query[key];
+            }
+        }
+
+        values["page"] = number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var action = ViewContext.RouteData.Values["action"]?.ToString();
+        var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+        return Url.Action(action, controller, values) ?? "#";
+    }
+}
+<nav class="pager" aria-label="Pagination">
+    <p class="help">Showing @from–@to of @total</p>
+    <div class="pager-links">
+        @if (page > 1)
+        {
+            <a class="btn btn-secondary" href="@PageUrl(page - 1)">Previous</a>
+        }
+        @if (page < pages)
+        {
+            <a class="btn btn-secondary" href="@PageUrl(page + 1)">Next</a>
+        }
+    </div>
+</nav>

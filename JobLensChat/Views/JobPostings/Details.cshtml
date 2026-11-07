@@ -1,0 +1,32 @@
+@model JobPosting
+@{
+    ViewData["Title"] = Model.Title;
+    var company = ViewBag.Company as Company;
+    var activity = (CompanyActivity)ViewBag.Activity;
+}
+<partial name="_Alerts" />
+<section class="page-header">
+    <div class="page-heading">
+        <h1>@Model.Title</h1>
+        <p class="help">@Model.CompanyName · @Model.PostedDate</p>
+    </div>
+    <div class="form-actions">
+        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.PostingId">Edit</a>
+        <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.PostingId">Delete</a>
+    </div>
+</section>
+@if (activity.ApprovedReports > 0 && company is not null)
+{
+    <p class="alert alert-error" role="alert">@activity.ApprovedReports scam reports impersonate this company — verify recruiters on the official domain @company.OfficialDomain.</p>
+}
+<section class="card">
+    <dl class="detail-list">
+        <div><dt>Company</dt><dd><a asp-controller="Companies" asp-action="Details" asp-route-id="@Model.CompanyId">@Model.CompanyName</a></dd></div>
+        <div><dt>Location</dt><dd>@Model.Location</dd></div>
+        <div><dt>State</dt><dd>@Model.State</dd></div>
+        <div><dt>Remote</dt><dd>@(Model.IsRemote ? "Yes" : "No")</dd></div>
+        <div><dt>Paid</dt><dd>@(Model.IsPaid ? "Yes" : "No")</dd></div>
+        <div><dt>Pay rate</dt><dd>@(Model.PayRatePerHour is null ? "—" : Model.PayRatePerHour.Value.ToString("$#,##0.00") + " per hour")</dd></div>
+        <div><dt>Description</dt><dd>@Model.Description</dd></div>
+    </dl>
+</section>

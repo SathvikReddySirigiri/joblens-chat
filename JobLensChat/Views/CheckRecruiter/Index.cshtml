@@ -1,0 +1,142 @@
+@model CheckRecruiterPageVm
+@{
+    ViewData["Title"] = "Check recruiter";
+    var companies = ViewBag.Companies as IReadOnlyList<Company> ?? Array.Empty<Company>();
+    var result = Model.Result;
+    string Mark(string tone) => tone switch
+    {
+        "good" => "✓",
+        "bad" => "✕",
+        _ => "ℹ",
+    };
+}
+<section class="page-header">
+    <h1>Check recruiter</h1>
+    <p class="help">Score one recruiter email against official domains, look-alikes, and approved reports.</p>
+</section>
+<section class="card">
+    <form method="post" asp-action="Check">
+        <div asp-validation-summary="ModelOnly" class="alert alert-error" role="alert"></div>
+        <div class="field">
+            <label asp-for="Email">Recruiter email</label>
+            <input asp-for="Email" autocomplete="off" />
+            <span asp-validation-for="Email" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="CompanyId">Company they claim to represent</label>
+            <select asp-for="CompanyId">
+                <option value="">Not specified</option>
+                @foreach (var company in companies)
+                {
+                    <option value="@company.CompanyId">@company.Name</option>
+                }
+            </select>
+            <p class="help">Optional. Used for the SEC registry panel.</p>
+        </div>
+        <button class="btn btn-primary" type="submit">Check</button>
+    </form>
+</section>
+@if (result is not null)
+{
+    <section class="card verdict-card" aria-labelledby="verdict-title">
+        <h2 id="verdict-title">Verdict</h2>
+        <p><partial name="_VerdictBadge" model="result.Verdict" /></p>
+        <p class="score-label">@result.Score / 100</p>
+        <meter class="score-meter" min="0" max="100" value="@result.Score" aria-label="Risk score out of 100">@result.Score</meter>
+        <ul class="reason-list">
+            @foreach (var reason in result.Reasons)
+            {
+                <li class="reason-@reason.Tone"><span aria-hidden="true">@Mark(reason.Tone)</span> @reason.Text</li>
+            }
+        </ul>
+    </section>
+    <section class="card" aria-labelledby="rdap-title">
+        <h2 id="rdap-title">Domain Lookup (RDAP · live)</h2>
+        @if (result.Rdap is null || !result.Rdap.Found)
+        {
+            <p>@(result.Rdap?.Message ?? "Live domain lookup is temporarily unavailable.")</p>
+        }
+        else
+        {
+            <dl class="detail-list">
+                <div><dt>Registered</dt><dd>@(result.Rdap.RegistrationDate ?? "—")</dd></div>
+                <div><dt>Age in days</dt><dd>@(result.Rdap.DomainAgeDays?.ToString() ?? "—")</dd></div>
+                <div><dt>Registrar</dt><dd>@(result.Rdap.Registrar ?? "—")</dd></div>
+                <div><dt>Expires</dt><dd>@(result.Rdap.ExpirationDate ?? "—")</dd></div>
+                <div><dt>Status</dt><dd>@(result.Rdap.Status.Count == 0 ? "—" : string.Join(", ", result.Rdap.Status))</dd></div>
+            </dl>
+        }
+    </section>
+    <section class="card" aria-labelledby="edgar-title">
+        <h2 id="edgar-title">SEC Registry (EDGAR · live)</h2>
+        @if (result.Edgar is null)
+        {
+            <p>No company name was available for a registry lookup.</p>
+        }
+        else if (!result.Edgar.Found)
+        {
+            <p>@result.Edgar.Message</p>
+        }
+        else
+        {
+            <dl class="detail-list">
+                <div><dt>Entity</dt><dd>@result.Edgar.EntityName</dd></div>
+                <div><dt>CIK</dt><dd>@result.Edgar.Cik</dd></div>
+                <div><dt>Ticker</dt><dd>@result.Edgar.Ticker</dd></div>
+            </dl>
+        }
+    </section>
+    <section class="card" aria-labelledby="reports-title">
+        <h2 id="reports-title">Community reports</h2>
+        @if (Model.Reports.Count == 0)
+        {
+            <p>No approved reports for this domain.</p>
+        }
+        else
+        {
+            <ul>
+                @foreach (var report in Model.Reports)
+                {
+                    <li><a asp-controller="ScamReports" asp-action="Details" asp-route-id="@report.ReportId">@report.ReportedDate · @report.ScamType</a></li>
+                }
+            </ul>
+        }
+    </section>
+    <section class="card" aria-labelledby="directory-title">
+        <h2 id="directory-title">Recruiter directory</h2>
+        @if (Model.Recruiter is null)
+        {
+            <p>This email is not in the recruiter directory.</p>
+        }
+        else
+        {
+            var verified = !string.IsNullOrEmpty(Model.Recruiter.CompanyOfficialDomain)
+                && string.Equals(Model.Recruiter.Domain, Model.Recruiter.CompanyOfficialDomain, StringComparison.OrdinalIgnoreCase);
+            <p><a asp-controller="Recruiters" asp-action="Details" asp-route-id="@Model.Recruiter.RecruiterId">@Model.Recruiter.Email</a></p>
+            @if (verified)
+            {
+                <p><span class="badge-low">Verified official domain</span></p>
+            }
+        }
+    </section>
+    <section class="card">
+        <h2>Next steps</h2>
+        @if (result.Verdict == "LOW")
+        {
+            <p>The signals are quieter. Still confirm the recruiter on the company's official careers page before you share documents.</p>
+        }
+        else if (result.Verdict == "MEDIUM")
+        {
+            <p>Pause before you reply. Do not send money, a check deposit, or identity documents until the careers page confirms this person.</p>
+        }
+        else
+        {
+            <p>Do not reply or send money. Report the message and tell the career center.</p>
+        }
+        <div class="form-actions">
+            <a class="btn btn-primary" asp-controller="ScamReports" asp-action="Create" asp-route-email="@result.Email" asp-route-company="@Model.CompanyId">Report this scam</a>
+            <a class="btn btn-secondary" asp-controller="Chat" asp-action="Index">Ask the chatbot</a>
+        </div>
+    </section>
+    <p class="help">Live panels are fetched from public registries and are not stored.</p>
+}
