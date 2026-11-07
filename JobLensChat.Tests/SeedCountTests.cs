@@ -25,23 +25,23 @@ public sealed class SeedCountTests
         {
             await DatabaseInitializer.InitializeAsync(configuration, environment, NullLogger.Instance);
             var counts = await new ScamRepository(configuration, environment).GetCountsAsync(CancellationToken.None);
-            Assert.Equal(10, counts.Companies);
-            Assert.Equal(65, counts.Recruiters);
-            Assert.Equal(60, counts.ScamReports);
-            Assert.Equal(41, counts.Approved);
-            Assert.Equal(12, counts.Pending);
-            Assert.Equal(7, counts.Rejected);
-            Assert.Equal(30, counts.JobPostings);
-            Assert.Equal(20, counts.InterviewReviews);
-            Assert.Equal(40, counts.CheckLogs);
-            Assert.Equal(3, counts.Users);
+            Assert.Equal(20, counts.Companies);
+            Assert.Equal(130, counts.Recruiters);
+            Assert.Equal(120, counts.ScamReports);
+            Assert.Equal(85, counts.Approved);
+            Assert.Equal(23, counts.Pending);
+            Assert.Equal(12, counts.Rejected);
+            Assert.Equal(70, counts.JobPostings);
+            Assert.Equal(50, counts.InterviewReviews);
+            Assert.Equal(100, counts.CheckLogs);
+            Assert.Equal(5, counts.Users);
 
             var database = SqliteConnections.ForPath(Path.Combine(root, "App_Data", "joblens.db"));
             await using var connection = await SqliteConnections.OpenAsync(database, CancellationToken.None);
             Assert.Equal(0, await ScalarAsync(connection, "SELECT COUNT(*) FROM ScamReports WHERE CreatedByUserId IS NOT NULL;"));
             Assert.Equal(0, await ScalarAsync(connection, "SELECT COUNT(*) FROM ScamReports WHERE Description = '';"));
             Assert.Equal(0, await ScalarAsync(connection, "SELECT COUNT(*) FROM InterviewReviews WHERE CreatedByUserId IS NOT NULL;"));
-            Assert.Equal(5, await ScalarAsync(connection, "SELECT COUNT(*) FROM Recruiters WHERE Notes = 'Verified official domain';"));
+            Assert.Equal(10, await ScalarAsync(connection, "SELECT COUNT(*) FROM Recruiters WHERE Notes = 'Verified official domain';"));
             Assert.Equal(0, await ScalarAsync(connection, "SELECT COUNT(*) FROM Users WHERE PasswordHash LIKE '%2026%';"));
 
             var hash = await TextAsync(connection, "SELECT PasswordHash FROM Users WHERE Email = 'student1@joblens.demo';");

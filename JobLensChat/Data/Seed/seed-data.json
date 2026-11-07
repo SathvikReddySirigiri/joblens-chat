@@ -1,0 +1,3416 @@
+{
+  "companies": [
+    {
+      "name": "Amazon",
+      "officialDomain": "amazon.com",
+      "industry": "Technology",
+      "hqState": "WA"
+    },
+    {
+      "name": "Microsoft",
+      "officialDomain": "microsoft.com",
+      "industry": "Technology",
+      "hqState": "WA"
+    },
+    {
+      "name": "Google",
+      "officialDomain": "google.com",
+      "industry": "Technology",
+      "hqState": "CA"
+    },
+    {
+      "name": "Deloitte",
+      "officialDomain": "deloitte.com",
+      "industry": "Consulting",
+      "hqState": "NY"
+    },
+    {
+      "name": "JPMorgan Chase",
+      "officialDomain": "jpmorgan.com",
+      "industry": "Finance",
+      "hqState": "NY"
+    },
+    {
+      "name": "Walmart",
+      "officialDomain": "walmart.com",
+      "industry": "Retail",
+      "hqState": "AR"
+    },
+    {
+      "name": "Accenture",
+      "officialDomain": "accenture.com",
+      "industry": "Consulting",
+      "hqState": "IL"
+    },
+    {
+      "name": "Raymond James",
+      "officialDomain": "raymondjames.com",
+      "industry": "Finance",
+      "hqState": "FL"
+    },
+    {
+      "name": "Publix",
+      "officialDomain": "publix.com",
+      "industry": "Retail",
+      "hqState": "FL"
+    },
+    {
+      "name": "Moffitt Cancer Center",
+      "officialDomain": "moffitt.org",
+      "industry": "Healthcare",
+      "hqState": "FL"
+    },
+    {
+      "name": "Apple",
+      "officialDomain": "apple.com",
+      "industry": "Technology",
+      "hqState": "CA"
+    },
+    {
+      "name": "Meta",
+      "officialDomain": "meta.com",
+      "industry": "Technology",
+      "hqState": "CA"
+    },
+    {
+      "name": "IBM",
+      "officialDomain": "ibm.com",
+      "industry": "Technology",
+      "hqState": "NY"
+    },
+    {
+      "name": "PwC",
+      "officialDomain": "pwc.com",
+      "industry": "Consulting",
+      "hqState": "NY"
+    },
+    {
+      "name": "EY",
+      "officialDomain": "ey.com",
+      "industry": "Consulting",
+      "hqState": "NY"
+    },
+    {
+      "name": "Bank of America",
+      "officialDomain": "bankofamerica.com",
+      "industry": "Finance",
+      "hqState": "NC"
+    },
+    {
+      "name": "Target",
+      "officialDomain": "target.com",
+      "industry": "Retail",
+      "hqState": "MN"
+    },
+    {
+      "name": "Lockheed Martin",
+      "officialDomain": "lockheedmartin.com",
+      "industry": "Aerospace",
+      "hqState": "MD"
+    },
+    {
+      "name": "Tampa General Hospital",
+      "officialDomain": "tgh.org",
+      "industry": "Healthcare",
+      "hqState": "FL"
+    },
+    {
+      "name": "Jabil",
+      "officialDomain": "jabil.com",
+      "industry": "Manufacturing",
+      "hqState": "FL"
+    }
+  ],
+  "reports": [
+    {
+      "companyName": "Amazon",
+      "recruiterEmail": "hr@amaz0n-careers.net",
+      "scamType": "Equipment purchase",
+      "channel": "Email",
+      "amountRequestedUsd": 1200,
+      "domainAgeDays": 9,
+      "status": "Approved",
+      "reportedDate": "2026-09-01",
+      "description": "The message told the student to buy a laptop from a named seller before the start date. The seller was not the company's vendor."
+    },
+    {
+      "companyName": "Amazon",
+      "recruiterEmail": "recruiting@amaz0n-careers.net",
+      "scamType": "Fake check",
+      "channel": "Email",
+      "amountRequestedUsd": 850,
+      "domainAgeDays": 12,
+      "status": "Approved",
+      "reportedDate": "2026-09-08",
+      "description": "The recruiter mailed a check and asked the student to buy equipment, then wire back the difference. The check was not from the company."
+    },
+    {
+      "companyName": "Amazon",
+      "recruiterEmail": "talent@amaz0n-careers.net",
+      "scamType": "Upfront fee",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 400,
+      "domainAgeDays": 6,
+      "status": "Approved",
+      "reportedDate": "2026-10-03",
+      "description": "The sender required a training or badge fee before any interview. The company careers page lists no such fee."
+    },
+    {
+      "companyName": "Amazon",
+      "recruiterEmail": "jobs@amaz0n-careers.net",
+      "scamType": "Fake staffing agency",
+      "channel": "Telegram",
+      "amountRequestedUsd": 600,
+      "domainAgeDays": 15,
+      "status": "Pending",
+      "reportedDate": "2026-08-05",
+      "description": "A supposed agency used the company name but had no listing on the official careers page. The contact domain did not match the company."
+    },
+    {
+      "companyName": "Amazon",
+      "recruiterEmail": "recruiter@amazon-jobs-now.net",
+      "scamType": "Equipment purchase",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 2100,
+      "domainAgeDays": 22,
+      "status": "Approved",
+      "reportedDate": "2026-09-15",
+      "description": "The message told the student to buy a laptop from a named seller before the start date. The seller was not the company's vendor."
+    },
+    {
+      "companyName": "Amazon",
+      "recruiterEmail": "hr@amazon-hiring-desk.com",
+      "scamType": "Fake check",
+      "channel": "Text message",
+      "amountRequestedUsd": 1500,
+      "domainAgeDays": 30,
+      "status": "Approved",
+      "reportedDate": "2026-10-10",
+      "description": "The recruiter mailed a check and asked the student to buy equipment, then wire back the difference. The check was not from the company."
+    },
+    {
+      "companyName": "Amazon",
+      "recruiterEmail": "careers@amzn-opportunity.net",
+      "scamType": "Chat-only interview",
+      "channel": "Telegram",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 18,
+      "status": "Approved",
+      "reportedDate": "2026-07-06",
+      "description": "Every step stayed in a private chat and never moved to a company video call. No employee could be found on the official site."
+    },
+    {
+      "companyName": "Amazon",
+      "recruiterEmail": "apply@amazon-remote-roles.com",
+      "scamType": "Identity theft",
+      "channel": "Email",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 45,
+      "status": "Approved",
+      "reportedDate": "2026-08-12",
+      "description": "The sender asked for a government ID and bank details during the first screening. A real campus recruiter does not collect those up front."
+    },
+    {
+      "companyName": "Amazon",
+      "recruiterEmail": "staff@amazon-workforce.net",
+      "scamType": "Upfront fee",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 250,
+      "domainAgeDays": 28,
+      "status": "Approved",
+      "reportedDate": "2026-10-17",
+      "description": "The sender required a training or badge fee before any interview. The company careers page lists no such fee."
+    },
+    {
+      "companyName": "Amazon",
+      "recruiterEmail": "hello@amazon-talent-team.com",
+      "scamType": "Fake staffing agency",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 900,
+      "domainAgeDays": 11,
+      "status": "Approved",
+      "reportedDate": "2026-08-21",
+      "description": "A supposed agency used the company name but had no listing on the official careers page. The contact domain did not match the company."
+    },
+    {
+      "companyName": "Amazon",
+      "recruiterEmail": "info@gmail.com",
+      "scamType": "Chat-only interview",
+      "channel": "Email",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 2400,
+      "status": "Pending",
+      "reportedDate": "2026-07-16",
+      "description": "Every step stayed in a private chat and never moved to a company video call. No employee could be found on the official site."
+    },
+    {
+      "companyName": "Amazon",
+      "recruiterEmail": "alerts@outlook.com",
+      "scamType": "Fake check",
+      "channel": "Text message",
+      "amountRequestedUsd": 700,
+      "domainAgeDays": 1800,
+      "status": "Rejected",
+      "reportedDate": "2026-04-07",
+      "description": "The recruiter mailed a check and asked the student to buy equipment, then wire back the difference. The check was not from the company."
+    },
+    {
+      "companyName": "Microsoft",
+      "recruiterEmail": "hr@rnicrosoft-hiring.com",
+      "scamType": "Equipment purchase",
+      "channel": "Email",
+      "amountRequestedUsd": 1800,
+      "domainAgeDays": 8,
+      "status": "Approved",
+      "reportedDate": "2026-09-12",
+      "description": "The message told the student to buy a laptop from a named seller before the start date. The seller was not the company's vendor."
+    },
+    {
+      "companyName": "Microsoft",
+      "recruiterEmail": "recruiting@rnicrosoft-hiring.com",
+      "scamType": "Fake check",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 950,
+      "domainAgeDays": 14,
+      "status": "Approved",
+      "reportedDate": "2026-10-08",
+      "description": "The recruiter mailed a check and asked the student to buy equipment, then wire back the difference. The check was not from the company."
+    },
+    {
+      "companyName": "Microsoft",
+      "recruiterEmail": "talent@rnicrosoft-hiring.com",
+      "scamType": "Upfront fee",
+      "channel": "Telegram",
+      "amountRequestedUsd": 320,
+      "domainAgeDays": 5,
+      "status": "Approved",
+      "reportedDate": "2026-08-14",
+      "description": "The sender required a training or badge fee before any interview. The company careers page lists no such fee."
+    },
+    {
+      "companyName": "Microsoft",
+      "recruiterEmail": "jobs@microsoft-careers-mail.com",
+      "scamType": "Chat-only interview",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 20,
+      "status": "Approved",
+      "reportedDate": "2026-07-21",
+      "description": "Every step stayed in a private chat and never moved to a company video call. No employee could be found on the official site."
+    },
+    {
+      "companyName": "Microsoft",
+      "recruiterEmail": "hr@ms-hiring-portal.net",
+      "scamType": "Identity theft",
+      "channel": "Email",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 40,
+      "status": "Approved",
+      "reportedDate": "2026-08-24",
+      "description": "The sender asked for a government ID and bank details during the first screening. A real campus recruiter does not collect those up front."
+    },
+    {
+      "companyName": "Microsoft",
+      "recruiterEmail": "apply@microsoft-opportunity.com",
+      "scamType": "Fake staffing agency",
+      "channel": "Text message",
+      "amountRequestedUsd": 1100,
+      "domainAgeDays": 33,
+      "status": "Approved",
+      "reportedDate": "2026-10-15",
+      "description": "A supposed agency used the company name but had no listing on the official careers page. The contact domain did not match the company."
+    },
+    {
+      "companyName": "Microsoft",
+      "recruiterEmail": "careers@outlook.com",
+      "scamType": "Equipment purchase",
+      "channel": "Email",
+      "amountRequestedUsd": 640,
+      "domainAgeDays": 3200,
+      "status": "Approved",
+      "reportedDate": "2026-09-22",
+      "description": "The message told the student to buy a laptop from a named seller before the start date. The seller was not the company's vendor."
+    },
+    {
+      "companyName": "Microsoft",
+      "recruiterEmail": "recruiter@microsoft-talent-now.net",
+      "scamType": "Fake check",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 480,
+      "domainAgeDays": 26,
+      "status": "Approved",
+      "reportedDate": "2026-06-02",
+      "description": "The recruiter mailed a check and asked the student to buy equipment, then wire back the difference. The check was not from the company."
+    },
+    {
+      "companyName": "Microsoft",
+      "recruiterEmail": "info@yahoo.com",
+      "scamType": "Upfront fee",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 150,
+      "domainAgeDays": 4500,
+      "status": "Pending",
+      "reportedDate": "2026-05-06",
+      "description": "The sender required a training or badge fee before any interview. The company careers page lists no such fee."
+    },
+    {
+      "companyName": "Microsoft",
+      "recruiterEmail": "alerts@gmail.com",
+      "scamType": "Chat-only interview",
+      "channel": "Telegram",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 5100,
+      "status": "Rejected",
+      "reportedDate": "2026-03-09",
+      "description": "Every step stayed in a private chat and never moved to a company video call. No employee could be found on the official site."
+    },
+    {
+      "companyName": "Deloitte",
+      "recruiterEmail": "hr@deloitte-recruitment-hr.com",
+      "scamType": "Equipment purchase",
+      "channel": "Telegram",
+      "amountRequestedUsd": 1600,
+      "domainAgeDays": 7,
+      "status": "Approved",
+      "reportedDate": "2026-09-19",
+      "description": "The message told the student to buy a laptop from a named seller before the start date. The seller was not the company's vendor."
+    },
+    {
+      "companyName": "Deloitte",
+      "recruiterEmail": "recruiting@deloitte-recruitment-hr.com",
+      "scamType": "Fake check",
+      "channel": "Email",
+      "amountRequestedUsd": 880,
+      "domainAgeDays": 16,
+      "status": "Approved",
+      "reportedDate": "2026-10-20",
+      "description": "The recruiter mailed a check and asked the student to buy equipment, then wire back the difference. The check was not from the company."
+    },
+    {
+      "companyName": "Deloitte",
+      "recruiterEmail": "talent@deloitte-recruitment-hr.com",
+      "scamType": "Upfront fee",
+      "channel": "Telegram",
+      "amountRequestedUsd": 275,
+      "domainAgeDays": 10,
+      "status": "Pending",
+      "reportedDate": "2026-08-17",
+      "description": "The sender required a training or badge fee before any interview. The company careers page lists no such fee."
+    },
+    {
+      "companyName": "Deloitte",
+      "recruiterEmail": "jobs@deloitte-careers-desk.com",
+      "scamType": "Fake staffing agency",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 1400,
+      "domainAgeDays": 24,
+      "status": "Approved",
+      "reportedDate": "2026-10-01",
+      "description": "A supposed agency used the company name but had no listing on the official careers page. The contact domain did not match the company."
+    },
+    {
+      "companyName": "Deloitte",
+      "recruiterEmail": "hr@deloitte-hiring-team.net",
+      "scamType": "Chat-only interview",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 19,
+      "status": "Approved",
+      "reportedDate": "2026-07-25",
+      "description": "Every step stayed in a private chat and never moved to a company video call. No employee could be found on the official site."
+    },
+    {
+      "companyName": "Deloitte",
+      "recruiterEmail": "apply@deloitte-opportunity.com",
+      "scamType": "Identity theft",
+      "channel": "Email",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 38,
+      "status": "Approved",
+      "reportedDate": "2026-08-26",
+      "description": "The sender asked for a government ID and bank details during the first screening. A real campus recruiter does not collect those up front."
+    },
+    {
+      "companyName": "Deloitte",
+      "recruiterEmail": "careers@deloitte-staffing.net",
+      "scamType": "Fake check",
+      "channel": "Text message",
+      "amountRequestedUsd": 520,
+      "domainAgeDays": 42,
+      "status": "Approved",
+      "reportedDate": "2026-06-11",
+      "description": "The recruiter mailed a check and asked the student to buy equipment, then wire back the difference. The check was not from the company."
+    },
+    {
+      "companyName": "Deloitte",
+      "recruiterEmail": "recruiter@yahoo.com",
+      "scamType": "Upfront fee",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 90,
+      "domainAgeDays": 6200,
+      "status": "Rejected",
+      "reportedDate": "2026-02-18",
+      "description": "The sender required a training or badge fee before any interview. The company careers page lists no such fee."
+    },
+    {
+      "companyName": "Google",
+      "recruiterEmail": "hr@google-careers-team.net",
+      "scamType": "Equipment purchase",
+      "channel": "Email",
+      "amountRequestedUsd": 2400,
+      "domainAgeDays": 4,
+      "status": "Approved",
+      "reportedDate": "2026-09-26",
+      "description": "The message told the student to buy a laptop from a named seller before the start date. The seller was not the company's vendor."
+    },
+    {
+      "companyName": "Google",
+      "recruiterEmail": "recruiting@google-careers-team.net",
+      "scamType": "Fake check",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 1300,
+      "domainAgeDays": 13,
+      "status": "Approved",
+      "reportedDate": "2026-10-24",
+      "description": "The recruiter mailed a check and asked the student to buy equipment, then wire back the difference. The check was not from the company."
+    },
+    {
+      "companyName": "Google",
+      "recruiterEmail": "jobs@google-hiring-mail.com",
+      "scamType": "Upfront fee",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 360,
+      "domainAgeDays": 21,
+      "status": "Approved",
+      "reportedDate": "2026-08-03",
+      "description": "The sender required a training or badge fee before any interview. The company careers page lists no such fee."
+    },
+    {
+      "companyName": "Google",
+      "recruiterEmail": "talent@g00gle-careers.net",
+      "scamType": "Chat-only interview",
+      "channel": "Telegram",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 17,
+      "status": "Approved",
+      "reportedDate": "2026-07-29",
+      "description": "Every step stayed in a private chat and never moved to a company video call. No employee could be found on the official site."
+    },
+    {
+      "companyName": "Google",
+      "recruiterEmail": "apply@google-opportunity-team.com",
+      "scamType": "Identity theft",
+      "channel": "Email",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 50,
+      "status": "Approved",
+      "reportedDate": "2026-08-28",
+      "description": "The sender asked for a government ID and bank details during the first screening. A real campus recruiter does not collect those up front."
+    },
+    {
+      "companyName": "Google",
+      "recruiterEmail": "careers@gmail.com",
+      "scamType": "Fake staffing agency",
+      "channel": "Text message",
+      "amountRequestedUsd": 750,
+      "domainAgeDays": 2100,
+      "status": "Pending",
+      "reportedDate": "2026-07-09",
+      "description": "A supposed agency used the company name but had no listing on the official careers page. The contact domain did not match the company."
+    },
+    {
+      "companyName": "Google",
+      "recruiterEmail": "recruiter@outlook.com",
+      "scamType": "Fake check",
+      "channel": "Email",
+      "amountRequestedUsd": 410,
+      "domainAgeDays": 3900,
+      "status": "Pending",
+      "reportedDate": "2026-04-22",
+      "description": "The recruiter mailed a check and asked the student to buy equipment, then wire back the difference. The check was not from the company."
+    },
+    {
+      "companyName": "JPMorgan Chase",
+      "recruiterEmail": "hr@jpmorgan-talent-hub.com",
+      "scamType": "Equipment purchase",
+      "channel": "Email",
+      "amountRequestedUsd": 1900,
+      "domainAgeDays": 11,
+      "status": "Approved",
+      "reportedDate": "2026-10-06",
+      "description": "The message told the student to buy a laptop from a named seller before the start date. The seller was not the company's vendor."
+    },
+    {
+      "companyName": "JPMorgan Chase",
+      "recruiterEmail": "recruiting@jpmorgan-careers-mail.net",
+      "scamType": "Fake check",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 720,
+      "domainAgeDays": 29,
+      "status": "Approved",
+      "reportedDate": "2026-09-03",
+      "description": "The recruiter mailed a check and asked the student to buy equipment, then wire back the difference. The check was not from the company."
+    },
+    {
+      "companyName": "JPMorgan Chase",
+      "recruiterEmail": "talent@jpmchase-hiring.com",
+      "scamType": "Upfront fee",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 210,
+      "domainAgeDays": 35,
+      "status": "Approved",
+      "reportedDate": "2026-08-07",
+      "description": "The sender required a training or badge fee before any interview. The company careers page lists no such fee."
+    },
+    {
+      "companyName": "JPMorgan Chase",
+      "recruiterEmail": "jobs@jpmorgan-opportunity.net",
+      "scamType": "Chat-only interview",
+      "channel": "Telegram",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 8,
+      "status": "Approved",
+      "reportedDate": "2026-07-13",
+      "description": "Every step stayed in a private chat and never moved to a company video call. No employee could be found on the official site."
+    },
+    {
+      "companyName": "JPMorgan Chase",
+      "recruiterEmail": "apply@gmail.com",
+      "scamType": "Identity theft",
+      "channel": "Email",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 7000,
+      "status": "Pending",
+      "reportedDate": "2026-06-20",
+      "description": "The sender asked for a government ID and bank details during the first screening. A real campus recruiter does not collect those up front."
+    },
+    {
+      "companyName": "JPMorgan Chase",
+      "recruiterEmail": "careers@jpmorgan-staff.net",
+      "scamType": "Fake staffing agency",
+      "channel": "Text message",
+      "amountRequestedUsd": 980,
+      "domainAgeDays": 44,
+      "status": "Rejected",
+      "reportedDate": "2026-05-19",
+      "description": "A supposed agency used the company name but had no listing on the official careers page. The contact domain did not match the company."
+    },
+    {
+      "companyName": "Walmart",
+      "recruiterEmail": "hr@walmart-hiring-center.net",
+      "scamType": "Equipment purchase",
+      "channel": "Email",
+      "amountRequestedUsd": 540,
+      "domainAgeDays": 23,
+      "status": "Approved",
+      "reportedDate": "2026-09-05",
+      "description": "The message told the student to buy a laptop from a named seller before the start date. The seller was not the company's vendor."
+    },
+    {
+      "companyName": "Walmart",
+      "recruiterEmail": "recruiting@walmart-careers-desk.com",
+      "scamType": "Fake check",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 1100,
+      "domainAgeDays": 31,
+      "status": "Approved",
+      "reportedDate": "2026-10-13",
+      "description": "The recruiter mailed a check and asked the student to buy equipment, then wire back the difference. The check was not from the company."
+    },
+    {
+      "companyName": "Walmart",
+      "recruiterEmail": "talent@walmart-jobs-now.com",
+      "scamType": "Upfront fee",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 180,
+      "domainAgeDays": 12,
+      "status": "Approved",
+      "reportedDate": "2026-08-10",
+      "description": "The sender required a training or badge fee before any interview. The company careers page lists no such fee."
+    },
+    {
+      "companyName": "Walmart",
+      "recruiterEmail": "jobs@outlook.com",
+      "scamType": "Chat-only interview",
+      "channel": "Telegram",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 1500,
+      "status": "Pending",
+      "reportedDate": "2026-07-18",
+      "description": "Every step stayed in a private chat and never moved to a company video call. No employee could be found on the official site."
+    },
+    {
+      "companyName": "Walmart",
+      "recruiterEmail": "apply@walmart-opportunity.net",
+      "scamType": "Fake staffing agency",
+      "channel": "Text message",
+      "amountRequestedUsd": 860,
+      "domainAgeDays": 27,
+      "status": "Rejected",
+      "reportedDate": "2026-01-12",
+      "description": "A supposed agency used the company name but had no listing on the official careers page. The contact domain did not match the company."
+    },
+    {
+      "companyName": "Accenture",
+      "recruiterEmail": "hr@accenture-talent-mail.com",
+      "scamType": "Equipment purchase",
+      "channel": "Email",
+      "amountRequestedUsd": 1700,
+      "domainAgeDays": 6,
+      "status": "Approved",
+      "reportedDate": "2026-09-10",
+      "description": "The message told the student to buy a laptop from a named seller before the start date. The seller was not the company's vendor."
+    },
+    {
+      "companyName": "Accenture",
+      "recruiterEmail": "recruiting@accenture-hiring-team.net",
+      "scamType": "Fake check",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 640,
+      "domainAgeDays": 36,
+      "status": "Approved",
+      "reportedDate": "2026-10-22",
+      "description": "The recruiter mailed a check and asked the student to buy equipment, then wire back the difference. The check was not from the company."
+    },
+    {
+      "companyName": "Accenture",
+      "recruiterEmail": "talent@gmail.com",
+      "scamType": "Upfront fee",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 125,
+      "domainAgeDays": 2800,
+      "status": "Pending",
+      "reportedDate": "2026-07-02",
+      "description": "The sender required a training or badge fee before any interview. The company careers page lists no such fee."
+    },
+    {
+      "companyName": "Accenture",
+      "recruiterEmail": "jobs@accenture-careers-hub.com",
+      "scamType": "Chat-only interview",
+      "channel": "Telegram",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 19,
+      "status": "Pending",
+      "reportedDate": "2026-08-19",
+      "description": "Every step stayed in a private chat and never moved to a company video call. No employee could be found on the official site."
+    },
+    {
+      "companyName": "Raymond James",
+      "recruiterEmail": "hr@raymondjames-careers.net",
+      "scamType": "Identity theft",
+      "channel": "Email",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 14,
+      "status": "Approved",
+      "reportedDate": "2026-06-28",
+      "description": "The sender asked for a government ID and bank details during the first screening. A real campus recruiter does not collect those up front."
+    },
+    {
+      "companyName": "Raymond James",
+      "recruiterEmail": "recruiting@rj-hiring-desk.com",
+      "scamType": "Fake staffing agency",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 1250,
+      "domainAgeDays": 41,
+      "status": "Approved",
+      "reportedDate": "2026-10-28",
+      "description": "A supposed agency used the company name but had no listing on the official careers page. The contact domain did not match the company."
+    },
+    {
+      "companyName": "Raymond James",
+      "recruiterEmail": "talent@yahoo.com",
+      "scamType": "Fake check",
+      "channel": "Text message",
+      "amountRequestedUsd": 300,
+      "domainAgeDays": 3600,
+      "status": "Rejected",
+      "reportedDate": "2026-08-31",
+      "description": "The recruiter mailed a check and asked the student to buy equipment, then wire back the difference. The check was not from the company."
+    },
+    {
+      "companyName": "Publix",
+      "recruiterEmail": "hr@publix-hiring-team.com",
+      "scamType": "Equipment purchase",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 430,
+      "domainAgeDays": 25,
+      "status": "Approved",
+      "reportedDate": "2026-09-17",
+      "description": "The message told the student to buy a laptop from a named seller before the start date. The seller was not the company's vendor."
+    },
+    {
+      "companyName": "Publix",
+      "recruiterEmail": "recruiting@outlook.com",
+      "scamType": "Upfront fee",
+      "channel": "Email",
+      "amountRequestedUsd": 75,
+      "domainAgeDays": 4100,
+      "status": "Pending",
+      "reportedDate": "2026-07-23",
+      "description": "The sender required a training or badge fee before any interview. The company careers page lists no such fee."
+    },
+    {
+      "companyName": "Publix",
+      "recruiterEmail": "jobs@publix-careers-mail.net",
+      "scamType": "Fake staffing agency",
+      "channel": "Text message",
+      "amountRequestedUsd": 640,
+      "domainAgeDays": 48,
+      "status": "Rejected",
+      "reportedDate": "2026-07-27",
+      "description": "A supposed agency used the company name but had no listing on the official careers page. The contact domain did not match the company."
+    },
+    {
+      "companyName": "Moffitt Cancer Center",
+      "recruiterEmail": "hr@moffitt-careers-desk.org",
+      "scamType": "Chat-only interview",
+      "channel": "Telegram",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 9,
+      "status": "Approved",
+      "reportedDate": "2026-07-31",
+      "description": "Every step stayed in a private chat and never moved to a company video call. No employee could be found on the official site."
+    },
+    {
+      "companyName": "Moffitt Cancer Center",
+      "recruiterEmail": "recruiting@yahoo.com",
+      "scamType": "Identity theft",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 5500,
+      "status": "Pending",
+      "reportedDate": "2026-03-20",
+      "description": "The sender asked for a government ID and bank details during the first screening. A real campus recruiter does not collect those up front."
+    },
+    {
+      "recruiterEmail": "campus1@amazon-hr-onboarding.net",
+      "scamType": "Fake check",
+      "channel": "Email",
+      "amountRequestedUsd": 50,
+      "domainAgeDays": 3,
+      "status": "Approved",
+      "companyName": "Amazon",
+      "reportedDate": "2026-01-05",
+      "description": "A message claiming to be Amazon recruiting mailed a cashier's check and told the student to buy a laptop, then return the extra money. The check sender was not Amazon."
+    },
+    {
+      "recruiterEmail": "campus2@amazon-hr-onboarding.net",
+      "scamType": "Equipment purchase",
+      "channel": "Telegram",
+      "amountRequestedUsd": 147,
+      "domainAgeDays": 8,
+      "status": "Approved",
+      "companyName": "Amazon",
+      "reportedDate": "2026-01-17",
+      "description": "The sender told the student to order a work laptop from a private seller before day one at Amazon. Amazon's careers page does not ask new hires to buy equipment."
+    },
+    {
+      "recruiterEmail": "campus3@amazon-hr-onboarding.net",
+      "scamType": "Upfront fee",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 244,
+      "domainAgeDays": 13,
+      "status": "Approved",
+      "companyName": "Amazon",
+      "reportedDate": "2026-01-28",
+      "description": "Before any interview, the sender required a training fee to move forward with Amazon. No fee is listed on the company's official careers page."
+    },
+    {
+      "recruiterEmail": "campus1@amazon-campus-offers.net",
+      "scamType": "Chat-only interview",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 18,
+      "status": "Approved",
+      "companyName": "Amazon",
+      "reportedDate": "2026-02-09",
+      "description": "The whole conversation stayed in a private chat and never became a Amazon video interview. The student could not find the sender on the company site."
+    },
+    {
+      "recruiterEmail": "campus2@amazon-campus-offers.net",
+      "scamType": "Identity theft",
+      "channel": "Text message",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 23,
+      "status": "Approved",
+      "companyName": "Amazon",
+      "reportedDate": "2026-02-21",
+      "description": "During the first screening the sender asked for a government ID and a bank account for a Amazon role. A campus recruiter does not collect those documents up front."
+    },
+    {
+      "recruiterEmail": "campus1@gmail.com",
+      "scamType": "Fake staffing agency",
+      "channel": "Email",
+      "amountRequestedUsd": 535,
+      "domainAgeDays": 2055,
+      "status": "Approved",
+      "companyName": "Amazon",
+      "reportedDate": "2026-03-05",
+      "description": "An agency used the Amazon name but had no listing on the official careers page. The contact address did not match the company's domain."
+    },
+    {
+      "recruiterEmail": "campus2@gmail.com",
+      "scamType": "Fake check",
+      "channel": "Telegram",
+      "amountRequestedUsd": 632,
+      "domainAgeDays": 2266,
+      "status": "Pending",
+      "companyName": "Amazon",
+      "reportedDate": "2026-03-16",
+      "description": "A message claiming to be Amazon recruiting mailed a cashier's check and told the student to buy a laptop, then return the extra money. The check sender was not Amazon."
+    },
+    {
+      "recruiterEmail": "campus1@proton.me",
+      "scamType": "Equipment purchase",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 729,
+      "domainAgeDays": 2477,
+      "status": "Rejected",
+      "companyName": "Amazon",
+      "reportedDate": "2026-03-28",
+      "description": "The sender told the student to order a work laptop from a private seller before day one at Amazon. Amazon's careers page does not ask new hires to buy equipment."
+    },
+    {
+      "recruiterEmail": "campus1@microsoft-talent-team.com",
+      "scamType": "Upfront fee",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 826,
+      "domainAgeDays": 43,
+      "status": "Approved",
+      "companyName": "Microsoft",
+      "reportedDate": "2026-04-02",
+      "description": "Before any interview, the sender required a training fee to move forward with Microsoft. No fee is listed on the company's official careers page."
+    },
+    {
+      "recruiterEmail": "campus2@microsoft-talent-team.com",
+      "scamType": "Chat-only interview",
+      "channel": "Text message",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 48,
+      "status": "Approved",
+      "companyName": "Microsoft",
+      "reportedDate": "2026-04-08",
+      "description": "The whole conversation stayed in a private chat and never became a Microsoft video interview. The student could not find the sender on the company site."
+    },
+    {
+      "recruiterEmail": "campus3@microsoft-talent-team.com",
+      "scamType": "Identity theft",
+      "channel": "Email",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 53,
+      "status": "Approved",
+      "companyName": "Microsoft",
+      "reportedDate": "2026-04-14",
+      "description": "During the first screening the sender asked for a government ID and a bank account for a Microsoft role. A campus recruiter does not collect those documents up front."
+    },
+    {
+      "recruiterEmail": "campus1@microsoft-intern-mail.net",
+      "scamType": "Fake staffing agency",
+      "channel": "Telegram",
+      "amountRequestedUsd": 1117,
+      "domainAgeDays": 58,
+      "status": "Approved",
+      "companyName": "Microsoft",
+      "reportedDate": "2026-04-19",
+      "description": "An agency used the Microsoft name but had no listing on the official careers page. The contact address did not match the company's domain."
+    },
+    {
+      "recruiterEmail": "campus2@microsoft-intern-mail.net",
+      "scamType": "Fake check",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 1214,
+      "domainAgeDays": 5,
+      "status": "Approved",
+      "companyName": "Microsoft",
+      "reportedDate": "2026-04-25",
+      "description": "A message claiming to be Microsoft recruiting mailed a cashier's check and told the student to buy a laptop, then return the extra money. The check sender was not Microsoft."
+    },
+    {
+      "recruiterEmail": "campus1@outlook.com",
+      "scamType": "Equipment purchase",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 1311,
+      "domainAgeDays": 3743,
+      "status": "Pending",
+      "companyName": "Microsoft",
+      "reportedDate": "2026-05-01",
+      "description": "The sender told the student to order a work laptop from a private seller before day one at Microsoft. Microsoft's careers page does not ask new hires to buy equipment."
+    },
+    {
+      "recruiterEmail": "campus1@deloitte-jobs-us.net",
+      "scamType": "Upfront fee",
+      "channel": "Text message",
+      "amountRequestedUsd": 1408,
+      "domainAgeDays": 15,
+      "status": "Approved",
+      "companyName": "Deloitte",
+      "reportedDate": "2026-05-07",
+      "description": "Before any interview, the sender required a training fee to move forward with Deloitte. No fee is listed on the company's official careers page."
+    },
+    {
+      "recruiterEmail": "campus2@deloitte-jobs-us.net",
+      "scamType": "Chat-only interview",
+      "channel": "Email",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 20,
+      "status": "Approved",
+      "companyName": "Deloitte",
+      "reportedDate": "2026-05-13",
+      "description": "The whole conversation stayed in a private chat and never became a Deloitte video interview. The student could not find the sender on the company site."
+    },
+    {
+      "recruiterEmail": "campus3@deloitte-jobs-us.net",
+      "scamType": "Identity theft",
+      "channel": "Telegram",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 25,
+      "status": "Approved",
+      "companyName": "Deloitte",
+      "reportedDate": "2026-05-18",
+      "description": "During the first screening the sender asked for a government ID and a bank account for a Deloitte role. A campus recruiter does not collect those documents up front."
+    },
+    {
+      "recruiterEmail": "campus1@deloitte-campus-mail.com",
+      "scamType": "Fake staffing agency",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 1699,
+      "domainAgeDays": 30,
+      "status": "Approved",
+      "companyName": "Deloitte",
+      "reportedDate": "2026-05-24",
+      "description": "An agency used the Deloitte name but had no listing on the official careers page. The contact address did not match the company's domain."
+    },
+    {
+      "recruiterEmail": "campus1@yahoo.com",
+      "scamType": "Fake check",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 1796,
+      "domainAgeDays": 4798,
+      "status": "Rejected",
+      "companyName": "Deloitte",
+      "reportedDate": "2026-05-30",
+      "description": "A message claiming to be Deloitte recruiting mailed a cashier's check and told the student to buy a laptop, then return the extra money. The check sender was not Deloitte."
+    },
+    {
+      "recruiterEmail": "campus1@google-intern-hiring.com",
+      "scamType": "Equipment purchase",
+      "channel": "Text message",
+      "amountRequestedUsd": 1893,
+      "domainAgeDays": 40,
+      "status": "Approved",
+      "companyName": "Google",
+      "reportedDate": "2026-06-05",
+      "description": "The sender told the student to order a work laptop from a private seller before day one at Google. Google's careers page does not ask new hires to buy equipment."
+    },
+    {
+      "recruiterEmail": "campus2@google-intern-hiring.com",
+      "scamType": "Upfront fee",
+      "channel": "Email",
+      "amountRequestedUsd": 1990,
+      "domainAgeDays": 45,
+      "status": "Approved",
+      "companyName": "Google",
+      "reportedDate": "2026-06-11",
+      "description": "Before any interview, the sender required a training fee to move forward with Google. No fee is listed on the company's official careers page."
+    },
+    {
+      "recruiterEmail": "campus3@google-intern-hiring.com",
+      "scamType": "Chat-only interview",
+      "channel": "Telegram",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 50,
+      "status": "Approved",
+      "companyName": "Google",
+      "reportedDate": "2026-06-16",
+      "description": "The whole conversation stayed in a private chat and never became a Google video interview. The student could not find the sender on the company site."
+    },
+    {
+      "recruiterEmail": "campus1@google-student-roles.net",
+      "scamType": "Identity theft",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 55,
+      "status": "Approved",
+      "companyName": "Google",
+      "reportedDate": "2026-06-22",
+      "description": "During the first screening the sender asked for a government ID and a bank account for a Google role. A campus recruiter does not collect those documents up front."
+    },
+    {
+      "recruiterEmail": "campus3@gmail.com",
+      "scamType": "Fake staffing agency",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 2281,
+      "domainAgeDays": 5853,
+      "status": "Pending",
+      "companyName": "Google",
+      "reportedDate": "2026-06-28",
+      "description": "An agency used the Google name but had no listing on the official careers page. The contact address did not match the company's domain."
+    },
+    {
+      "recruiterEmail": "campus1@jpmorgan-intern-desk.net",
+      "scamType": "Fake check",
+      "channel": "Text message",
+      "amountRequestedUsd": 2378,
+      "domainAgeDays": 7,
+      "status": "Approved",
+      "companyName": "JPMorgan Chase",
+      "reportedDate": "2026-07-02",
+      "description": "A message claiming to be JPMorgan Chase recruiting mailed a cashier's check and told the student to buy a laptop, then return the extra money. The check sender was not JPMorgan Chase."
+    },
+    {
+      "recruiterEmail": "campus2@jpmorgan-intern-desk.net",
+      "scamType": "Equipment purchase",
+      "channel": "Email",
+      "amountRequestedUsd": 2475,
+      "domainAgeDays": 12,
+      "status": "Approved",
+      "companyName": "JPMorgan Chase",
+      "reportedDate": "2026-07-08",
+      "description": "The sender told the student to order a work laptop from a private seller before day one at JPMorgan Chase. JPMorgan Chase's careers page does not ask new hires to buy equipment."
+    },
+    {
+      "recruiterEmail": "campus1@chase-campus-hiring.com",
+      "scamType": "Upfront fee",
+      "channel": "Telegram",
+      "amountRequestedUsd": 2572,
+      "domainAgeDays": 17,
+      "status": "Approved",
+      "companyName": "JPMorgan Chase",
+      "reportedDate": "2026-07-13",
+      "description": "Before any interview, the sender required a training fee to move forward with JPMorgan Chase. No fee is listed on the company's official careers page."
+    },
+    {
+      "recruiterEmail": "campus2@outlook.com",
+      "scamType": "Chat-only interview",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 6697,
+      "status": "Pending",
+      "companyName": "JPMorgan Chase",
+      "reportedDate": "2026-07-19",
+      "description": "The whole conversation stayed in a private chat and never became a JPMorgan Chase video interview. The student could not find the sender on the company site."
+    },
+    {
+      "recruiterEmail": "campus1@walmart-campus-hiring.net",
+      "scamType": "Identity theft",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 27,
+      "status": "Approved",
+      "companyName": "Walmart",
+      "reportedDate": "2026-07-24",
+      "description": "During the first screening the sender asked for a government ID and a bank account for a Walmart role. A campus recruiter does not collect those documents up front."
+    },
+    {
+      "recruiterEmail": "campus2@walmart-campus-hiring.net",
+      "scamType": "Fake staffing agency",
+      "channel": "Text message",
+      "amountRequestedUsd": 2863,
+      "domainAgeDays": 32,
+      "status": "Pending",
+      "companyName": "Walmart",
+      "reportedDate": "2026-07-30",
+      "description": "An agency used the Walmart name but had no listing on the official careers page. The contact address did not match the company's domain."
+    },
+    {
+      "recruiterEmail": "campus1@accenture-intern-desk.com",
+      "scamType": "Fake check",
+      "channel": "Email",
+      "amountRequestedUsd": 2960,
+      "domainAgeDays": 37,
+      "status": "Approved",
+      "companyName": "Accenture",
+      "reportedDate": "2026-08-02",
+      "description": "A message claiming to be Accenture recruiting mailed a cashier's check and told the student to buy a laptop, then return the extra money. The check sender was not Accenture."
+    },
+    {
+      "recruiterEmail": "campus2@accenture-intern-desk.com",
+      "scamType": "Equipment purchase",
+      "channel": "Telegram",
+      "amountRequestedUsd": 106,
+      "domainAgeDays": 42,
+      "status": "Approved",
+      "companyName": "Accenture",
+      "reportedDate": "2026-08-05",
+      "description": "The sender told the student to order a work laptop from a private seller before day one at Accenture. Accenture's careers page does not ask new hires to buy equipment."
+    },
+    {
+      "recruiterEmail": "campus1@raymondjames-talent.net",
+      "scamType": "Upfront fee",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 203,
+      "domainAgeDays": 47,
+      "status": "Approved",
+      "companyName": "Raymond James",
+      "reportedDate": "2026-08-08",
+      "description": "Before any interview, the sender required a training fee to move forward with Raymond James. No fee is listed on the company's official careers page."
+    },
+    {
+      "recruiterEmail": "campus2@proton.me",
+      "scamType": "Chat-only interview",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 7963,
+      "status": "Pending",
+      "companyName": "Publix",
+      "reportedDate": "2026-08-11",
+      "description": "The whole conversation stayed in a private chat and never became a Publix video interview. The student could not find the sender on the company site."
+    },
+    {
+      "recruiterEmail": "campus1@moffitt-hiring-now.org",
+      "scamType": "Identity theft",
+      "channel": "Text message",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 57,
+      "status": "Approved",
+      "companyName": "Moffitt Cancer Center",
+      "reportedDate": "2026-08-14",
+      "description": "During the first screening the sender asked for a government ID and a bank account for a Moffitt Cancer Center role. A campus recruiter does not collect those documents up front."
+    },
+    {
+      "recruiterEmail": "campus1@app1e-careers.com",
+      "scamType": "Fake staffing agency",
+      "channel": "Email",
+      "amountRequestedUsd": 494,
+      "domainAgeDays": 4,
+      "status": "Approved",
+      "companyName": "Apple",
+      "reportedDate": "2026-08-17",
+      "description": "An agency used the Apple name but had no listing on the official careers page. The contact address did not match the company's domain."
+    },
+    {
+      "recruiterEmail": "campus2@app1e-careers.com",
+      "scamType": "Fake check",
+      "channel": "Telegram",
+      "amountRequestedUsd": 591,
+      "domainAgeDays": 9,
+      "status": "Approved",
+      "companyName": "Apple",
+      "reportedDate": "2026-08-20",
+      "description": "A message claiming to be Apple recruiting mailed a cashier's check and told the student to buy a laptop, then return the extra money. The check sender was not Apple."
+    },
+    {
+      "recruiterEmail": "campus3@app1e-careers.com",
+      "scamType": "Equipment purchase",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 688,
+      "domainAgeDays": 14,
+      "status": "Approved",
+      "companyName": "Apple",
+      "reportedDate": "2026-08-23",
+      "description": "The sender told the student to order a work laptop from a private seller before day one at Apple. Apple's careers page does not ask new hires to buy equipment."
+    },
+    {
+      "recruiterEmail": "campus1@apple-talent-desk.net",
+      "scamType": "Upfront fee",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 785,
+      "domainAgeDays": 19,
+      "status": "Approved",
+      "companyName": "Apple",
+      "reportedDate": "2026-08-27",
+      "description": "Before any interview, the sender required a training fee to move forward with Apple. No fee is listed on the company's official careers page."
+    },
+    {
+      "recruiterEmail": "campus4@gmail.com",
+      "scamType": "Chat-only interview",
+      "channel": "Text message",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 2228,
+      "status": "Pending",
+      "companyName": "Apple",
+      "reportedDate": "2026-08-30",
+      "description": "The whole conversation stayed in a private chat and never became a Apple video interview. The student could not find the sender on the company site."
+    },
+    {
+      "recruiterEmail": "campus1@meta-recruiting-team.net",
+      "scamType": "Identity theft",
+      "channel": "Email",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 29,
+      "status": "Approved",
+      "companyName": "Meta",
+      "reportedDate": "2026-09-02",
+      "description": "During the first screening the sender asked for a government ID and a bank account for a Meta role. A campus recruiter does not collect those documents up front."
+    },
+    {
+      "recruiterEmail": "campus2@meta-recruiting-team.net",
+      "scamType": "Fake staffing agency",
+      "channel": "Telegram",
+      "amountRequestedUsd": 1076,
+      "domainAgeDays": 34,
+      "status": "Approved",
+      "companyName": "Meta",
+      "reportedDate": "2026-09-05",
+      "description": "An agency used the Meta name but had no listing on the official careers page. The contact address did not match the company's domain."
+    },
+    {
+      "recruiterEmail": "campus3@meta-recruiting-team.net",
+      "scamType": "Fake check",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 1173,
+      "domainAgeDays": 39,
+      "status": "Approved",
+      "companyName": "Meta",
+      "reportedDate": "2026-09-08",
+      "description": "A message claiming to be Meta recruiting mailed a cashier's check and told the student to buy a laptop, then return the extra money. The check sender was not Meta."
+    },
+    {
+      "recruiterEmail": "campus1@meta-jobs-outreach.com",
+      "scamType": "Equipment purchase",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 1270,
+      "domainAgeDays": 44,
+      "status": "Rejected",
+      "companyName": "Meta",
+      "reportedDate": "2026-09-11",
+      "description": "The sender told the student to order a work laptop from a private seller before day one at Meta. Meta's careers page does not ask new hires to buy equipment."
+    },
+    {
+      "recruiterEmail": "campus1@ibm-campus-hiring.net",
+      "scamType": "Upfront fee",
+      "channel": "Text message",
+      "amountRequestedUsd": 1367,
+      "domainAgeDays": 49,
+      "status": "Approved",
+      "companyName": "IBM",
+      "reportedDate": "2026-09-14",
+      "description": "Before any interview, the sender required a training fee to move forward with IBM. No fee is listed on the company's official careers page."
+    },
+    {
+      "recruiterEmail": "campus2@ibm-campus-hiring.net",
+      "scamType": "Chat-only interview",
+      "channel": "Email",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 54,
+      "status": "Approved",
+      "companyName": "IBM",
+      "reportedDate": "2026-09-17",
+      "description": "The whole conversation stayed in a private chat and never became a IBM video interview. The student could not find the sender on the company site."
+    },
+    {
+      "recruiterEmail": "campus2@yahoo.com",
+      "scamType": "Identity theft",
+      "channel": "Telegram",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 3705,
+      "status": "Pending",
+      "companyName": "IBM",
+      "reportedDate": "2026-09-20",
+      "description": "During the first screening the sender asked for a government ID and a bank account for a IBM role. A campus recruiter does not collect those documents up front."
+    },
+    {
+      "recruiterEmail": "campus1@pwc-hiring-desk.com",
+      "scamType": "Fake staffing agency",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 1658,
+      "domainAgeDays": 6,
+      "status": "Approved",
+      "companyName": "PwC",
+      "reportedDate": "2026-09-23",
+      "description": "An agency used the PwC name but had no listing on the official careers page. The contact address did not match the company's domain."
+    },
+    {
+      "recruiterEmail": "campus2@pwc-hiring-desk.com",
+      "scamType": "Fake check",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 1755,
+      "domainAgeDays": 11,
+      "status": "Approved",
+      "companyName": "PwC",
+      "reportedDate": "2026-09-26",
+      "description": "A message claiming to be PwC recruiting mailed a cashier's check and told the student to buy a laptop, then return the extra money. The check sender was not PwC."
+    },
+    {
+      "recruiterEmail": "campus3@pwc-hiring-desk.com",
+      "scamType": "Equipment purchase",
+      "channel": "Text message",
+      "amountRequestedUsd": 1852,
+      "domainAgeDays": 16,
+      "status": "Rejected",
+      "companyName": "PwC",
+      "reportedDate": "2026-09-29",
+      "description": "The sender told the student to order a work laptop from a private seller before day one at PwC. PwC's careers page does not ask new hires to buy equipment."
+    },
+    {
+      "recruiterEmail": "campus1@ey-student-jobs.com",
+      "scamType": "Upfront fee",
+      "channel": "Email",
+      "amountRequestedUsd": 1949,
+      "domainAgeDays": 21,
+      "status": "Approved",
+      "companyName": "EY",
+      "reportedDate": "2026-10-02",
+      "description": "Before any interview, the sender required a training fee to move forward with EY. No fee is listed on the company's official careers page."
+    },
+    {
+      "recruiterEmail": "campus3@proton.me",
+      "scamType": "Chat-only interview",
+      "channel": "Telegram",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 4760,
+      "status": "Pending",
+      "companyName": "EY",
+      "reportedDate": "2026-10-05",
+      "description": "The whole conversation stayed in a private chat and never became a EY video interview. The student could not find the sender on the company site."
+    },
+    {
+      "recruiterEmail": "campus1@bofa-careers-portal.com",
+      "scamType": "Identity theft",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 31,
+      "status": "Approved",
+      "companyName": "Bank of America",
+      "reportedDate": "2026-10-09",
+      "description": "During the first screening the sender asked for a government ID and a bank account for a Bank of America role. A campus recruiter does not collect those documents up front."
+    },
+    {
+      "recruiterEmail": "campus2@bofa-careers-portal.com",
+      "scamType": "Fake staffing agency",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 2240,
+      "domainAgeDays": 36,
+      "status": "Approved",
+      "companyName": "Bank of America",
+      "reportedDate": "2026-10-12",
+      "description": "An agency used the Bank of America name but had no listing on the official careers page. The contact address did not match the company's domain."
+    },
+    {
+      "recruiterEmail": "campus3@bofa-careers-portal.com",
+      "scamType": "Fake check",
+      "channel": "Text message",
+      "amountRequestedUsd": 2337,
+      "domainAgeDays": 41,
+      "status": "Pending",
+      "companyName": "Bank of America",
+      "reportedDate": "2026-10-15",
+      "description": "A message claiming to be Bank of America recruiting mailed a cashier's check and told the student to buy a laptop, then return the extra money. The check sender was not Bank of America."
+    },
+    {
+      "recruiterEmail": "campus1@target-careers-desk.net",
+      "scamType": "Equipment purchase",
+      "channel": "Email",
+      "amountRequestedUsd": 2434,
+      "domainAgeDays": 46,
+      "status": "Approved",
+      "companyName": "Target",
+      "reportedDate": "2026-10-18",
+      "description": "The sender told the student to order a work laptop from a private seller before day one at Target. Target's careers page does not ask new hires to buy equipment."
+    },
+    {
+      "recruiterEmail": "campus3@outlook.com",
+      "scamType": "Upfront fee",
+      "channel": "Telegram",
+      "amountRequestedUsd": 2531,
+      "domainAgeDays": 5815,
+      "status": "Rejected",
+      "companyName": "Target",
+      "reportedDate": "2026-10-21",
+      "description": "Before any interview, the sender required a training fee to move forward with Target. No fee is listed on the company's official careers page."
+    },
+    {
+      "recruiterEmail": "campus1@lockheed-talent-team.com",
+      "scamType": "Chat-only interview",
+      "channel": "WhatsApp",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 56,
+      "status": "Approved",
+      "companyName": "Lockheed Martin",
+      "reportedDate": "2026-10-24",
+      "description": "The whole conversation stayed in a private chat and never became a Lockheed Martin video interview. The student could not find the sender on the company site."
+    },
+    {
+      "recruiterEmail": "campus1@tgh-recruiting-now.org",
+      "scamType": "Identity theft",
+      "channel": "LinkedIn",
+      "amountRequestedUsd": 0,
+      "domainAgeDays": 3,
+      "status": "Pending",
+      "companyName": "Tampa General Hospital",
+      "reportedDate": "2026-10-27",
+      "description": "During the first screening the sender asked for a government ID and a bank account for a Tampa General Hospital role. A campus recruiter does not collect those documents up front."
+    },
+    {
+      "recruiterEmail": "campus1@jabil-jobs-portal.net",
+      "scamType": "Fake staffing agency",
+      "channel": "Text message",
+      "amountRequestedUsd": 2822,
+      "domainAgeDays": 8,
+      "status": "Approved",
+      "companyName": "Jabil",
+      "reportedDate": "2026-10-30",
+      "description": "An agency used the Jabil name but had no listing on the official careers page. The contact address did not match the company's domain."
+    }
+  ],
+  "officialRecruiters": [
+    {
+      "email": "campus.recruiting@amazon.com",
+      "companyDomain": "amazon.com",
+      "firstSeen": "2026-01-05",
+      "notes": "Verified official domain"
+    },
+    {
+      "email": "university.hiring@microsoft.com",
+      "companyDomain": "microsoft.com",
+      "firstSeen": "2026-01-05",
+      "notes": "Verified official domain"
+    },
+    {
+      "email": "early.careers@deloitte.com",
+      "companyDomain": "deloitte.com",
+      "firstSeen": "2026-01-05",
+      "notes": "Verified official domain"
+    },
+    {
+      "email": "students@jpmorgan.com",
+      "companyDomain": "jpmorgan.com",
+      "firstSeen": "2026-01-05",
+      "notes": "Verified official domain"
+    },
+    {
+      "email": "internships@moffitt.org",
+      "companyDomain": "moffitt.org",
+      "firstSeen": "2026-01-05",
+      "notes": "Verified official domain"
+    },
+    {
+      "email": "university.recruiting@apple.com",
+      "companyDomain": "apple.com",
+      "firstSeen": "2026-01-05",
+      "notes": "Verified official domain"
+    },
+    {
+      "email": "earlycareers@meta.com",
+      "companyDomain": "meta.com",
+      "firstSeen": "2026-01-05",
+      "notes": "Verified official domain"
+    },
+    {
+      "email": "campus@ibm.com",
+      "companyDomain": "ibm.com",
+      "firstSeen": "2026-01-05",
+      "notes": "Verified official domain"
+    },
+    {
+      "email": "students@bankofamerica.com",
+      "companyDomain": "bankofamerica.com",
+      "firstSeen": "2026-01-05",
+      "notes": "Verified official domain"
+    },
+    {
+      "email": "careers@tgh.org",
+      "companyDomain": "tgh.org",
+      "firstSeen": "2026-01-05",
+      "notes": "Verified official domain"
+    }
+  ],
+  "jobPostings": [
+    {
+      "companyName": "Amazon",
+      "title": "Data Analyst Intern",
+      "location": "Seattle, WA",
+      "state": "WA",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 32,
+      "postedDate": "2026-06-03",
+      "description": "Data Analyst Intern with Amazon in Seattle, WA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Amazon",
+      "title": "Software Engineering Intern",
+      "location": "Austin, TX",
+      "state": "TX",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 40,
+      "postedDate": "2026-08-14",
+      "description": "Software Engineering Intern with Amazon in Austin, TX. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Amazon",
+      "title": "Business Analyst",
+      "location": "Seattle, WA",
+      "state": "WA",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 27,
+      "postedDate": "2026-10-02",
+      "description": "Business Analyst with Amazon in Seattle, WA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Microsoft",
+      "title": "Cybersecurity Intern",
+      "location": "Redmond, WA",
+      "state": "WA",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 38,
+      "postedDate": "2026-06-18",
+      "description": "Cybersecurity Intern with Microsoft in Redmond, WA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Microsoft",
+      "title": "Software Engineer",
+      "location": "Austin, TX",
+      "state": "TX",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 45,
+      "postedDate": "2026-09-09",
+      "description": "Software Engineer with Microsoft in Austin, TX. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Microsoft",
+      "title": "Data Analyst Intern",
+      "location": "Redmond, WA",
+      "state": "WA",
+      "isRemote": 0,
+      "isPaid": 0,
+      "payRatePerHour": null,
+      "postedDate": "2026-07-07",
+      "description": "Data Analyst Intern with Microsoft in Redmond, WA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Google",
+      "title": "Software Engineering Intern",
+      "location": "Mountain View, CA",
+      "state": "CA",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 42,
+      "postedDate": "2026-06-22",
+      "description": "Software Engineering Intern with Google in Mountain View, CA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Google",
+      "title": "Cybersecurity Intern",
+      "location": "Austin, TX",
+      "state": "TX",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 36,
+      "postedDate": "2026-09-15",
+      "description": "Cybersecurity Intern with Google in Austin, TX. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Google",
+      "title": "Business Analyst",
+      "location": "San Francisco, CA",
+      "state": "CA",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 30,
+      "postedDate": "2026-10-20",
+      "description": "Business Analyst with Google in San Francisco, CA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Deloitte",
+      "title": "Business Analyst",
+      "location": "New York, NY",
+      "state": "NY",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 29,
+      "postedDate": "2026-06-11",
+      "description": "Business Analyst with Deloitte in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Deloitte",
+      "title": "Data Analyst Intern",
+      "location": "Chicago, IL",
+      "state": "IL",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 24,
+      "postedDate": "2026-08-03",
+      "description": "Data Analyst Intern with Deloitte in Chicago, IL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Deloitte",
+      "title": "Cybersecurity Intern",
+      "location": "New York, NY",
+      "state": "NY",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 33,
+      "postedDate": "2026-10-08",
+      "description": "Cybersecurity Intern with Deloitte in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "JPMorgan Chase",
+      "title": "Business Analyst",
+      "location": "New York, NY",
+      "state": "NY",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 34,
+      "postedDate": "2026-07-01",
+      "description": "Business Analyst with JPMorgan Chase in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "JPMorgan Chase",
+      "title": "Cybersecurity Intern",
+      "location": "Tampa, FL",
+      "state": "FL",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 31,
+      "postedDate": "2026-09-01",
+      "description": "Cybersecurity Intern with JPMorgan Chase in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "JPMorgan Chase",
+      "title": "Data Analyst",
+      "location": "New York, NY",
+      "state": "NY",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 37,
+      "postedDate": "2026-10-16",
+      "description": "Data Analyst with JPMorgan Chase in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Walmart",
+      "title": "Data Analyst Intern",
+      "location": "Bentonville, AR",
+      "state": "AR",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 22,
+      "postedDate": "2026-06-25",
+      "description": "Data Analyst Intern with Walmart in Bentonville, AR. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Walmart",
+      "title": "Business Analyst",
+      "location": "Dallas, TX",
+      "state": "TX",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 21,
+      "postedDate": "2026-08-19",
+      "description": "Business Analyst with Walmart in Dallas, TX. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Walmart",
+      "title": "Software Engineering Intern",
+      "location": "Bentonville, AR",
+      "state": "AR",
+      "isRemote": 0,
+      "isPaid": 0,
+      "payRatePerHour": null,
+      "postedDate": "2026-09-28",
+      "description": "Software Engineering Intern with Walmart in Bentonville, AR. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Accenture",
+      "title": "Business Analyst",
+      "location": "Chicago, IL",
+      "state": "IL",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 28,
+      "postedDate": "2026-07-14",
+      "description": "Business Analyst with Accenture in Chicago, IL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Accenture",
+      "title": "Cybersecurity Intern",
+      "location": "Chicago, IL",
+      "state": "IL",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 30,
+      "postedDate": "2026-08-27",
+      "description": "Cybersecurity Intern with Accenture in Chicago, IL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Accenture",
+      "title": "Data Analyst Intern",
+      "location": "Austin, TX",
+      "state": "TX",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 26,
+      "postedDate": "2026-10-12",
+      "description": "Data Analyst Intern with Accenture in Austin, TX. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Raymond James",
+      "title": "Business Analyst",
+      "location": "St. Petersburg, FL",
+      "state": "FL",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 25,
+      "postedDate": "2026-06-30",
+      "description": "Business Analyst with Raymond James in St. Petersburg, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Raymond James",
+      "title": "Data Analyst Intern",
+      "location": "Tampa, FL",
+      "state": "FL",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 20,
+      "postedDate": "2026-09-04",
+      "description": "Data Analyst Intern with Raymond James in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Raymond James",
+      "title": "Cybersecurity Intern",
+      "location": "St. Petersburg, FL",
+      "state": "FL",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 27,
+      "postedDate": "2026-10-23",
+      "description": "Cybersecurity Intern with Raymond James in St. Petersburg, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Publix",
+      "title": "Data Analyst Intern",
+      "location": "Lakeland, FL",
+      "state": "FL",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 19,
+      "postedDate": "2026-07-20",
+      "description": "Data Analyst Intern with Publix in Lakeland, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Publix",
+      "title": "Business Analyst",
+      "location": "Lakeland, FL",
+      "state": "FL",
+      "isRemote": 0,
+      "isPaid": 0,
+      "payRatePerHour": null,
+      "postedDate": "2026-08-11",
+      "description": "Business Analyst with Publix in Lakeland, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Publix",
+      "title": "Software Engineering Intern",
+      "location": "Jacksonville, FL",
+      "state": "FL",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 23,
+      "postedDate": "2026-10-05",
+      "description": "Software Engineering Intern with Publix in Jacksonville, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Moffitt Cancer Center",
+      "title": "Data Analyst Intern",
+      "location": "Tampa, FL",
+      "state": "FL",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 24,
+      "postedDate": "2026-06-08",
+      "description": "Data Analyst Intern with Moffitt Cancer Center in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Moffitt Cancer Center",
+      "title": "Cybersecurity Intern",
+      "location": "Tampa, FL",
+      "state": "FL",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 26,
+      "postedDate": "2026-09-18",
+      "description": "Cybersecurity Intern with Moffitt Cancer Center in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Moffitt Cancer Center",
+      "title": "Business Analyst",
+      "location": "Tampa, FL",
+      "state": "FL",
+      "isRemote": 1,
+      "isPaid": 0,
+      "payRatePerHour": null,
+      "postedDate": "2026-10-27",
+      "description": "Business Analyst with Moffitt Cancer Center in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Amazon",
+      "title": "Data Analyst Intern",
+      "location": "Seattle, WA",
+      "state": "WA",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 18,
+      "postedDate": "2026-06-01",
+      "description": "Data Analyst Intern with Amazon in Seattle, WA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Microsoft",
+      "title": "Software Engineering Intern",
+      "location": "Redmond, WA",
+      "state": "WA",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 21,
+      "postedDate": "2026-06-05",
+      "description": "Software Engineering Intern with Microsoft in Redmond, WA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Google",
+      "title": "Business Analyst",
+      "location": "Mountain View, CA",
+      "state": "CA",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 24,
+      "postedDate": "2026-06-09",
+      "description": "Business Analyst with Google in Mountain View, CA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Deloitte",
+      "title": "Cybersecurity Intern",
+      "location": "New York, NY",
+      "state": "NY",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 27,
+      "postedDate": "2026-06-13",
+      "description": "Cybersecurity Intern with Deloitte in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "JPMorgan Chase",
+      "title": "Finance Intern",
+      "location": "New York, NY",
+      "state": "NY",
+      "isRemote": 0,
+      "isPaid": 0,
+      "payRatePerHour": null,
+      "postedDate": "2026-06-16",
+      "description": "Finance Intern with JPMorgan Chase in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Walmart",
+      "title": "Operations Analyst",
+      "location": "Bentonville, AR",
+      "state": "AR",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 33,
+      "postedDate": "2026-06-20",
+      "description": "Operations Analyst with Walmart in Bentonville, AR. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Accenture",
+      "title": "Data Analyst Intern",
+      "location": "Chicago, IL",
+      "state": "IL",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 36,
+      "postedDate": "2026-06-24",
+      "description": "Data Analyst Intern with Accenture in Chicago, IL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Raymond James",
+      "title": "Software Engineering Intern",
+      "location": "St. Petersburg, FL",
+      "state": "FL",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 39,
+      "postedDate": "2026-06-28",
+      "description": "Software Engineering Intern with Raymond James in St. Petersburg, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Publix",
+      "title": "Business Analyst",
+      "location": "Lakeland, FL",
+      "state": "FL",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 42,
+      "postedDate": "2026-07-02",
+      "description": "Business Analyst with Publix in Lakeland, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Moffitt Cancer Center",
+      "title": "Cybersecurity Intern",
+      "location": "Tampa, FL",
+      "state": "FL",
+      "isRemote": 1,
+      "isPaid": 0,
+      "payRatePerHour": null,
+      "postedDate": "2026-07-06",
+      "description": "Cybersecurity Intern with Moffitt Cancer Center in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Apple",
+      "title": "Finance Intern",
+      "location": "Cupertino, CA",
+      "state": "CA",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 20,
+      "postedDate": "2026-07-10",
+      "description": "Finance Intern with Apple in Cupertino, CA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Apple",
+      "title": "Operations Analyst",
+      "location": "Cupertino, CA",
+      "state": "CA",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 23,
+      "postedDate": "2026-07-14",
+      "description": "Operations Analyst with Apple in Cupertino, CA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Apple",
+      "title": "Data Analyst Intern",
+      "location": "Cupertino, CA",
+      "state": "CA",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 26,
+      "postedDate": "2026-07-17",
+      "description": "Data Analyst Intern with Apple in Cupertino, CA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Meta",
+      "title": "Software Engineering Intern",
+      "location": "Menlo Park, CA",
+      "state": "CA",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 29,
+      "postedDate": "2026-07-21",
+      "description": "Software Engineering Intern with Meta in Menlo Park, CA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Meta",
+      "title": "Business Analyst",
+      "location": "Menlo Park, CA",
+      "state": "CA",
+      "isRemote": 0,
+      "isPaid": 0,
+      "payRatePerHour": null,
+      "postedDate": "2026-07-25",
+      "description": "Business Analyst with Meta in Menlo Park, CA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Meta",
+      "title": "Cybersecurity Intern",
+      "location": "Menlo Park, CA",
+      "state": "CA",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 35,
+      "postedDate": "2026-07-29",
+      "description": "Cybersecurity Intern with Meta in Menlo Park, CA. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "IBM",
+      "title": "Finance Intern",
+      "location": "Armonk, NY",
+      "state": "NY",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 38,
+      "postedDate": "2026-08-02",
+      "description": "Finance Intern with IBM in Armonk, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "IBM",
+      "title": "Operations Analyst",
+      "location": "Armonk, NY",
+      "state": "NY",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 41,
+      "postedDate": "2026-08-06",
+      "description": "Operations Analyst with IBM in Armonk, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "IBM",
+      "title": "Data Analyst Intern",
+      "location": "Armonk, NY",
+      "state": "NY",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 44,
+      "postedDate": "2026-08-10",
+      "description": "Data Analyst Intern with IBM in Armonk, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "PwC",
+      "title": "Software Engineering Intern",
+      "location": "New York, NY",
+      "state": "NY",
+      "isRemote": 0,
+      "isPaid": 0,
+      "payRatePerHour": null,
+      "postedDate": "2026-08-14",
+      "description": "Software Engineering Intern with PwC in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "PwC",
+      "title": "Business Analyst",
+      "location": "New York, NY",
+      "state": "NY",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 22,
+      "postedDate": "2026-08-17",
+      "description": "Business Analyst with PwC in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "PwC",
+      "title": "Cybersecurity Intern",
+      "location": "New York, NY",
+      "state": "NY",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 25,
+      "postedDate": "2026-08-21",
+      "description": "Cybersecurity Intern with PwC in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "EY",
+      "title": "Finance Intern",
+      "location": "New York, NY",
+      "state": "NY",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 28,
+      "postedDate": "2026-08-25",
+      "description": "Finance Intern with EY in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "EY",
+      "title": "Operations Analyst",
+      "location": "New York, NY",
+      "state": "NY",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 31,
+      "postedDate": "2026-08-29",
+      "description": "Operations Analyst with EY in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "EY",
+      "title": "Data Analyst Intern",
+      "location": "New York, NY",
+      "state": "NY",
+      "isRemote": 1,
+      "isPaid": 0,
+      "payRatePerHour": null,
+      "postedDate": "2026-09-02",
+      "description": "Data Analyst Intern with EY in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Bank of America",
+      "title": "Software Engineering Intern",
+      "location": "Charlotte, NC",
+      "state": "NC",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 37,
+      "postedDate": "2026-09-06",
+      "description": "Software Engineering Intern with Bank of America in Charlotte, NC. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Bank of America",
+      "title": "Business Analyst",
+      "location": "Charlotte, NC",
+      "state": "NC",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 40,
+      "postedDate": "2026-09-10",
+      "description": "Business Analyst with Bank of America in Charlotte, NC. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Bank of America",
+      "title": "Cybersecurity Intern",
+      "location": "Charlotte, NC",
+      "state": "NC",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 43,
+      "postedDate": "2026-09-14",
+      "description": "Cybersecurity Intern with Bank of America in Charlotte, NC. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Target",
+      "title": "Finance Intern",
+      "location": "Minneapolis, MN",
+      "state": "MN",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 18,
+      "postedDate": "2026-09-17",
+      "description": "Finance Intern with Target in Minneapolis, MN. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Target",
+      "title": "Operations Analyst",
+      "location": "Minneapolis, MN",
+      "state": "MN",
+      "isRemote": 0,
+      "isPaid": 0,
+      "payRatePerHour": null,
+      "postedDate": "2026-09-21",
+      "description": "Operations Analyst with Target in Minneapolis, MN. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Target",
+      "title": "Data Analyst Intern",
+      "location": "Minneapolis, MN",
+      "state": "MN",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 24,
+      "postedDate": "2026-09-25",
+      "description": "Data Analyst Intern with Target in Minneapolis, MN. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Lockheed Martin",
+      "title": "Software Engineering Intern",
+      "location": "Bethesda, MD",
+      "state": "MD",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 27,
+      "postedDate": "2026-09-29",
+      "description": "Software Engineering Intern with Lockheed Martin in Bethesda, MD. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Lockheed Martin",
+      "title": "Business Analyst",
+      "location": "Bethesda, MD",
+      "state": "MD",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 30,
+      "postedDate": "2026-10-03",
+      "description": "Business Analyst with Lockheed Martin in Bethesda, MD. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Lockheed Martin",
+      "title": "Cybersecurity Intern",
+      "location": "Bethesda, MD",
+      "state": "MD",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 33,
+      "postedDate": "2026-10-07",
+      "description": "Cybersecurity Intern with Lockheed Martin in Bethesda, MD. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Tampa General Hospital",
+      "title": "Finance Intern",
+      "location": "Tampa, FL",
+      "state": "FL",
+      "isRemote": 0,
+      "isPaid": 0,
+      "payRatePerHour": null,
+      "postedDate": "2026-10-11",
+      "description": "Finance Intern with Tampa General Hospital in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Tampa General Hospital",
+      "title": "Operations Analyst",
+      "location": "Tampa, FL",
+      "state": "FL",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 39,
+      "postedDate": "2026-10-15",
+      "description": "Operations Analyst with Tampa General Hospital in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Tampa General Hospital",
+      "title": "Data Analyst Intern",
+      "location": "Tampa, FL",
+      "state": "FL",
+      "isRemote": 1,
+      "isPaid": 1,
+      "payRatePerHour": 42,
+      "postedDate": "2026-10-18",
+      "description": "Data Analyst Intern with Tampa General Hospital in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Jabil",
+      "title": "Software Engineering Intern",
+      "location": "St. Petersburg, FL",
+      "state": "FL",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 45,
+      "postedDate": "2026-10-22",
+      "description": "Software Engineering Intern with Jabil in St. Petersburg, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Jabil",
+      "title": "Business Analyst",
+      "location": "St. Petersburg, FL",
+      "state": "FL",
+      "isRemote": 0,
+      "isPaid": 1,
+      "payRatePerHour": 20,
+      "postedDate": "2026-10-26",
+      "description": "Business Analyst with Jabil in St. Petersburg, FL. Synthetic 2026 listing for the JobLens class dataset."
+    },
+    {
+      "companyName": "Jabil",
+      "title": "Cybersecurity Intern",
+      "location": "St. Petersburg, FL",
+      "state": "FL",
+      "isRemote": 1,
+      "isPaid": 0,
+      "payRatePerHour": null,
+      "postedDate": "2026-10-30",
+      "description": "Cybersecurity Intern with Jabil in St. Petersburg, FL. Synthetic 2026 listing for the JobLens class dataset."
+    }
+  ],
+  "interviewReviews": [
+    {
+      "companyName": "Amazon",
+      "role": "Data Analyst Intern",
+      "rating": 5,
+      "experience": "A structured loop with a real hiring manager and a written offer later.",
+      "wasLegit": 1,
+      "reviewDate": "2026-03-12"
+    },
+    {
+      "companyName": "Amazon",
+      "role": "Warehouse Associate",
+      "rating": 2,
+      "experience": "The chat never left Telegram and the sender avoided the official site.",
+      "wasLegit": 0,
+      "reviewDate": "2026-08-04"
+    },
+    {
+      "companyName": "Microsoft",
+      "role": "Software Engineering Intern",
+      "rating": 4,
+      "experience": "Two video rounds and a recruiter who used a microsoft.com address.",
+      "wasLegit": 1,
+      "reviewDate": "2026-04-16"
+    },
+    {
+      "companyName": "Microsoft",
+      "role": "Support Engineer",
+      "rating": 5,
+      "experience": "The panel matched the posting on the company careers page.",
+      "wasLegit": 1,
+      "reviewDate": "2026-09-02"
+    },
+    {
+      "companyName": "Google",
+      "role": "Business Analyst",
+      "rating": 4,
+      "experience": "A campus recruiter followed up from the official hiring portal.",
+      "wasLegit": 1,
+      "reviewDate": "2026-05-07"
+    },
+    {
+      "companyName": "Google",
+      "role": "Data Analyst Intern",
+      "rating": 1,
+      "experience": "They asked for a fee before scheduling any interview.",
+      "wasLegit": 0,
+      "reviewDate": "2026-07-19"
+    },
+    {
+      "companyName": "Deloitte",
+      "role": "Consulting Analyst",
+      "rating": 5,
+      "experience": "Case interview plus a call with a manager listed on the firm site.",
+      "wasLegit": 1,
+      "reviewDate": "2026-03-28"
+    },
+    {
+      "companyName": "Deloitte",
+      "role": "Cybersecurity Intern",
+      "rating": 3,
+      "experience": "The process was slow but the interviewers were real employees.",
+      "wasLegit": 1,
+      "reviewDate": "2026-10-06"
+    },
+    {
+      "companyName": "JPMorgan Chase",
+      "role": "Business Analyst",
+      "rating": 4,
+      "experience": "Superday in New York matched the role posted for summer 2026.",
+      "wasLegit": 1,
+      "reviewDate": "2026-04-02"
+    },
+    {
+      "companyName": "JPMorgan Chase",
+      "role": "Operations Analyst",
+      "rating": 5,
+      "experience": "Background check came only after a written offer letter.",
+      "wasLegit": 1,
+      "reviewDate": "2026-08-21"
+    },
+    {
+      "companyName": "Walmart",
+      "role": "Data Analyst Intern",
+      "rating": 4,
+      "experience": "On-site Bentonville interview with a team that matched the posting.",
+      "wasLegit": 1,
+      "reviewDate": "2026-06-11"
+    },
+    {
+      "companyName": "Walmart",
+      "role": "Software Engineering Intern",
+      "rating": 2,
+      "experience": "The offer PDF used a look-alike domain instead of walmart.com.",
+      "wasLegit": 0,
+      "reviewDate": "2026-09-14"
+    },
+    {
+      "companyName": "Accenture",
+      "role": "Business Analyst",
+      "rating": 5,
+      "experience": "Recruiter scheduled a video interview from the campus portal.",
+      "wasLegit": 1,
+      "reviewDate": "2026-05-22"
+    },
+    {
+      "companyName": "Accenture",
+      "role": "Cybersecurity Intern",
+      "rating": 4,
+      "experience": "Technical screen covered tools the job description named.",
+      "wasLegit": 1,
+      "reviewDate": "2026-10-09"
+    },
+    {
+      "companyName": "Raymond James",
+      "role": "Finance Intern",
+      "rating": 4,
+      "experience": "St. Petersburg office visit and a follow-up from raymondjames.com.",
+      "wasLegit": 1,
+      "reviewDate": "2026-03-18"
+    },
+    {
+      "companyName": "Raymond James",
+      "role": "Operations Analyst",
+      "rating": 3,
+      "experience": "Phone screen was legitimate, then the role was filled.",
+      "wasLegit": 1,
+      "reviewDate": "2026-07-30"
+    },
+    {
+      "companyName": "Publix",
+      "role": "Business Analyst",
+      "rating": 5,
+      "experience": "Store-support interview in Lakeland with a corporate recruiter.",
+      "wasLegit": 1,
+      "reviewDate": "2026-06-25"
+    },
+    {
+      "companyName": "Publix",
+      "role": "Data Analyst Intern",
+      "rating": 4,
+      "experience": "They confirmed the internship on the Publix careers site.",
+      "wasLegit": 1,
+      "reviewDate": "2026-09-29"
+    },
+    {
+      "companyName": "Moffitt Cancer Center",
+      "role": "Research Intern",
+      "rating": 5,
+      "experience": "Hospital volunteer office confirmed the interview slot.",
+      "wasLegit": 1,
+      "reviewDate": "2026-04-09"
+    },
+    {
+      "companyName": "Moffitt Cancer Center",
+      "role": "Data Analyst Intern",
+      "rating": 4,
+      "experience": "Panel asked about coursework and never requested payment.",
+      "wasLegit": 1,
+      "reviewDate": "2026-10-15"
+    },
+    {
+      "companyName": "Amazon",
+      "role": "Data Analyst Intern",
+      "rating": 3,
+      "experience": "The Amazon interview stayed with named employees and matched the posted data analyst intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-03-03"
+    },
+    {
+      "companyName": "Microsoft",
+      "role": "Business Analyst",
+      "rating": 4,
+      "experience": "The Microsoft interview stayed with named employees and matched the posted business analyst role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-03-11"
+    },
+    {
+      "companyName": "Google",
+      "role": "Software Engineering Intern",
+      "rating": 5,
+      "experience": "The Google interview stayed with named employees and matched the posted software engineering intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-03-19"
+    },
+    {
+      "companyName": "Deloitte",
+      "role": "Cybersecurity Intern",
+      "rating": 2,
+      "experience": "The Deloitte conversation never left a private chat and the sender would not use the official careers site.",
+      "wasLegit": 0,
+      "reviewDate": "2026-03-28"
+    },
+    {
+      "companyName": "JPMorgan Chase",
+      "role": "Finance Intern",
+      "rating": 4,
+      "experience": "The JPMorgan Chase interview stayed with named employees and matched the posted finance intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-04-05"
+    },
+    {
+      "companyName": "Walmart",
+      "role": "Data Analyst Intern",
+      "rating": 5,
+      "experience": "The Walmart interview stayed with named employees and matched the posted data analyst intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-04-13"
+    },
+    {
+      "companyName": "Accenture",
+      "role": "Business Analyst",
+      "rating": 3,
+      "experience": "The Accenture interview stayed with named employees and matched the posted business analyst role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-04-21"
+    },
+    {
+      "companyName": "Raymond James",
+      "role": "Software Engineering Intern",
+      "rating": 4,
+      "experience": "The Raymond James interview stayed with named employees and matched the posted software engineering intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-04-30"
+    },
+    {
+      "companyName": "Publix",
+      "role": "Cybersecurity Intern",
+      "rating": 5,
+      "experience": "The Publix interview stayed with named employees and matched the posted cybersecurity intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-05-08"
+    },
+    {
+      "companyName": "Moffitt Cancer Center",
+      "role": "Finance Intern",
+      "rating": 3,
+      "experience": "The Moffitt Cancer Center interview stayed with named employees and matched the posted finance intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-05-16"
+    },
+    {
+      "companyName": "Apple",
+      "role": "Data Analyst Intern",
+      "rating": 4,
+      "experience": "The Apple interview stayed with named employees and matched the posted data analyst intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-05-24"
+    },
+    {
+      "companyName": "Apple",
+      "role": "Business Analyst",
+      "rating": 2,
+      "experience": "The Apple conversation never left a private chat and the sender would not use the official careers site.",
+      "wasLegit": 0,
+      "reviewDate": "2026-06-02"
+    },
+    {
+      "companyName": "Meta",
+      "role": "Software Engineering Intern",
+      "rating": 3,
+      "experience": "The Meta interview stayed with named employees and matched the posted software engineering intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-06-10"
+    },
+    {
+      "companyName": "Meta",
+      "role": "Cybersecurity Intern",
+      "rating": 4,
+      "experience": "The Meta interview stayed with named employees and matched the posted cybersecurity intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-06-18"
+    },
+    {
+      "companyName": "IBM",
+      "role": "Finance Intern",
+      "rating": 5,
+      "experience": "The IBM interview stayed with named employees and matched the posted finance intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-06-26"
+    },
+    {
+      "companyName": "IBM",
+      "role": "Data Analyst Intern",
+      "rating": 3,
+      "experience": "The IBM interview stayed with named employees and matched the posted data analyst intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-07-05"
+    },
+    {
+      "companyName": "PwC",
+      "role": "Business Analyst",
+      "rating": 4,
+      "experience": "The PwC interview stayed with named employees and matched the posted business analyst role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-07-13"
+    },
+    {
+      "companyName": "PwC",
+      "role": "Software Engineering Intern",
+      "rating": 5,
+      "experience": "The PwC interview stayed with named employees and matched the posted software engineering intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-07-21"
+    },
+    {
+      "companyName": "EY",
+      "role": "Cybersecurity Intern",
+      "rating": 3,
+      "experience": "The EY interview stayed with named employees and matched the posted cybersecurity intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-07-29"
+    },
+    {
+      "companyName": "EY",
+      "role": "Finance Intern",
+      "rating": 2,
+      "experience": "The EY conversation never left a private chat and the sender would not use the official careers site.",
+      "wasLegit": 0,
+      "reviewDate": "2026-08-07"
+    },
+    {
+      "companyName": "Bank of America",
+      "role": "Data Analyst Intern",
+      "rating": 5,
+      "experience": "The Bank of America interview stayed with named employees and matched the posted data analyst intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-08-15"
+    },
+    {
+      "companyName": "Bank of America",
+      "role": "Business Analyst",
+      "rating": 3,
+      "experience": "The Bank of America interview stayed with named employees and matched the posted business analyst role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-08-23"
+    },
+    {
+      "companyName": "Target",
+      "role": "Software Engineering Intern",
+      "rating": 4,
+      "experience": "The Target interview stayed with named employees and matched the posted software engineering intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-08-31"
+    },
+    {
+      "companyName": "Target",
+      "role": "Cybersecurity Intern",
+      "rating": 5,
+      "experience": "The Target interview stayed with named employees and matched the posted cybersecurity intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-09-09"
+    },
+    {
+      "companyName": "Lockheed Martin",
+      "role": "Finance Intern",
+      "rating": 3,
+      "experience": "The Lockheed Martin interview stayed with named employees and matched the posted finance intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-09-17"
+    },
+    {
+      "companyName": "Lockheed Martin",
+      "role": "Data Analyst Intern",
+      "rating": 4,
+      "experience": "The Lockheed Martin interview stayed with named employees and matched the posted data analyst intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-09-25"
+    },
+    {
+      "companyName": "Tampa General Hospital",
+      "role": "Business Analyst",
+      "rating": 5,
+      "experience": "The Tampa General Hospital interview stayed with named employees and matched the posted business analyst role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-10-03"
+    },
+    {
+      "companyName": "Tampa General Hospital",
+      "role": "Software Engineering Intern",
+      "rating": 2,
+      "experience": "The Tampa General Hospital conversation never left a private chat and the sender would not use the official careers site.",
+      "wasLegit": 0,
+      "reviewDate": "2026-10-12"
+    },
+    {
+      "companyName": "Jabil",
+      "role": "Cybersecurity Intern",
+      "rating": 4,
+      "experience": "The Jabil interview stayed with named employees and matched the posted cybersecurity intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-10-20"
+    },
+    {
+      "companyName": "Jabil",
+      "role": "Finance Intern",
+      "rating": 5,
+      "experience": "The Jabil interview stayed with named employees and matched the posted finance intern role.",
+      "wasLegit": 1,
+      "reviewDate": "2026-10-28"
+    }
+  ],
+  "checkLogs": [
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "amaz0n-careers.net",
+      "riskScore": 70,
+      "verdict": "HIGH",
+      "createdAt": "2026-05-04"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "gmail.com",
+      "riskScore": 41,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-05-12"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "rnicrosoft-hiring.com",
+      "riskScore": 7,
+      "verdict": "LOW",
+      "createdAt": "2026-05-21"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "outlook.com",
+      "riskScore": 73,
+      "verdict": "HIGH",
+      "createdAt": "2026-06-02"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "deloitte-recruitment-hr.com",
+      "riskScore": 44,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-06-09"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "yahoo.com",
+      "riskScore": 10,
+      "verdict": "LOW",
+      "createdAt": "2026-06-16"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "google-careers-team.net",
+      "riskScore": 76,
+      "verdict": "HIGH",
+      "createdAt": "2026-06-25"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "walmart-hiring-center.net",
+      "riskScore": 47,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-07-03"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "jpmorgan-talent-hub.com",
+      "riskScore": 13,
+      "verdict": "LOW",
+      "createdAt": "2026-07-10"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "publix-hiring-team.com",
+      "riskScore": 79,
+      "verdict": "HIGH",
+      "createdAt": "2026-07-17"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "amaz0n-careers.net",
+      "riskScore": 50,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-07-24"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "gmail.com",
+      "riskScore": 16,
+      "verdict": "LOW",
+      "createdAt": "2026-07-30"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "rnicrosoft-hiring.com",
+      "riskScore": 82,
+      "verdict": "HIGH",
+      "createdAt": "2026-08-04"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "outlook.com",
+      "riskScore": 53,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-08-08"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "deloitte-recruitment-hr.com",
+      "riskScore": 19,
+      "verdict": "LOW",
+      "createdAt": "2026-08-12"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "yahoo.com",
+      "riskScore": 85,
+      "verdict": "HIGH",
+      "createdAt": "2026-08-16"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "google-careers-team.net",
+      "riskScore": 56,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "walmart-hiring-center.net",
+      "riskScore": 22,
+      "verdict": "LOW",
+      "createdAt": "2026-08-25"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "jpmorgan-talent-hub.com",
+      "riskScore": 88,
+      "verdict": "HIGH",
+      "createdAt": "2026-08-29"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "publix-hiring-team.com",
+      "riskScore": 59,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-09-02"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "amaz0n-careers.net",
+      "riskScore": 25,
+      "verdict": "LOW",
+      "createdAt": "2026-09-05"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "gmail.com",
+      "riskScore": 91,
+      "verdict": "HIGH",
+      "createdAt": "2026-09-08"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "rnicrosoft-hiring.com",
+      "riskScore": 42,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-09-11"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "outlook.com",
+      "riskScore": 28,
+      "verdict": "LOW",
+      "createdAt": "2026-09-15"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "deloitte-recruitment-hr.com",
+      "riskScore": 94,
+      "verdict": "HIGH",
+      "createdAt": "2026-09-18"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "yahoo.com",
+      "riskScore": 45,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-09-22"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "google-careers-team.net",
+      "riskScore": 6,
+      "verdict": "LOW",
+      "createdAt": "2026-09-26"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "walmart-hiring-center.net",
+      "riskScore": 72,
+      "verdict": "HIGH",
+      "createdAt": "2026-09-29"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "jpmorgan-talent-hub.com",
+      "riskScore": 48,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-10-01"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "publix-hiring-team.com",
+      "riskScore": 9,
+      "verdict": "LOW",
+      "createdAt": "2026-10-03"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "amaz0n-careers.net",
+      "riskScore": 75,
+      "verdict": "HIGH",
+      "createdAt": "2026-10-06"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "gmail.com",
+      "riskScore": 51,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-10-08"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "rnicrosoft-hiring.com",
+      "riskScore": 12,
+      "verdict": "LOW",
+      "createdAt": "2026-10-10"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "outlook.com",
+      "riskScore": 78,
+      "verdict": "HIGH",
+      "createdAt": "2026-10-13"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "deloitte-recruitment-hr.com",
+      "riskScore": 54,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-10-15"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "yahoo.com",
+      "riskScore": 15,
+      "verdict": "LOW",
+      "createdAt": "2026-10-18"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "google-careers-team.net",
+      "riskScore": 81,
+      "verdict": "HIGH",
+      "createdAt": "2026-10-21"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "walmart-hiring-center.net",
+      "riskScore": 57,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-10-24"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "jpmorgan-talent-hub.com",
+      "riskScore": 18,
+      "verdict": "LOW",
+      "createdAt": "2026-10-27"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "publix-hiring-team.com",
+      "riskScore": 84,
+      "verdict": "HIGH",
+      "createdAt": "2026-10-30"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "amazon-hr-onboarding.net",
+      "riskScore": 8,
+      "verdict": "LOW",
+      "createdAt": "2026-05-02"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "microsoft-talent-team.com",
+      "riskScore": 9,
+      "verdict": "LOW",
+      "createdAt": "2026-05-11"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "deloitte-jobs-us.net",
+      "riskScore": 10,
+      "verdict": "LOW",
+      "createdAt": "2026-05-19"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "google-intern-hiring.com",
+      "riskScore": 11,
+      "verdict": "LOW",
+      "createdAt": "2026-05-28"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "app1e-careers.com",
+      "riskScore": 12,
+      "verdict": "LOW",
+      "createdAt": "2026-06-03"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "meta-recruiting-team.net",
+      "riskScore": 13,
+      "verdict": "LOW",
+      "createdAt": "2026-06-08"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "pwc-hiring-desk.com",
+      "riskScore": 46,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-06-13"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 47,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-06-17"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 48,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-06-22"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 49,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-06-27"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 80,
+      "verdict": "HIGH",
+      "createdAt": "2026-07-02"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 81,
+      "verdict": "HIGH",
+      "createdAt": "2026-07-06"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "deloitte-jobs-us.net",
+      "riskScore": 82,
+      "verdict": "HIGH",
+      "createdAt": "2026-07-10"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "google-intern-hiring.com",
+      "riskScore": 83,
+      "verdict": "HIGH",
+      "createdAt": "2026-07-14"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "app1e-careers.com",
+      "riskScore": 84,
+      "verdict": "HIGH",
+      "createdAt": "2026-07-18"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "meta-recruiting-team.net",
+      "riskScore": 23,
+      "verdict": "LOW",
+      "createdAt": "2026-07-22"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "pwc-hiring-desk.com",
+      "riskScore": 24,
+      "verdict": "LOW",
+      "createdAt": "2026-07-26"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "bofa-careers-portal.com",
+      "riskScore": 25,
+      "verdict": "LOW",
+      "createdAt": "2026-07-30"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "gmail.com",
+      "riskScore": 26,
+      "verdict": "LOW",
+      "createdAt": "2026-08-03"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 27,
+      "verdict": "LOW",
+      "createdAt": "2026-08-06"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 8,
+      "verdict": "LOW",
+      "createdAt": "2026-08-09"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 41,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-08-11"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 42,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-08-14"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 43,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-08-17"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "app1e-careers.com",
+      "riskScore": 44,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-08-20"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "meta-recruiting-team.net",
+      "riskScore": 70,
+      "verdict": "HIGH",
+      "createdAt": "2026-08-22"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "pwc-hiring-desk.com",
+      "riskScore": 71,
+      "verdict": "HIGH",
+      "createdAt": "2026-08-25"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "bofa-careers-portal.com",
+      "riskScore": 72,
+      "verdict": "HIGH",
+      "createdAt": "2026-08-28"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "gmail.com",
+      "riskScore": 73,
+      "verdict": "HIGH",
+      "createdAt": "2026-09-02"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "outlook.com",
+      "riskScore": 74,
+      "verdict": "HIGH",
+      "createdAt": "2026-09-04"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "amazon-hr-onboarding.net",
+      "riskScore": 18,
+      "verdict": "LOW",
+      "createdAt": "2026-09-06"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 19,
+      "verdict": "LOW",
+      "createdAt": "2026-09-08"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 20,
+      "verdict": "LOW",
+      "createdAt": "2026-09-10"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 21,
+      "verdict": "LOW",
+      "createdAt": "2026-09-12"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 22,
+      "verdict": "LOW",
+      "createdAt": "2026-09-14"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 23,
+      "verdict": "LOW",
+      "createdAt": "2026-09-17"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "pwc-hiring-desk.com",
+      "riskScore": 56,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-09-19"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "bofa-careers-portal.com",
+      "riskScore": 57,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-09-21"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "gmail.com",
+      "riskScore": 58,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-09-23"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "outlook.com",
+      "riskScore": 59,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-09-25"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "amazon-hr-onboarding.net",
+      "riskScore": 85,
+      "verdict": "HIGH",
+      "createdAt": "2026-09-27"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "microsoft-talent-team.com",
+      "riskScore": 86,
+      "verdict": "HIGH",
+      "createdAt": "2026-09-29"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 87,
+      "verdict": "HIGH",
+      "createdAt": "2026-10-02"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 88,
+      "verdict": "HIGH",
+      "createdAt": "2026-10-04"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 89,
+      "verdict": "HIGH",
+      "createdAt": "2026-10-05"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 13,
+      "verdict": "LOW",
+      "createdAt": "2026-10-07"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 14,
+      "verdict": "LOW",
+      "createdAt": "2026-10-09"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 15,
+      "verdict": "LOW",
+      "createdAt": "2026-10-10"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "gmail.com",
+      "riskScore": 16,
+      "verdict": "LOW",
+      "createdAt": "2026-10-12"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "outlook.com",
+      "riskScore": 17,
+      "verdict": "LOW",
+      "createdAt": "2026-10-14"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "amazon-hr-onboarding.net",
+      "riskScore": 18,
+      "verdict": "LOW",
+      "createdAt": "2026-10-15"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "microsoft-talent-team.com",
+      "riskScore": 51,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-10-17"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "deloitte-jobs-us.net",
+      "riskScore": 52,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-10-18"
+    },
+    {
+      "checkType": "Recruiter",
+      "inputSummary": "google-intern-hiring.com",
+      "riskScore": 53,
+      "verdict": "MEDIUM",
+      "createdAt": "2026-10-20"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 74,
+      "verdict": "HIGH",
+      "createdAt": "2026-10-22"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 75,
+      "verdict": "HIGH",
+      "createdAt": "2026-10-23"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 76,
+      "verdict": "HIGH",
+      "createdAt": "2026-10-25"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 77,
+      "verdict": "HIGH",
+      "createdAt": "2026-10-27"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 78,
+      "verdict": "HIGH",
+      "createdAt": "2026-10-28"
+    },
+    {
+      "checkType": "Offer",
+      "inputSummary": "offer text (redacted)",
+      "riskScore": 79,
+      "verdict": "HIGH",
+      "createdAt": "2026-10-30"
+    }
+  ],
+  "users": [
+    {
+      "email": "moderator@joblens.demo",
+      "displayName": "Moderator",
+      "role": "Moderator",
+      "passwordSlot": "moderator"
+    },
+    {
+      "email": "student1@joblens.demo",
+      "displayName": "Student 1",
+      "role": "Student",
+      "passwordSlot": "student"
+    },
+    {
+      "email": "student2@joblens.demo",
+      "displayName": "Student 2",
+      "role": "Student",
+      "passwordSlot": "student"
+    },
+    {
+      "email": "student3@joblens.demo",
+      "displayName": "Student 3",
+      "role": "Student",
+      "passwordSlot": "student"
+    },
+    {
+      "email": "student4@joblens.demo",
+      "displayName": "Student 4",
+      "role": "Student",
+      "passwordSlot": "student"
+    }
+  ]
+}

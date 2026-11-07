@@ -46,16 +46,26 @@ public sealed class ChatOrchestrator(IConfiguration configuration, AiClientFacto
 
     private static readonly string[] Companies =
     [
+        "Tampa General Hospital",
         "Moffitt Cancer Center",
+        "Lockheed Martin",
+        "Bank of America",
         "JPMorgan Chase",
         "Raymond James",
         "Microsoft",
         "Accenture",
         "Deloitte",
         "Walmart",
+        "Target",
         "Amazon",
         "Google",
         "Publix",
+        "Apple",
+        "Jabil",
+        "Meta",
+        "IBM",
+        "PwC",
+        "EY",
     ];
 
     private static readonly string[] ScamTypes =

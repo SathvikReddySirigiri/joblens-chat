@@ -147,31 +147,16 @@ public static partial class DatabaseInitializer
 
     private static async Task SeedJobPostingsIfEmptyAsync(SqliteConnection connection, CancellationToken cancellationToken)
     {
-        if (ExpandedSeed.Postings.Length != 30)
-        {
-            throw new InvalidOperationException($"Expected 30 job postings, found {ExpandedSeed.Postings.Length}.");
-        }
-
         await SeedIfEmptyAsync(connection, "SELECT COUNT(*) FROM JobPostings;", InsertPostingsAsync, cancellationToken);
     }
 
     private static async Task SeedReviewsIfEmptyAsync(SqliteConnection connection, CancellationToken cancellationToken)
     {
-        if (ExpandedSeed.Reviews.Length != 20)
-        {
-            throw new InvalidOperationException($"Expected 20 interview reviews, found {ExpandedSeed.Reviews.Length}.");
-        }
-
         await SeedIfEmptyAsync(connection, "SELECT COUNT(*) FROM InterviewReviews;", InsertReviewsAsync, cancellationToken);
     }
 
     private static async Task SeedCheckLogsIfEmptyAsync(SqliteConnection connection, CancellationToken cancellationToken)
     {
-        if (ExpandedSeed.CheckDates.Length != 40)
-        {
-            throw new InvalidOperationException($"Expected 40 check logs, found {ExpandedSeed.CheckDates.Length}.");
-        }
-
         await SeedIfEmptyAsync(connection, "SELECT COUNT(*) FROM CheckLogs;", InsertCheckLogsAsync, cancellationToken);
     }
 
@@ -215,7 +200,7 @@ public static partial class DatabaseInitializer
         var description = command.Parameters.Add("$description", SqliteType.Text);
         var postedDate = command.Parameters.Add("$postedDate", SqliteType.Text);
 
-        foreach (var row in ExpandedSeed.Postings)
+        foreach (var row in SeedCatalog.Document.JobPostings)
         {
             companyId.Value = RequireCompany(companyIds, row.CompanyName);
             title.Value = row.Title;
@@ -224,7 +209,7 @@ public static partial class DatabaseInitializer
             remote.Value = row.IsRemote;
             paid.Value = row.IsPaid;
             pay.Value = (object?)row.PayRatePerHour ?? DBNull.Value;
-            description.Value = $"{row.Title} with {row.CompanyName} in {row.Location}. Synthetic 2026 listing for the JobLens class dataset.";
+            description.Value = row.Description;
             postedDate.Value = row.PostedDate;
             await command.ExecuteNonQueryAsync(cancellationToken);
         }
@@ -249,7 +234,7 @@ public static partial class DatabaseInitializer
         var legit = command.Parameters.Add("$legit", SqliteType.Integer);
         var reviewDate = command.Parameters.Add("$reviewDate", SqliteType.Text);
 
-        foreach (var row in ExpandedSeed.Reviews)
+        foreach (var row in SeedCatalog.Document.InterviewReviews)
         {
             companyId.Value = RequireCompany(companyIds, row.CompanyName);
             role.Value = row.Role;
@@ -277,21 +262,14 @@ public static partial class DatabaseInitializer
         var score = command.Parameters.Add("$score", SqliteType.Integer);
         var verdict = command.Parameters.Add("$verdict", SqliteType.Text);
         var createdAt = command.Parameters.Add("$createdAt", SqliteType.Text);
-        var verdicts = new[] { "HIGH", "MEDIUM", "LOW" };
 
-        for (var i = 0; i < ExpandedSeed.CheckDates.Length; i++)
+        foreach (var row in SeedCatalog.Document.CheckLogs)
         {
-            var label = verdicts[i % verdicts.Length];
-            type.Value = i % 2 == 0 ? "Recruiter" : "Offer";
-            summary.Value = ExpandedSeed.CheckDomains[i % ExpandedSeed.CheckDomains.Length];
-            verdict.Value = label;
-            score.Value = label switch
-            {
-                "HIGH" => 70 + (i % 25),
-                "MEDIUM" => 40 + (i % 20),
-                _ => 5 + (i % 25),
-            };
-            createdAt.Value = ExpandedSeed.CheckDates[i];
+            type.Value = row.CheckType;
+            summary.Value = row.InputSummary;
+            verdict.Value = row.Verdict;
+            score.Value = row.RiskScore;
+            createdAt.Value = row.CreatedAt;
             await command.ExecuteNonQueryAsync(cancellationToken);
         }
     }
@@ -343,22 +321,14 @@ public static partial class DatabaseInitializer
         var companyId = official.Parameters.Add("$companyId", SqliteType.Integer);
         var firstSeen = official.Parameters.Add("$firstSeen", SqliteType.Text);
         var notes = official.Parameters.Add("$notes", SqliteType.Text);
-        (string Email, string Domain)[] officials =
-        [
-            ("campus.recruiting@amazon.com", "amazon.com"),
-            ("university.hiring@microsoft.com", "microsoft.com"),
-            ("early.careers@deloitte.com", "deloitte.com"),
-            ("students@jpmorgan.com", "jpmorgan.com"),
-            ("internships@moffitt.org", "moffitt.org"),
-        ];
 
-        foreach (var row in officials)
+        foreach (var row in SeedCatalog.Document.OfficialRecruiters)
         {
             email.Value = row.Email;
-            domain.Value = row.Domain;
-            companyId.Value = RequireCompany(companyIds, row.Domain);
-            firstSeen.Value = "2026-01-05";
-            notes.Value = "Verified official domain";
+            domain.Value = row.CompanyDomain;
+            companyId.Value = RequireCompany(companyIds, row.CompanyDomain);
+            firstSeen.Value = row.FirstSeen;
+            notes.Value = row.Notes;
             await official.ExecuteNonQueryAsync(cancellationToken);
         }
     }
@@ -381,18 +351,13 @@ public static partial class DatabaseInitializer
         var hash = command.Parameters.Add("$hash", SqliteType.Text);
         var role = command.Parameters.Add("$role", SqliteType.Text);
         var createdAt = command.Parameters.Add("$createdAt", SqliteType.Text);
-        (string Email, string DisplayName, string Password, string Role)[] accounts =
-        [
-            ("moderator@joblens.demo", "Moderator", moderatorPassword, "Moderator"),
-            ("student1@joblens.demo", "Student 1", studentPassword, "Student"),
-            ("student2@joblens.demo", "Student 2", studentPassword, "Student"),
-        ];
 
-        foreach (var account in accounts)
+        foreach (var account in SeedCatalog.Document.Users)
         {
+            var password = account.PasswordSlot == "moderator" ? moderatorPassword : studentPassword;
             email.Value = account.Email;
             name.Value = account.DisplayName;
-            hash.Value = UserPassword.Hash(account.Email, account.Password);
+            hash.Value = UserPassword.Hash(account.Email, password);
             role.Value = account.Role;
             createdAt.Value = "2026-01-01";
             await command.ExecuteNonQueryAsync(cancellationToken);
