@@ -1,0 +1,51 @@
+@model InterviewReviewFormVm
+<div asp-validation-summary="ModelOnly" class="alert alert-error" role="alert"></div>
+<input type="hidden" asp-for="ReviewId" />
+<div class="field">
+    <label asp-for="CompanyId">Company</label>
+    <select asp-for="CompanyId">
+        <option value="">Choose a company</option>
+        @foreach (var company in ViewBag.Companies as IReadOnlyList<Company> ?? Array.Empty<Company>())
+        {
+            <option value="@company.CompanyId">@company.Name</option>
+        }
+    </select>
+    <span asp-validation-for="CompanyId" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="Role">Role</label>
+    <input asp-for="Role" />
+    <span asp-validation-for="Role" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="Rating">Rating</label>
+    <select asp-for="Rating">
+        @for (var rating = 1; rating <= 5; rating++)
+        {
+            <option value="@rating">@rating</option>
+        }
+    </select>
+    <span asp-validation-for="Rating" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="Experience">Experience</label>
+    <textarea asp-for="Experience" maxlength="1000" data-counter="experience-count"></textarea>
+    <p class="help" id="experience-count">20 to 1000 characters.</p>
+    <span asp-validation-for="Experience" class="field-error"></span>
+</div>
+<fieldset class="field">
+    <legend>Was this a legitimate interview?</legend>
+    <div class="check-row">
+        <input type="radio" id="WasLegitYes" name="WasLegit" value="true" checked="@(Model.WasLegit ? "checked" : null)" />
+        <label for="WasLegitYes">Yes</label>
+    </div>
+    <div class="check-row">
+        <input type="radio" id="WasLegitNo" name="WasLegit" value="false" checked="@(!Model.WasLegit ? "checked" : null)" />
+        <label for="WasLegitNo">No</label>
+    </div>
+</fieldset>
+<div class="field">
+    <label asp-for="ReviewDate">Review date</label>
+    <input asp-for="ReviewDate" placeholder="yyyy-MM-dd" />
+    <span asp-validation-for="ReviewDate" class="field-error"></span>
+</div>

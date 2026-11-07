@@ -8,4 +8,5 @@ public sealed record Recruiter(
     string? CompanyName,
     string FirstSeen,
     string Notes,
-    int ReportCount);
+    int ReportCount,
+    string? CompanyOfficialDomain = null);

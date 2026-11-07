@@ -3,7 +3,7 @@ using Microsoft.Data.Sqlite;
 
 namespace JobLensChat.Data;
 
-public sealed class InterviewReviewRepository
+public sealed partial class InterviewReviewRepository
 {
     private const string SelectSql = """
         SELECT r.ReviewId, r.CompanyId, c.Name, r.Role, r.Rating, r.Experience, r.WasLegit, r.ReviewDate, r.CreatedByUserId

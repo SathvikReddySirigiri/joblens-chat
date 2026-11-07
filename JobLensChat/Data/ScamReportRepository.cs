@@ -3,7 +3,7 @@ using Microsoft.Data.Sqlite;
 
 namespace JobLensChat.Data;
 
-public sealed class ScamReportRepository
+public sealed partial class ScamReportRepository
 {
     private const string ReportSelect = """
         SELECT r.ReportId, r.CompanyId, c.Name, r.RecruiterEmail, r.Domain, r.ScamType, r.Channel,
@@ -117,6 +117,7 @@ public sealed class ScamReportRepository
         double amountRequestedUsd,
         int domainAgeDays,
         string description,
+        string reportedDate,
         CancellationToken cancellationToken)
     {
         await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);
@@ -130,7 +131,8 @@ public sealed class ScamReportRepository
                 Channel = $channel,
                 AmountRequestedUsd = $amount,
                 DomainAgeDays = $age,
-                Description = $description
+                Description = $description,
+                ReportedDate = $reportedDate
             WHERE ReportId = $id;
             """;
         command.Parameters.AddWithValue("$companyId", companyId);
@@ -141,6 +143,7 @@ public sealed class ScamReportRepository
         command.Parameters.AddWithValue("$amount", amountRequestedUsd);
         command.Parameters.AddWithValue("$age", domainAgeDays);
         command.Parameters.AddWithValue("$description", description);
+        command.Parameters.AddWithValue("$reportedDate", reportedDate);
         command.Parameters.AddWithValue("$id", reportId);
         return await command.ExecuteNonQueryAsync(cancellationToken) == 1;
     }

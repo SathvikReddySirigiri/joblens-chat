@@ -1,4 +1,5 @@
-﻿@{
+﻿@model DataCounts
+@{
     ViewData["Title"] = "About & Architecture";
 }
 
@@ -7,6 +8,18 @@
     <h1>Ask about job scams. Get answers grounded in data.</h1>
     <p>Career-center staff need a fast way to see which companies and domains to warn students about. Students need to know whether a recruiter email is safe to answer. JobLens Chat will answer those questions from synthetic scam reports, not from guesses.</p>
     <a class="btn btn-primary" asp-controller="Chat" asp-action="Index">Open the chatbot</a>
+</section>
+
+<section id="about" class="section" aria-labelledby="counts-title">
+    <h2 id="counts-title">What is in the database</h2>
+    <dl class="summary-grid">
+        <div class="card"><dt>Companies</dt><dd>@Model.Companies</dd></div>
+        <div class="card"><dt>Recruiters</dt><dd>@Model.Recruiters</dd></div>
+        <div class="card"><dt>Scam reports</dt><dd>@Model.ScamReports (@Model.Approved approved, @Model.Pending pending, @Model.Rejected rejected)</dd></div>
+        <div class="card"><dt>Job postings</dt><dd>@Model.JobPostings</dd></div>
+        <div class="card"><dt>Interview reviews</dt><dd>@Model.InterviewReviews</dd></div>
+        <div class="card"><dt>Check logs</dt><dd>@Model.CheckLogs</dd></div>
+    </dl>
 </section>
 
 <section class="section" aria-labelledby="flow-title">

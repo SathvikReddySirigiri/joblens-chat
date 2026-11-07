@@ -1,0 +1,10 @@
+@model string
+@{
+    var tone = Model switch
+    {
+        "Approved" => "low",
+        "Rejected" => "high",
+        _ => "medium",
+    };
+}
+<span class="badge-@tone">@Model</span>

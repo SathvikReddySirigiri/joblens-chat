@@ -17,7 +17,7 @@ public sealed class InterviewReviewFormVm
     public int Rating { get; set; }
 
     [Required]
-    [StringLength(2000, MinimumLength = 20)]
+    [StringLength(1000, MinimumLength = 20)]
     public string Experience { get; set; } = "";
 
     public bool WasLegit { get; set; }

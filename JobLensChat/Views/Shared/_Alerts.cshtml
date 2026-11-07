@@ -1,0 +1,8 @@
+@if (TempData["Success"] is string successMessage)
+{
+    <p class="alert alert-info alert-temp" role="status">@successMessage</p>
+}
+@if (TempData["Error"] is string errorMessage)
+{
+    <p class="alert alert-error alert-temp" role="alert">@errorMessage</p>
+}

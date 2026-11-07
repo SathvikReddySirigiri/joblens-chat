@@ -1,0 +1,58 @@
+@model ScamReport
+@{
+    ViewData["Title"] = "Scam report";
+    var recruiter = ViewBag.Recruiter as Recruiter;
+    var related = ViewBag.Related as IReadOnlyList<ScamReport> ?? Array.Empty<ScamReport>();
+}
+<partial name="_Alerts" />
+<section class="page-header">
+    <div class="page-heading">
+        <h1>Report @Model.ReportId</h1>
+        <p class="help">@Model.CompanyName · @Model.ReportedDate</p>
+    </div>
+    <div class="form-actions">
+        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.ReportId">Edit</a>
+        <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.ReportId">Delete</a>
+    </div>
+</section>
+<section class="card">
+    <p><partial name="_StatusBadge" model="Model.Status" /></p>
+    <dl class="detail-list">
+        <div><dt>Email</dt><dd>@Model.RecruiterEmail</dd></div>
+        <div><dt>Domain</dt><dd>@Model.Domain</dd></div>
+        <div><dt>Company</dt><dd><a asp-controller="Companies" asp-action="Details" asp-route-id="@Model.CompanyId">@Model.CompanyName</a></dd></div>
+        <div><dt>Type</dt><dd>@Model.ScamType</dd></div>
+        <div><dt>Channel</dt><dd>@Model.Channel</dd></div>
+        <div><dt>Amount</dt><dd>@Model.AmountRequestedUsd.ToString("$#,##0.00")</dd></div>
+        <div><dt>Domain age</dt><dd>@Model.DomainAgeDays days</dd></div>
+        <div><dt>Description</dt><dd>@Model.Description</dd></div>
+    </dl>
+    @if (Model.Status == "Pending")
+    {
+        <div class="form-actions">
+            <form method="post" asp-action="Approve" asp-route-id="@Model.ReportId">
+                <button class="btn btn-primary" type="submit">Approve</button>
+            </form>
+            <form method="post" asp-action="Reject" asp-route-id="@Model.ReportId">
+                <button class="btn btn-secondary" type="submit">Reject</button>
+            </form>
+        </div>
+    }
+    <p><a class="btn btn-secondary" asp-controller="CheckRecruiter" asp-action="Index" asp-route-email="@Model.RecruiterEmail">Check this recruiter</a></p>
+    @if (recruiter is not null)
+    {
+        <p><a asp-controller="Recruiters" asp-action="Details" asp-route-id="@recruiter.RecruiterId">Recruiter record</a></p>
+    }
+</section>
+@if (related.Count > 0)
+{
+    <section class="card">
+        <h2>Other reports for @Model.Domain</h2>
+        <ul>
+            @foreach (var report in related)
+            {
+                <li><a asp-action="Details" asp-route-id="@report.ReportId">@report.ReportedDate · @report.ScamType</a></li>
+            }
+        </ul>
+    </section>
+}

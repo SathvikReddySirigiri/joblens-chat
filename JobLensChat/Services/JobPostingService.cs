@@ -79,11 +79,25 @@ public sealed class JobPostingService(JobPostingRepository postings, CompanyRepo
             return null;
         }
 
-        double? pay = form.IsPaid ? form.PayRatePerHour : null;
-        if (form.IsPaid && pay is null or < 0)
+        double? pay;
+        if (form.IsPaid)
         {
-            _error = "A paid posting needs a pay rate of zero or more.";
+            if (form.PayRatePerHour is null or < 0)
+            {
+                _error = "A paid posting needs a pay rate of zero or more.";
+                return null;
+            }
+
+            pay = form.PayRatePerHour;
+        }
+        else if (form.PayRatePerHour is > 0)
+        {
+            _error = "An unpaid posting cannot include a pay rate. Leave it empty or zero.";
             return null;
+        }
+        else
+        {
+            pay = null;
         }
 
         if (await companies.GetByIdAsync(form.CompanyId, cancellationToken) is null)

@@ -1,0 +1,17 @@
+@model ScamReport
+@{
+    ViewData["Title"] = "Delete scam report";
+}
+<partial name="_Alerts" />
+<section class="page-header">
+    <h1>Delete this report?</h1>
+    <p class="help">@Model.RecruiterEmail · @Model.ScamType · @Model.ReportedDate. This cannot be undone.</p>
+</section>
+<section class="card">
+    <form method="post" asp-action="DeleteConfirmed" asp-route-id="@Model.ReportId">
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Delete report</button>
+            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.ReportId">Cancel</a>
+        </div>
+    </form>
+</section>

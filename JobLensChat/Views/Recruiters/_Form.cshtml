@@ -1,0 +1,31 @@
+@model RecruiterFormVm
+<div asp-validation-summary="ModelOnly" class="alert alert-error" role="alert"></div>
+<input type="hidden" asp-for="RecruiterId" />
+<div class="field">
+    <label asp-for="Email">Email</label>
+    <input asp-for="Email" autocomplete="off" data-domain-source="domain-preview" />
+    <p class="help" id="domain-preview">Domain is taken from the email.</p>
+    <span asp-validation-for="Email" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="CompanyId">Company</label>
+    <select asp-for="CompanyId">
+        <option value="">No company</option>
+        @foreach (var company in ViewBag.Companies as IReadOnlyList<Company> ?? Array.Empty<Company>())
+        {
+            <option value="@company.CompanyId">@company.Name</option>
+        }
+    </select>
+    <p class="help">Optional. A verified badge appears when this domain matches the company domain.</p>
+    <span asp-validation-for="CompanyId" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="FirstSeen">First seen</label>
+    <input asp-for="FirstSeen" placeholder="yyyy-MM-dd" />
+    <span asp-validation-for="FirstSeen" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="Notes">Notes</label>
+    <textarea asp-for="Notes"></textarea>
+    <span asp-validation-for="Notes" class="field-error"></span>
+</div>

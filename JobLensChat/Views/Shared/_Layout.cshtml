@@ -14,22 +14,53 @@
     @{
         var controller = ViewContext.RouteData.Values["controller"]?.ToString();
     }
+    @{
+        var checkSection = controller is "CheckRecruiter" or "OfferAnalyzer";
+        var dataSection = controller is "ScamReports" or "Companies" or "Recruiters" or "JobPostings" or "InterviewReviews";
+    }
     <header class="site-header">
         <div class="container navbar">
             <a class="brand" asp-controller="Home" asp-action="Index">🛡️ JobLens Chat</a>
-            <nav aria-label="Main">
+            <button class="menu-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
+            <nav id="site-nav" class="site-nav" aria-label="Main">
                 <ul class="nav-links">
                     <li>
                         <a class="nav-link @(controller == "Home" ? "active" : null)"
                            asp-controller="Home"
                            asp-action="Index"
-                           aria-current="@(controller == "Home" ? "page" : null)">About &amp; Architecture</a>
+                           aria-current="@(controller == "Home" ? "page" : null)">Home</a>
+                    </li>
+                    <li class="nav-item" data-dropdown>
+                        <button class="nav-link @(checkSection ? "active" : null)" type="button" data-dropdown-button aria-expanded="false" aria-controls="check-menu">Check</button>
+                        <div id="check-menu" class="dropdown-panel" data-dropdown-panel hidden>
+                            <a class="nav-link @(controller == "CheckRecruiter" ? "active" : null)" asp-controller="CheckRecruiter" asp-action="Index">Check Recruiter</a>
+                            <a class="nav-link @(controller == "OfferAnalyzer" ? "active" : null)" asp-controller="OfferAnalyzer" asp-action="Index">Offer Analyzer</a>
+                        </div>
+                    </li>
+                    <li class="nav-item" data-dropdown>
+                        <button class="nav-link @(dataSection ? "active" : null)" type="button" data-dropdown-button aria-expanded="false" aria-controls="data-menu">Data</button>
+                        <div id="data-menu" class="dropdown-panel" data-dropdown-panel hidden>
+                            <a class="nav-link @(controller == "ScamReports" ? "active" : null)" asp-controller="ScamReports" asp-action="Index">Scam Reports</a>
+                            <a class="nav-link @(controller == "Companies" ? "active" : null)" asp-controller="Companies" asp-action="Index">Companies</a>
+                            <a class="nav-link @(controller == "Recruiters" ? "active" : null)" asp-controller="Recruiters" asp-action="Index">Recruiters</a>
+                            <a class="nav-link @(controller == "JobPostings" ? "active" : null)" asp-controller="JobPostings" asp-action="Index">Job Postings</a>
+                            <a class="nav-link @(controller == "InterviewReviews" ? "active" : null)" asp-controller="InterviewReviews" asp-action="Index">Interview Reviews</a>
+                        </div>
+                    </li>
+                    <li>
+                        <a class="nav-link @(controller == "Dashboard" ? "active" : null)"
+                           asp-controller="Dashboard"
+                           asp-action="Index"
+                           aria-current="@(controller == "Dashboard" ? "page" : null)">Dashboard</a>
                     </li>
                     <li>
                         <a class="nav-link @(controller == "Chat" ? "active" : null)"
                            asp-controller="Chat"
                            asp-action="Index"
                            aria-current="@(controller == "Chat" ? "page" : null)">Chat</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" asp-controller="Home" asp-action="Index" asp-fragment="about">About</a>
                     </li>
                 </ul>
             </nav>
@@ -43,6 +74,7 @@
             <p>JobLens Chat · ISM 6225 · App Dev for Analytics · C# MVC + MCP + SQLite · Synthetic data only</p>
         </div>
     </footer>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,0 +1,92 @@
+@using JobLensChat.Models
+@{
+    ViewData["Title"] = "Recruiters";
+    var page = (PageResult<Recruiter>)ViewBag.Page;
+    ViewData["PagerPage"] = page.Page;
+    ViewData["PagerSize"] = page.PageSize;
+    ViewData["PagerTotal"] = page.Total;
+    var companies = ViewBag.Companies as IReadOnlyList<Company> ?? Array.Empty<Company>();
+}
+<partial name="_Alerts" />
+<section class="page-header">
+    <div class="page-heading">
+        <h1>Recruiters</h1>
+        <p class="help">Email addresses seen in reports, plus known official-domain contacts.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">Add new</a>
+</section>
+<section class="card">
+    <form method="get" class="toolbar" aria-label="Filter recruiters">
+        <div class="field">
+            <label for="search">Search</label>
+            <input id="search" name="search" value="@ViewBag.Search" />
+        </div>
+        <div class="field">
+            <label for="company">Company</label>
+            <select id="company" name="company">
+                <option value="">Any</option>
+                @foreach (var company in companies)
+                {
+                    if (ViewBag.Company as int? == company.CompanyId)
+                    {
+                        <option value="@company.CompanyId" selected>@company.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@company.CompanyId">@company.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Apply</button>
+            <a class="btn btn-secondary" asp-action="Index">Clear</a>
+        </div>
+    </form>
+</section>
+@if (page.Total == 0)
+{
+    <section class="card empty-state">
+        <p>No recruiters match these filters.</p>
+        <a asp-action="Index">Clear filters</a>
+    </section>
+}
+else
+{
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th scope="col">Email</th>
+                    <th scope="col">Domain</th>
+                    <th scope="col">Company</th>
+                    <th scope="col">Reports</th>
+                    <th scope="col">First seen</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var recruiter in page.Items)
+                {
+                    var verified = !string.IsNullOrEmpty(recruiter.CompanyOfficialDomain)
+                        && string.Equals(recruiter.Domain, recruiter.CompanyOfficialDomain, StringComparison.OrdinalIgnoreCase);
+                    <tr>
+                        <td>@recruiter.Email</td>
+                        <td>
+                            @recruiter.Domain
+                            @if (verified)
+                            {
+                                <span class="badge-low">Verified official domain</span>
+                            }
+                        </td>
+                        <td>@(recruiter.CompanyName ?? "—")</td>
+                        <td>@recruiter.ReportCount</td>
+                        <td>@recruiter.FirstSeen</td>
+                        <td><a asp-action="Details" asp-route-id="@recruiter.RecruiterId">Details</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_Pager" />
+}

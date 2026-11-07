@@ -1,0 +1,161 @@
+@using JobLensChat.Models
+@{
+    ViewData["Title"] = "Scam reports";
+    var page = (PageResult<ScamReport>)ViewBag.Page;
+    ViewData["PagerPage"] = page.Page;
+    ViewData["PagerSize"] = page.PageSize;
+    ViewData["PagerTotal"] = page.Total;
+    var companies = ViewBag.Companies as IReadOnlyList<Company> ?? Array.Empty<Company>();
+    string SortUrl(string column)
+    {
+        var next = ViewBag.Sort as string == column && ViewBag.Dir as string == "asc" ? "desc" : "asc";
+        return Url.Action("Index", new { search = ViewBag.Search, status = ViewBag.Status, scamType = ViewBag.ScamType, channel = ViewBag.Channel, company = ViewBag.Company, sort = column, dir = next }) ?? "#";
+    }
+}
+<partial name="_Alerts" />
+<section class="page-header">
+    <div class="page-heading">
+        <h1>Scam reports</h1>
+        <p class="help">Review synthetic reports of recruiters impersonating real companies.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">Add new</a>
+</section>
+<p class="toolbar-note">
+    <a asp-action="Index" asp-route-status="Pending">Moderation queue</a>
+    <span class="badge-medium">@ViewBag.PendingCount pending</span>
+</p>
+<section class="card">
+    <form method="get" class="toolbar" aria-label="Filter reports">
+        <div class="field">
+            <label for="search">Search</label>
+            <input id="search" name="search" value="@ViewBag.Search" />
+        </div>
+        <div class="field">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+                <option value="">Any</option>
+                @foreach (var status in new[] { "Pending", "Approved", "Rejected" })
+                {
+                    if (ViewBag.Status as string == status)
+                    {
+                        <option value="@status" selected>@status</option>
+                    }
+                    else
+                    {
+                        <option value="@status">@status</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="field">
+            <label for="scamType">Scam type</label>
+            <select id="scamType" name="scamType">
+                <option value="">Any</option>
+                @foreach (var type in Catalog.ScamTypes)
+                {
+                    if (ViewBag.ScamType as string == type)
+                    {
+                        <option selected>@type</option>
+                    }
+                    else
+                    {
+                        <option>@type</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="field">
+            <label for="channel">Channel</label>
+            <select id="channel" name="channel">
+                <option value="">Any</option>
+                @foreach (var channel in Catalog.Channels)
+                {
+                    if (ViewBag.Channel as string == channel)
+                    {
+                        <option selected>@channel</option>
+                    }
+                    else
+                    {
+                        <option>@channel</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="field">
+            <label for="company">Company</label>
+            <select id="company" name="company">
+                <option value="">Any</option>
+                @foreach (var company in companies)
+                {
+                    if (ViewBag.Company as int? == company.CompanyId)
+                    {
+                        <option value="@company.CompanyId" selected>@company.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@company.CompanyId">@company.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Apply</button>
+            <a class="btn btn-secondary" asp-action="Index">Clear</a>
+        </div>
+    </form>
+</section>
+@if (page.Total == 0)
+{
+    <section class="card empty-state">
+        <p>No reports match these filters.</p>
+        <a asp-action="Index">Clear filters</a>
+    </section>
+}
+else
+{
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th scope="col"><a href="@SortUrl("date")">Date</a></th>
+                    <th scope="col"><a href="@SortUrl("company")">Company</a></th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Channel</th>
+                    <th scope="col"><a href="@SortUrl("status")">Status</a></th>
+                    <th scope="col"><a href="@SortUrl("amount")">Amount</a></th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var report in page.Items)
+                {
+                    <tr>
+                        <td>@report.ReportedDate</td>
+                        <td>@report.CompanyName</td>
+                        <td>@report.RecruiterEmail</td>
+                        <td>@report.ScamType</td>
+                        <td>@report.Channel</td>
+                        <td><partial name="_StatusBadge" model="report.Status" /></td>
+                        <td>@report.AmountRequestedUsd.ToString("$#,##0.00")</td>
+                        <td class="row-actions">
+                            <a asp-action="Details" asp-route-id="@report.ReportId">Details</a>
+                            @if (report.Status == "Pending")
+                            {
+                                <form method="post" asp-action="Approve" asp-route-id="@report.ReportId">
+                                    <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                                    <button class="btn btn-secondary" type="submit">Approve</button>
+                                </form>
+                                <form method="post" asp-action="Reject" asp-route-id="@report.ReportId">
+                                    <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+                                    <button class="btn btn-secondary" type="submit">Reject</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_Pager" />
+}

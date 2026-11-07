@@ -1,0 +1,18 @@
+@{
+    ViewData["Title"] = "Check recruiter";
+    var email = ViewBag.Email as string;
+}
+<section class="page-header">
+    <h1>Check recruiter</h1>
+    <p class="help">This check arrives in Phase 8. The email below is ready for that page.</p>
+</section>
+<section class="card">
+    @if (!string.IsNullOrWhiteSpace(email))
+    {
+        <p>Email to check: <strong>@email</strong></p>
+    }
+    else
+    {
+        <p>Open this page from a scam report to carry the recruiter email.</p>
+    }
+</section>

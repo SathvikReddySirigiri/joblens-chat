@@ -3,10 +3,10 @@ using Microsoft.Data.Sqlite;
 
 namespace JobLensChat.Data;
 
-public sealed class RecruiterRepository
+public sealed partial class RecruiterRepository
 {
     private const string SelectSql = """
-        SELECT r.RecruiterId, r.Email, r.Domain, r.CompanyId, c.Name, r.FirstSeen, r.Notes, COUNT(s.ReportId)
+        SELECT r.RecruiterId, r.Email, r.Domain, r.CompanyId, c.Name, r.FirstSeen, r.Notes, COUNT(s.ReportId), c.OfficialDomain
         FROM Recruiters r
         LEFT JOIN Companies c ON c.CompanyId = r.CompanyId
         LEFT JOIN ScamReports s ON s.RecruiterEmail = r.Email COLLATE NOCASE
@@ -39,7 +39,7 @@ public sealed class RecruiterRepository
             {SelectSql}
             WHERE ($search = '' OR r.Email LIKE $like OR r.Domain LIKE $like)
               AND ($companyId = 0 OR r.CompanyId = $companyId)
-            GROUP BY r.RecruiterId, r.Email, r.Domain, r.CompanyId, c.Name, r.FirstSeen, r.Notes
+            GROUP BY r.RecruiterId, r.Email, r.Domain, r.CompanyId, c.Name, c.OfficialDomain, r.FirstSeen, r.Notes
             ORDER BY r.Email
             LIMIT $limit OFFSET $offset;
             """;
@@ -58,7 +58,7 @@ public sealed class RecruiterRepository
         command.CommandText = $"""
             {SelectSql}
             WHERE r.RecruiterId = $id
-            GROUP BY r.RecruiterId, r.Email, r.Domain, r.CompanyId, c.Name, r.FirstSeen, r.Notes;
+            GROUP BY r.RecruiterId, r.Email, r.Domain, r.CompanyId, c.Name, c.OfficialDomain, r.FirstSeen, r.Notes;
             """;
         command.Parameters.AddWithValue("$id", recruiterId);
         var rows = await ReadListAsync(command, cancellationToken);
@@ -72,7 +72,7 @@ public sealed class RecruiterRepository
         command.CommandText = $"""
             {SelectSql}
             WHERE r.Email = $email COLLATE NOCASE
-            GROUP BY r.RecruiterId, r.Email, r.Domain, r.CompanyId, c.Name, r.FirstSeen, r.Notes;
+            GROUP BY r.RecruiterId, r.Email, r.Domain, r.CompanyId, c.Name, c.OfficialDomain, r.FirstSeen, r.Notes;
             """;
         command.Parameters.AddWithValue("$email", email.Trim());
         var rows = await ReadListAsync(command, cancellationToken);
@@ -174,7 +174,8 @@ public sealed class RecruiterRepository
                 reader.IsDBNull(4) ? null : reader.GetString(4),
                 reader.GetString(5),
                 reader.GetString(6),
-                reader.GetInt32(7)));
+                reader.GetInt32(7),
+                reader.IsDBNull(8) ? null : reader.GetString(8)));
         }
 
         return rows;

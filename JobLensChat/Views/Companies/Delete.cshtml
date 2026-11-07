@@ -1,0 +1,26 @@
+@model Company
+@{
+    ViewData["Title"] = "Delete company";
+    var dependents = (int)(ViewBag.Dependents ?? 0);
+}
+<partial name="_Alerts" />
+<section class="page-header">
+    <h1>Delete @Model.Name?</h1>
+    <p class="help">@Model.OfficialDomain · @Model.Industry</p>
+</section>
+<section class="card">
+    @if (dependents > 0)
+    {
+        <p class="alert alert-error" role="alert">This company has @dependents related records and cannot be deleted.</p>
+    }
+    else
+    {
+        <p>This cannot be undone.</p>
+    }
+    <form method="post" asp-action="DeleteConfirmed" asp-route-id="@Model.CompanyId">
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Delete company</button>
+            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.CompanyId">Cancel</a>
+        </div>
+    </form>
+</section>

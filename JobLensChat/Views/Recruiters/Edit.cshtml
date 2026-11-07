@@ -1,0 +1,16 @@
+@model RecruiterFormVm
+@{
+    ViewData["Title"] = "Edit recruiter";
+}
+<section class="page-header">
+    <h1>Edit recruiter</h1>
+</section>
+<section class="card">
+    <form method="post" asp-action="Edit" asp-route-id="@Model.RecruiterId">
+        <partial name="_Form" model="Model" />
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Save</button>
+            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.RecruiterId">Cancel</a>
+        </div>
+    </form>
+</section>

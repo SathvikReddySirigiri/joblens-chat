@@ -1,0 +1,53 @@
+@model JobPostingFormVm
+<div asp-validation-summary="ModelOnly" class="alert alert-error" role="alert"></div>
+<input type="hidden" asp-for="PostingId" />
+<div class="field">
+    <label asp-for="CompanyId">Company</label>
+    <select asp-for="CompanyId">
+        <option value="">Choose a company</option>
+        @foreach (var company in ViewBag.Companies as IReadOnlyList<Company> ?? Array.Empty<Company>())
+        {
+            <option value="@company.CompanyId">@company.Name</option>
+        }
+    </select>
+    <span asp-validation-for="CompanyId" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="Title">Title</label>
+    <input asp-for="Title" />
+    <span asp-validation-for="Title" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="Location">Location</label>
+    <input asp-for="Location" />
+    <span asp-validation-for="Location" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="State">State</label>
+    <input asp-for="State" maxlength="2" />
+    <span asp-validation-for="State" class="field-error"></span>
+</div>
+<div class="field check-row">
+    <input asp-for="IsRemote" />
+    <label asp-for="IsRemote">Remote</label>
+</div>
+<div class="field check-row">
+    <input asp-for="IsPaid" />
+    <label asp-for="IsPaid">Paid</label>
+</div>
+<div class="field">
+    <label asp-for="PayRatePerHour">Pay rate per hour</label>
+    <input asp-for="PayRatePerHour" inputmode="decimal" />
+    <p class="help">Required when the posting is paid. Leave empty or zero when it is unpaid.</p>
+    <span asp-validation-for="PayRatePerHour" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="Description">Description</label>
+    <textarea asp-for="Description"></textarea>
+    <span asp-validation-for="Description" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="PostedDate">Posted date</label>
+    <input asp-for="PostedDate" placeholder="yyyy-MM-dd" />
+    <span asp-validation-for="PostedDate" class="field-error"></span>
+</div>

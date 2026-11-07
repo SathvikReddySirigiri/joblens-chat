@@ -63,9 +63,9 @@ public sealed class InterviewReviewService(InterviewReviewRepository reviews, Co
             return null;
         }
 
-        if (experience.Length is < 20 or > 2000)
+        if (experience.Length is < 20 or > 1000)
         {
-            _error = "Experience must be 20 to 2000 characters.";
+            _error = "Experience must be 20 to 1000 characters.";
             return null;
         }
 

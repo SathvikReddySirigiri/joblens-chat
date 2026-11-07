@@ -1,0 +1,17 @@
+@model Recruiter
+@{
+    ViewData["Title"] = "Delete recruiter";
+}
+<partial name="_Alerts" />
+<section class="page-header">
+    <h1>Delete this recruiter?</h1>
+    <p class="help">@Model.Email · @Model.Domain. Related scam reports stay in the report list.</p>
+</section>
+<section class="card">
+    <form method="post" asp-action="DeleteConfirmed" asp-route-id="@Model.RecruiterId">
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Delete recruiter</button>
+            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.RecruiterId">Cancel</a>
+        </div>
+    </form>
+</section>

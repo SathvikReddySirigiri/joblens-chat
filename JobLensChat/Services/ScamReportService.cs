@@ -32,7 +32,7 @@ public sealed class ScamReportService(ScamReportRepository reports, CompanyRepos
             prepared.Amount,
             prepared.Age,
             "Pending",
-            FieldRules.Today(),
+            prepared.ReportedDate,
             prepared.Description,
             cancellationToken);
         return ServiceResult.Ok(id);
@@ -61,6 +61,7 @@ public sealed class ScamReportService(ScamReportRepository reports, CompanyRepos
             prepared.Amount,
             prepared.Age,
             prepared.Description,
+            prepared.ReportedDate,
             cancellationToken);
         return updated ? ServiceResult.Ok(form.ReportId) : ServiceResult.Fail("Report not found.");
     }
@@ -128,13 +129,21 @@ public sealed class ScamReportService(ScamReportRepository reports, CompanyRepos
             return null;
         }
 
-        if (await reports.ExistsDuplicateAsync(email, scamType, excludeId, cancellationToken))
+        var reported = string.IsNullOrWhiteSpace(form.ReportedDate) ? FieldRules.Today() : form.ReportedDate.Trim();
+        if (!FieldRules.IsDate(reported))
         {
-            _error = "A report with this recruiter email and scam type already exists.";
+            _error = "Reported date must be yyyy-MM-dd.";
             return null;
         }
 
-        return new Prepared(form.CompanyId, email, domain, scamType, channel, form.AmountRequestedUsd, form.DomainAgeDays, description);
+        var duplicateId = await reports.FindDuplicateIdAsync(email, scamType, excludeId, cancellationToken);
+        if (duplicateId is not null)
+        {
+            _error = $"A report with this recruiter email and scam type already exists (report {duplicateId.Value}).";
+            return null;
+        }
+
+        return new Prepared(form.CompanyId, email, domain, scamType, channel, form.AmountRequestedUsd, form.DomainAgeDays, description, reported);
     }
 
     private async Task<ServiceResult> ChangeStatusAsync(int reportId, string status, CancellationToken cancellationToken)
@@ -176,5 +185,6 @@ public sealed class ScamReportService(ScamReportRepository reports, CompanyRepos
         string Channel,
         double Amount,
         int Age,
-        string Description);
+        string Description,
+        string ReportedDate);
 }

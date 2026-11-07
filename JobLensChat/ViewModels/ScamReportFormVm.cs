@@ -31,4 +31,7 @@ public sealed class ScamReportFormVm
     [Required]
     [StringLength(500, MinimumLength = 20)]
     public string Description { get; set; } = "";
+
+    [RegularExpression(@"^\d{4}-\d{2}-\d{2}$", ErrorMessage = "Use a yyyy-MM-dd date.")]
+    public string? ReportedDate { get; set; }
 }
