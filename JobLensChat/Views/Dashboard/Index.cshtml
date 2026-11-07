@@ -1,10 +1,217 @@
+@model DashboardSnapshot
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Scam Insights Dashboard";
+    var updated = DateTime.UtcNow;
+    string Money(double value) => Math.Abs(value % 1) < 0.001
+        ? value.ToString("$#,##0")
+        : value.ToString("$#,##0.00");
+    string Percent(double value) => value.ToString("0.#") + "%";
 }
+
 <section class="page-header">
-    <h1>Dashboard</h1>
-    <p class="help">Charts and totals arrive in Phase 9.</p>
+    <div class="page-heading">
+        <h1>Scam Insights Dashboard</h1>
+        <p class="help">Totals and trends from the synthetic scam reports, job postings, and recruiter checks.</p>
+        <p class="help">Last updated <time id="dashboard-updated" datetime="@updated.ToString("yyyy-MM-ddTHH:mm:ssZ")">@updated.ToString("yyyy-MM-dd HH:mm") UTC</time></p>
+    </div>
+    <div class="header-actions">
+        <label for="dashboard-range">Date range</label>
+        <select id="dashboard-range">
+            <option value="all" selected="@(Model.Range == "all" ? "selected" : null)">All</option>
+            <option value="6m" selected="@(Model.Range == "6m" ? "selected" : null)">Last 6 months</option>
+            <option value="3m" selected="@(Model.Range == "3m" ? "selected" : null)">Last 3 months</option>
+        </select>
+        <button type="button" class="btn btn-secondary" id="dashboard-refresh">Refresh</button>
+    </div>
 </section>
-<section class="card">
-    <p>The dashboard is not available yet.</p>
+<p class="help">Live from the JobLens database — changes on the Scam Reports page appear here immediately.</p>
+<div id="dashboard-error" class="alert alert-error" hidden>Couldn't load dashboard data</div>
+
+<section class="kpi-grid" aria-label="Key figures">
+    <article class="card kpi">
+        <h2>Total reports</h2>
+        <p class="kpi-value" id="kpi-total">@Model.Kpis.TotalReports</p>
+    </article>
+    <article class="card kpi">
+        <h2>Pending review</h2>
+        <p class="kpi-value"><a id="kpi-pending" asp-controller="ScamReports" asp-action="Index" asp-route-status="Pending">@Model.Kpis.PendingReports</a></p>
+    </article>
+    <article class="card kpi">
+        <h2>Approval rate</h2>
+        <p class="kpi-value" id="kpi-approval">@Percent(Model.Kpis.ApprovalRate)</p>
+        <p class="help">Approved divided by approved plus rejected.</p>
+    </article>
+    <article class="card kpi">
+        <h2>Money requested</h2>
+        <p class="kpi-value" id="kpi-money">@Money(Model.Kpis.TotalAmountRequestedUsd)</p>
+    </article>
+    <article class="card kpi">
+        <h2>Checks this month</h2>
+        <p class="kpi-value" id="kpi-checks">@Model.Kpis.ChecksThisMonth</p>
+    </article>
+    <article class="card kpi">
+        <h2>High-risk checks</h2>
+        <p class="kpi-value" id="kpi-high">@Percent(Model.Kpis.HighRiskCheckPct)</p>
+        <p class="help">HIGH verdicts divided by all checks in this range.</p>
+    </article>
 </section>
+
+<section class="chart-grid" aria-label="Charts">
+    <article class="card chart-card">
+        <h2>Reports per month</h2>
+        <p class="help">Every report and the approved subset, by the month it was reported.</p>
+        <div class="chart-box">
+            <canvas id="chart-months" role="img" aria-label="Line chart of reports per month, all statuses and approved."></canvas>
+        </div>
+        <details class="chart-table">
+            <summary>View as table</summary>
+            <div class="table-wrap">
+                <table>
+                    <caption>Reports per month</caption>
+                    <thead><tr><th scope="col">Month</th><th scope="col">All reports</th><th scope="col">Approved</th></tr></thead>
+                    <tbody id="table-months">
+                        @foreach (var row in Model.ReportsPerMonth)
+                        {
+                            <tr><td>@row.Month</td><td>@row.Total</td><td>@row.Approved</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </details>
+    </article>
+
+    <article class="card chart-card">
+        <h2>Reports by scam type</h2>
+        <p class="help">How reported scams split across the six scam types. The center shows the total.</p>
+        <div class="chart-box">
+            <canvas id="chart-types" role="img" aria-label="Doughnut chart of reports by scam type."></canvas>
+        </div>
+        <details class="chart-table">
+            <summary>View as table</summary>
+            <div class="table-wrap">
+                <table>
+                    <caption>Reports by scam type</caption>
+                    <thead><tr><th scope="col">Scam type</th><th scope="col">Reports</th></tr></thead>
+                    <tbody id="table-types">
+                        @foreach (var row in Model.ReportsByScamType)
+                        {
+                            <tr><td>@row.Category</td><td>@row.Count</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </details>
+    </article>
+
+    <article class="card chart-card">
+        <h2>Top impersonated companies</h2>
+        <p class="help">The seven companies with the most approved reports, and the money those reports requested.</p>
+        <div class="chart-box">
+            <canvas id="chart-companies" role="img" aria-label="Horizontal bar chart of the most impersonated companies by approved reports."></canvas>
+        </div>
+        <details class="chart-table">
+            <summary>View as table</summary>
+            <div class="table-wrap">
+                <table>
+                    <caption>Top impersonated companies</caption>
+                    <thead><tr><th scope="col">Company</th><th scope="col">Approved reports</th><th scope="col">Amount requested</th></tr></thead>
+                    <tbody id="table-companies">
+                        @foreach (var row in Model.TopImpersonatedCompanies)
+                        {
+                            <tr><td>@row.CompanyName</td><td>@row.ApprovedReports</td><td>@Money(row.TotalAmountRequestedUsd)</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </details>
+    </article>
+
+    <article class="card chart-card">
+        <h2>Recruiter checks by verdict</h2>
+        <p class="help">LOW, MEDIUM, and HIGH check results stacked by month.</p>
+        <div class="chart-box">
+            <canvas id="chart-checks" role="img" aria-label="Stacked bar chart of recruiter checks by verdict and month."></canvas>
+        </div>
+        <details class="chart-table">
+            <summary>View as table</summary>
+            <div class="table-wrap">
+                <table>
+                    <caption>Checks by verdict per month</caption>
+                    <thead><tr><th scope="col">Month</th><th scope="col">LOW</th><th scope="col">MEDIUM</th><th scope="col">HIGH</th></tr></thead>
+                    <tbody id="table-checks">
+                        @foreach (var row in Model.ChecksByVerdictPerMonth)
+                        {
+                            <tr><td>@row.Month</td><td>@row.Low</td><td>@row.Medium</td><td>@row.High</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </details>
+    </article>
+
+    <article class="card chart-card">
+        <h2>Reports by status</h2>
+        <p class="help">Pending, approved, and rejected reports in the selected dates.</p>
+        <div class="chart-box">
+            <canvas id="chart-status" role="img" aria-label="Bar chart of reports by status."></canvas>
+        </div>
+        <details class="chart-table">
+            <summary>View as table</summary>
+            <div class="table-wrap">
+                <table>
+                    <caption>Reports by status</caption>
+                    <thead><tr><th scope="col">Status</th><th scope="col">Reports</th></tr></thead>
+                    <tbody id="table-status">
+                        @foreach (var row in Model.ReportsByStatus)
+                        {
+                            <tr><td>@row.Category</td><td>@row.Count</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </details>
+    </article>
+
+    <article class="card chart-card">
+        <h2>Postings and approved reports</h2>
+        <p class="help">Open postings beside approved scam reports for each company. The tooltip includes the average interview rating.</p>
+        <div class="chart-box">
+            <canvas id="chart-compare" role="img" aria-label="Grouped bar chart of job postings and approved reports per company."></canvas>
+        </div>
+        <details class="chart-table">
+            <summary>View as table</summary>
+            <div class="table-wrap">
+                <table>
+                    <caption>Postings and approved reports per company</caption>
+                    <thead><tr><th scope="col">Company</th><th scope="col">Postings</th><th scope="col">Approved reports</th><th scope="col">Average rating</th></tr></thead>
+                    <tbody id="table-compare">
+                        @foreach (var row in Model.PostingsVsReports)
+                        {
+                            <tr>
+                                <td>@row.CompanyName</td>
+                                <td>@row.Postings</td>
+                                <td>@row.ApprovedReports</td>
+                                <td>@(row.AverageRating?.ToString("0.0") ?? "—")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </details>
+    </article>
+</section>
+
+<section class="card insights" aria-labelledby="insights-title">
+    <h2 id="insights-title">Insights</h2>
+    <ul id="dashboard-insights">
+        @foreach (var insight in Model.Insights)
+        {
+            <li>@insight</li>
+        }
+    </ul>
+</section>
+
+@section Scripts {
+    <script src="~/lib/chartjs/chart.umd.min.js" asp-append-version="true"></script>
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+}

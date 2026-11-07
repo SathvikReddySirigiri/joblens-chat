@@ -3,7 +3,7 @@ using Microsoft.Data.Sqlite;
 
 namespace JobLensChat.Data;
 
-public sealed class DashboardRepository
+public sealed partial class DashboardRepository
 {
     private readonly string _connectionString;
 

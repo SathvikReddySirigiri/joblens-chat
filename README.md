@@ -49,6 +49,10 @@ Inside `JobLensChat/`:
 
 The pages use that stylesheet. Bootstrap and jQuery are not part of the app.
 
+## Third-party
+
+Chart.js 4.4.6 (MIT license) is stored locally at `JobLensChat/wwwroot/lib/chartjs/chart.umd.min.js` and is loaded only on the Scam Insights Dashboard. The page does not request it from a CDN at runtime.
+
 ## Docs
 
 The proposal and project records are in `docs/`.
