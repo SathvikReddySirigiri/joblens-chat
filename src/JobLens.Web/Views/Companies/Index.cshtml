@@ -1,0 +1,64 @@
+@using JobLens.Web.Models
+@{
+    ViewData["Title"] = "Companies";
+    var page = (PageResult<Company>)ViewBag.Page;
+    ViewData["PagerPage"] = page.Page;
+    ViewData["PagerSize"] = page.PageSize;
+    ViewData["PagerTotal"] = page.Total;
+}
+<partial name="_Alerts" />
+<section class="page-header">
+    <div class="page-heading">
+        <h1>Companies</h1>
+        <p class="help">Official employers that scam reports and job postings refer to.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">Add new</a>
+</section>
+<section class="card">
+    <form method="get" class="toolbar" aria-label="Filter companies">
+        <div class="field">
+            <label for="search">Search</label>
+            <input id="search" name="search" value="@ViewBag.Search" />
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Apply</button>
+            <a class="btn btn-secondary" asp-action="Index">Clear</a>
+        </div>
+    </form>
+</section>
+@if (page.Total == 0)
+{
+    <section class="card empty-state">
+        <p>No companies match these filters.</p>
+        <a asp-action="Index">Clear filters</a>
+    </section>
+}
+else
+{
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Domain</th>
+                    <th scope="col">Industry</th>
+                    <th scope="col">State</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var company in page.Items)
+                {
+                    <tr>
+                        <td>@company.Name</td>
+                        <td>@company.OfficialDomain</td>
+                        <td>@company.Industry</td>
+                        <td>@company.HqState</td>
+                        <td><a asp-action="Details" asp-route-id="@company.CompanyId">Details</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_Pager" />
+}

@@ -5,19 +5,31 @@ Microsoft.Extensions.AI 10.10.0, Microsoft.Extensions.AI.OpenAI 10.10.0, OpenAI 
 Do NOT use Entity Framework. Use ADO.NET with Microsoft.Data.Sqlite.
 
 Domain: job/internship scam intelligence for university career centers (synthetic data only).
-Tables: Companies (PK CompanyId), ScamReports (PK ReportId, FK CompanyId → Companies), JobPostings, InterviewReviews, CheckLogs.
+Tables: Companies (PK CompanyId), ScamReports (PK ReportId, FK CompanyId → Companies), JobPostings, InterviewReviews, CheckLogs, Recruiters, Users.
+
+Solution layout (Clean Architecture):
+- src/JobLens.Domain — entities and domain constants (no package references)
+- src/JobLens.Application — interfaces, DTOs, services, DI (AddApplication); depends only on Domain
+- src/JobLens.Infrastructure — SQLite repositories, seed, external HTTP clients, AI factory, documents; depends on Application + Domain
+- src/JobLens.Web — MVC Controllers, Views, ViewModels, wwwroot, Mcp tools, ChatOrchestrator, Program.cs
+- tests/JobLens.Tests — xUnit tests referencing Domain, Application, Infrastructure, Web
+- Solution file: JobLens.slnx
+
+Dependency rule: Web → Application ← Infrastructure; Application → Domain.
+Web may reference Infrastructure only for composition root (AddInfrastructure) and startup (DatabaseInitializer).
+Controllers call Application services (or ChatOrchestrator); never repositories.
+MCP tools call Application services/interfaces only. ChatOrchestrator never calls repositories.
 
 Architecture rules:
-- Request flow: Browser → MVC Controller → ChatOrchestrator → MCP client → HTTP /mcp → MCP tools → Repository → SQLite.
-- No SQL in controllers or Razor views. All SQL lives in Data/ScamRepository.cs.
+- Request flow: Browser → MVC Controller → ChatOrchestrator → MCP client → HTTP /mcp → MCP tools → Application interfaces → Infrastructure repositories → SQLite.
+- No SQL in controllers, Razor views, Application, or Domain. All SQL lives in src/JobLens.Infrastructure/Persistence.
 - Every SQL command is parameterized ($param). Never concatenate user input into SQL.
 - MCP tools are read-only, narrow, described, validated, and return bounded output (max 20 rows).
   Never create an execute_sql, run_query, or any arbitrary-SQL tool, and never add write tools to MCP.
-- Writes (Create/Update/Delete) happen ONLY through MVC controllers → Services (business rules) → Repositories
-  (parameterized SQL). Controllers stay thin; validation in ViewModels + Services.
-- All SQL lives in Data/ repositories. Tables: Companies, ScamReports, JobPostings, InterviewReviews, CheckLogs.
+- Writes (Create/Update/Delete) happen ONLY through MVC controllers → Application services (business rules) → repositories
+  (parameterized SQL). Controllers stay thin; validation in ViewModels/Dtos + Services.
 - ChatOrchestrator never calls the repository directly — only through MCP tools.
-- SQLite file: App_Data/joblens.db locally; HOME/data/JobLens/joblens.db on Azure. Never under wwwroot.
+- SQLite file: App_Data/joblens.db under the Web project locally; HOME/data/JobLens/joblens.db on Azure. Never under wwwroot.
 - Secrets (AI keys) only in dotnet user-secrets locally and Azure environment variables. Never in appsettings.json or Git.
 - Every POST uses [ValidateAntiForgeryToken]. Server-side validation on all input. Friendly errors, details only in logs.
 - AllowedHosts: localhost values in development; exact Azure hostname in production. Never "*".

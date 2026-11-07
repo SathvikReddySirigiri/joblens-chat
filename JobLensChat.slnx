@@ -1,4 +1,0 @@
-<Solution>
-  <Project Path="JobLensChat/JobLensChat.csproj" />
-  <Project Path="JobLensChat.Tests/JobLensChat.Tests.csproj" />
-</Solution>
