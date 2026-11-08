@@ -95,7 +95,7 @@ public sealed class CompanyService(ICompanyRepository companies)
     public Task<Company?> GetByIdAsync(int companyId, CancellationToken cancellationToken) =>
         companies.GetByIdAsync(companyId, cancellationToken);
 
-    public Task<CompanyActivity> GetActivityAsync(int companyId, CancellationToken cancellationToken) =>
+    public Task<CompanyActivitySummary> GetActivityAsync(int companyId, CancellationToken cancellationToken) =>
         companies.GetActivityAsync(companyId, cancellationToken);
 
     public Task<int> CountDependentsAsync(int companyId, CancellationToken cancellationToken) =>

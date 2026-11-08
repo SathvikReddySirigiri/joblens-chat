@@ -1,7 +1,7 @@
 @model Company
 @{
     ViewData["Title"] = Model.Name;
-    var activity = (CompanyActivity)ViewBag.Activity;
+    var activity = (CompanyActivitySummary)ViewBag.Activity;
 }
 <partial name="_Alerts" />
 <section class="page-header">

@@ -1,0 +1,20 @@
+@model JobApplicationFormVm
+@{
+    ViewData["Title"] = "Track a job";
+}
+<section class="page-header">
+    <div class="page-heading">
+        <h1>Track a job</h1>
+        <p class="help">Save a role to your pipeline and optionally check the recruiter email for risk.</p>
+    </div>
+</section>
+<section class="card">
+    <form method="post" asp-action="Create">
+        @Html.AntiForgeryToken()
+        <partial name="_Form" />
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Save application</button>
+            <a class="btn btn-secondary" asp-action="Index">Cancel</a>
+        </div>
+    </form>
+</section>

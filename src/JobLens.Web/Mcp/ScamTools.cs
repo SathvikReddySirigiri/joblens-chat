@@ -10,7 +10,7 @@ using ModelContextProtocol.Server;
 namespace JobLens.Web.Mcp;
 
 [McpServerToolType]
-public sealed class ScamTools(IScamQueryRepository repository, RecruiterRiskService riskService, ILogger<ScamTools> logger)
+public sealed class ScamTools(IScamAnalyticsRepository repository, RecruiterRiskService riskService, ILogger<ScamTools> logger)
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {

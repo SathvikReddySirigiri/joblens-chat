@@ -11,6 +11,6 @@ public interface IJobPostingRepository
     Task<int> CreateAsync( int companyId, string title, string location, string state, bool isRemote, bool isPaid, double? payRatePerHour, string description, string postedDate, CancellationToken cancellationToken);
     Task<bool> UpdateAsync( int postingId, int companyId, string title, string location, string state, bool isRemote, bool isPaid, double? payRatePerHour, string description, string postedDate, CancellationToken cancellationToken);
     Task<bool> DeleteAsync(int postingId, CancellationToken cancellationToken);
-    Task<PageResult<JobPosting>> SearchPageAsync(SearchFilter filter, int page, CancellationToken cancellationToken);
+    Task<PageResult<JobPostingListItem>> SearchPageAsync(SearchFilter filter, int page, CancellationToken cancellationToken);
     Task<IReadOnlyList<JobListing>> SearchListedAsync(SearchFilter filter, int limit, CancellationToken cancellationToken);
 }

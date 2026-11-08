@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -20,6 +20,10 @@
     <ProjectReference Include="..\..\src\JobLens.Application\JobLens.Application.csproj" />
     <ProjectReference Include="..\..\src\JobLens.Infrastructure\JobLens.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\JobLens.Web\JobLens.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Fixtures\**\*" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

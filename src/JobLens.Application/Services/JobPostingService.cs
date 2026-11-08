@@ -132,7 +132,7 @@ public sealed class JobPostingService(IJobPostingRepository postings, ICompanyRe
         string Description,
         string PostedDate);
 
-    public Task<PageResult<JobPosting>> SearchPageAsync(SearchFilter filter, int page, CancellationToken cancellationToken) =>
+    public Task<PageResult<JobPostingListItem>> SearchPageAsync(SearchFilter filter, int page, CancellationToken cancellationToken) =>
         postings.SearchPageAsync(filter, page, cancellationToken);
 
     public Task<JobPosting?> GetByIdAsync(int postingId, CancellationToken cancellationToken) =>

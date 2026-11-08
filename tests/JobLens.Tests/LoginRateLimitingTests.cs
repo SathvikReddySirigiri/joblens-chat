@@ -23,12 +23,13 @@ public sealed class LoginRateLimitingTests
     }
 
     [Fact]
-    public void Expensive_policy_attribute_is_on_chat_offer_and_recruiter_posts()
+    public void Expensive_policy_attribute_is_on_chat_offer_recruiter_and_jobs()
     {
         AssertHasExpensive(typeof(ChatController), nameof(ChatController.Ask));
         AssertHasExpensive(typeof(OfferAnalyzerController), nameof(OfferAnalyzerController.Analyze));
         AssertHasExpensive(typeof(OfferAnalyzerController), nameof(OfferAnalyzerController.Upload));
         AssertHasExpensive(typeof(CheckRecruiterController), nameof(CheckRecruiterController.Check));
+        AssertHasExpensive(typeof(JobsController), nameof(JobsController.Index));
     }
 
     private static void AssertHasExpensive(Type controller, string methodName)

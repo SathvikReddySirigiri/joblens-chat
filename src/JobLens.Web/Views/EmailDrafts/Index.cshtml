@@ -1,0 +1,152 @@
+@using JobLens.Domain.Constants
+@model EmailDraftPageVm
+@{
+    ViewData["Title"] = "Email drafts";
+}
+<section class="page-header">
+    <div class="page-heading">
+        <h1>Email drafts</h1>
+        <p class="help">AI-assisted recruiter emails. JobLens never sends email — copy the draft or open your mail app.</p>
+    </div>
+</section>
+
+<section class="card">
+    <form method="post" asp-action="Index" id="email-draft-form">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="alert alert-error" role="alert"></div>
+
+        @if (Model.Applications.Count > 0)
+        {
+            <div class="field">
+                <label asp-for="PrefillApplicationId">Prefill from application</label>
+                <div class="header-actions">
+                    <select asp-for="PrefillApplicationId">
+                        <option value="">Choose an application</option>
+                        @foreach (var app in Model.Applications)
+                        {
+                            <option value="@app.ApplicationId">@app.Label</option>
+                        }
+                    </select>
+                    <button class="btn btn-secondary" type="submit" name="prefill" value="1">Prefill</button>
+                </div>
+            </div>
+        }
+
+        <div class="field">
+            <label asp-for="Type">Email type</label>
+            <select asp-for="Type">
+                @foreach (var type in EmailDraftTypes.All)
+                {
+                    <option value="@type">@EmailDraftTypes.DisplayName(type)</option>
+                }
+            </select>
+        </div>
+        <div class="field">
+            <label asp-for="Tone">Tone</label>
+            <select asp-for="Tone">
+                @foreach (var tone in EmailDraftTones.All)
+                {
+                    <option value="@tone">@tone</option>
+                }
+            </select>
+        </div>
+        <div class="field">
+            <label asp-for="StudentName">Your name</label>
+            <input asp-for="StudentName" maxlength="80" />
+            <span asp-validation-for="StudentName" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="CompanyName">Company</label>
+            <input asp-for="CompanyName" maxlength="120" />
+            <span asp-validation-for="CompanyName" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="RoleTitle">Role title</label>
+            <input asp-for="RoleTitle" maxlength="120" />
+            <span asp-validation-for="RoleTitle" class="field-error"></span>
+        </div>
+        <div class="field">
+            <label asp-for="RecruiterName">Recruiter name</label>
+            <input asp-for="RecruiterName" maxlength="80" />
+        </div>
+        <div class="field">
+            <label asp-for="RecruiterEmail">Recruiter email</label>
+            <input asp-for="RecruiterEmail" maxlength="200" />
+            <span asp-validation-for="RecruiterEmail" class="field-error"></span>
+            <p class="help">Used for risk checks and the “Open in mail app” link. JobLens does not send email.</p>
+        </div>
+        <div class="field">
+            <label asp-for="ExtraNotes">Extra notes</label>
+            <textarea asp-for="ExtraNotes" maxlength="500" rows="3"></textarea>
+            <span asp-validation-for="ExtraNotes" class="field-error"></span>
+        </div>
+        <button class="btn btn-primary" type="submit">Generate draft</button>
+    </form>
+</section>
+
+@if (Model.Result is { } draft)
+{
+    <section class="card" aria-labelledby="draft-title">
+        <h2 id="draft-title">Draft</h2>
+        <p class="help">@draft.Mode · type @EmailDraftTypes.DisplayName(draft.EffectiveType)</p>
+        @if (draft.Warnings.Count > 0)
+        {
+            <ul class="alert alert-error" role="alert">
+                @foreach (var warning in draft.Warnings)
+                {
+                    <li>@warning</li>
+                }
+            </ul>
+        }
+        <div class="field">
+            <label for="draft-subject">Subject</label>
+            <input id="draft-subject" value="@draft.Subject" readonly />
+        </div>
+        <div class="field">
+            <label for="draft-body">Body</label>
+            <textarea id="draft-body" rows="12" readonly>@draft.Body</textarea>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary" type="button" id="copy-draft">Copy</button>
+            @if (!string.IsNullOrWhiteSpace(Model.MailtoUrl))
+            {
+                <a class="btn btn-primary" href="@Model.MailtoUrl">Open in mail app</a>
+            }
+        </div>
+        <p class="help" id="copy-status" aria-live="polite"></p>
+    </section>
+}
+
+@section Scripts {
+    <script>
+        (function () {
+            var button = document.getElementById("copy-draft");
+            var status = document.getElementById("copy-status");
+            var subject = document.getElementById("draft-subject");
+            var body = document.getElementById("draft-body");
+            if (!button || !subject || !body) {
+                return;
+            }
+            button.addEventListener("click", function () {
+                var text = "Subject: " + subject.value + "\n\n" + body.value;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(function () {
+                        if (status) {
+                            status.textContent = "Copied to clipboard.";
+                        }
+                    }).catch(function () {
+                        if (status) {
+                            status.textContent = "Copy failed. Select the text manually.";
+                        }
+                    });
+                } else {
+                    body.select();
+                    document.execCommand("copy");
+                    if (status) {
+                        status.textContent = "Copied to clipboard.";
+                    }
+                }
+            });
+        })();
+    </script>
+}

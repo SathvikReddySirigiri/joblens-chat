@@ -1,3 +1,5 @@
+using JobLens.Application.Dtos.Dashboard;
+
 namespace JobLens.Application.Dtos;
 
 public sealed record ScamSummary(
@@ -11,3 +13,4 @@ public sealed record ScamSummary(
     string? ToDate,
     IReadOnlyList<CategoryCount> ByScamType,
     IReadOnlyList<CategoryCount> ByChannel);
+

@@ -13,6 +13,7 @@ Team: Naga Pavan Sathvik Reddy Sirigiri · Isabella Cuello Penaloza · Lakshmi R
 - Smart Search (plain-English → structured job filters)
 - Live Scam Insights Dashboard (Chart.js)
 - Chat grounded via MCP tools on `/mcp` (no free-form SQL)
+- **Jobs** page with two tabs: live openings from [USAJOBS](https://www.usajobs.gov) by default (or [The Muse](https://www.themuse.com) via `Jobs:Provider`) fetched on demand with JobLens trust signals, and JobLens-curated postings with Smart Search
 
 ## Solution structure
 
@@ -22,11 +23,10 @@ joblens-chat/
 ├── .cursorrules
 ├── global.json
 ├── docs/
-│   ├── architecture/
+│   ├── DOCUMENTATION.md
 │   ├── demo/
 │   ├── evidence/
-│   ├── testing/
-│   └── README.md
+│   └── testing/
 ├── src/
 │   ├── JobLens.Domain/           entities + constants
 │   ├── JobLens.Application/      interfaces, DTOs, services, AddApplication()
@@ -99,6 +99,10 @@ dotnet test
 | `Ai:DisplayName` | Optional label shown in UI |
 | `Mcp:Endpoint` | Chat MCP client URL (default `http://localhost:5080/mcp`) |
 | `Mcp:AccessKey` | Secret for `/mcp` (`X-Api-Key`) — required outside Development |
+| `Jobs:Provider` | `UsaJobs` (default) or `TheMuse` |
+| `Jobs:UsaJobs:ApiKey` | USAJOBS API key — user-secrets / Azure only |
+| `Jobs:UsaJobs:UserAgent` | Email registered with USAJOBS API — user-secrets / Azure only |
+| `Jobs:TheMuse:ApiKey` | Optional The Muse API key when `Jobs:Provider=TheMuse` |
 | `Database:Path` | Optional absolute SQLite path override |
 | `Seed:ModeratorPassword` | Demo moderator password — required outside Development (`Seed__ModeratorPassword`) |
 | `Seed:StudentPassword` | Demo student password — required outside Development (`Seed__StudentPassword`) |
@@ -115,11 +119,33 @@ Set these as application settings (double-underscore env form works too):
 | `Ai:Provider` / `Ai:Endpoint` / `Ai:Model` / `Ai:ApiKey` | Only if AI mode is enabled |
 | `Mcp:Endpoint` | In-app MCP URL the chat client calls |
 | `Mcp:AccessKey` | Required; `/mcp` returns 503 if missing |
+| `Jobs__Provider` | `UsaJobs` (default) or `TheMuse` |
+| `Jobs__UsaJobs__ApiKey` | USAJOBS API key |
+| `Jobs__UsaJobs__UserAgent` | Email registered with USAJOBS |
+| `Jobs__TheMuse__ApiKey` | Optional; when using The Muse |
 | `Seed:ModeratorPassword` | Required; startup throws if missing |
 | `Seed:StudentPassword` | Required; startup throws if missing |
 | `Database:Path` | Optional; otherwise `HOME/data/JobLens/joblens.db` |
 
-Forwarded headers (`X-Forwarded-For` / `X-Forwarded-Proto`) are enabled for App Service. Auth cookies use `SecurePolicy=Always` outside Development. Expensive POSTs (Chat, Offer Analyzer, Check Recruiter) are limited to 10 requests/minute per IP.
+Forwarded headers (`X-Forwarded-For` / `X-Forwarded-Proto`) are enabled for App Service. Auth cookies use `SecurePolicy=Always` outside Development. Expensive POSTs (Chat, Offer Analyzer, Check Recruiter) and Jobs GET (`/Jobs`) are limited to 10 requests/minute per IP.
+
+### Jobs (USAJOBS / The Muse + JobLens postings)
+
+- Page: `/Jobs` — two tabs (`?tab=live` default, `?tab=joblens`). Legacy `/LiveJobs` and `/JobPostings` Index redirect into these tabs; JobPostings CRUD routes stay unchanged.
+- **Live openings (default USAJOBS):** filters for keyword, location, hiring path (students/interns by default, recent graduates), remote-only, and OPM series codes against `https://data.usajobs.gov/api/search` (1-based pages, 30-minute memory cache, never written to SQLite). Trust card shows **Official .gov source** tips; apply links must be on `usajobs.gov`.
+- Switch provider with `Jobs:Provider` = `UsaJobs` | `TheMuse` (Muse keeps category/level/company filters).
+- **JobLens postings:** curated synthetic listings with Smart Search, filters, and moderator CRUD.
+- MCP tool: `search_live_jobs` (live external; scam facts still come only from database tools).
+
+#### USAJOBS local setup
+
+```powershell
+dotnet user-secrets set "Jobs:UsaJobs:ApiKey" "<your-usajobs-api-key>" --project src/JobLens.Web
+dotnet user-secrets set "Jobs:UsaJobs:UserAgent" "<your-registered-email>" --project src/JobLens.Web
+dotnet user-secrets set "Jobs:Provider" "UsaJobs" --project src/JobLens.Web
+```
+
+Azure App Settings: `Jobs__Provider`, `Jobs__UsaJobs__ApiKey`, `Jobs__UsaJobs__UserAgent`. Never put keys in `appsettings.json` or source control.
 
 ## Demo accounts
 
@@ -132,10 +158,12 @@ Synthetic users are seeded for class demos (hashed passwords). Documented defaul
 
 On Azure / any non-Development host, set `Seed__ModeratorPassword` and `Seed__StudentPassword` in App Settings or startup fails.
 
-## Docs
+## Documentation
 
-See [docs/README.md](docs/README.md) for the full document index (proposal, test matrix, known answers, demo files, evidence).
+See [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md) for the full document index (proposal, test matrix, known answers, demo files, evidence).
 
 ## Third-party
 
 Chart.js 4.4.6 (MIT) is stored at `src/JobLens.Web/wwwroot/lib/chartjs/chart.umd.min.js` and loaded only on the Scam Insights Dashboard.
+
+Live job listings are provided by [USAJOBS](https://www.usajobs.gov) by default (or The Muse when `Jobs:Provider=TheMuse`) and are not stored by JobLens.

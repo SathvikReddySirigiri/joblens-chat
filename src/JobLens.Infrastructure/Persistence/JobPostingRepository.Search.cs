@@ -7,7 +7,7 @@ namespace JobLens.Infrastructure.Persistence;
 
 public sealed partial class JobPostingRepository : IJobPostingRepository
 {
-    public async Task<PageResult<JobPosting>> SearchPageAsync(SearchFilter filter, int page, CancellationToken cancellationToken)
+    public async Task<PageResult<JobPostingListItem>> SearchPageAsync(SearchFilter filter, int page, CancellationToken cancellationToken)
     {
         var (limit, offset) = SqliteConnections.Page(page, JobLens.Domain.Constants.Paging.PageSize);
         await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);
@@ -23,7 +23,13 @@ public sealed partial class JobPostingRepository : IJobPostingRepository
 
         await using var command = connection.CreateCommand();
         command.CommandText = $"""
-            {SelectSql}
+            SELECT p.PostingId, p.CompanyId, c.Name, p.Title, p.Location, p.State,
+                   p.IsRemote, p.IsPaid, p.PayRatePerHour, p.Description, p.PostedDate,
+                   CASE WHEN EXISTS (
+                       SELECT 1 FROM ScamReports s
+                       WHERE s.CompanyId = p.CompanyId AND s.Status = 'Approved') THEN 1 ELSE 0 END
+            FROM JobPostings p
+            INNER JOIN Companies c ON c.CompanyId = p.CompanyId
             WHERE {SmartFilter}
             ORDER BY p.PostedDate DESC, p.PostingId DESC
             LIMIT $limit OFFSET $offset;
@@ -31,8 +37,26 @@ public sealed partial class JobPostingRepository : IJobPostingRepository
         BindSmart(command, filter);
         command.Parameters.AddWithValue("$limit", limit);
         command.Parameters.AddWithValue("$offset", offset);
-        var items = await ReadListAsync(command, cancellationToken);
-        return new PageResult<JobPosting>(items, Math.Max(page, 1), limit, total);
+        var items = new List<JobPostingListItem>();
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            items.Add(new JobPostingListItem(
+                reader.GetInt32(0),
+                reader.GetInt32(1),
+                reader.GetString(2),
+                reader.GetString(3),
+                reader.GetString(4),
+                reader.GetString(5),
+                reader.GetInt32(6) == 1,
+                reader.GetInt32(7) == 1,
+                reader.IsDBNull(8) ? null : reader.GetDouble(8),
+                reader.GetString(9),
+                reader.GetString(10),
+                reader.GetInt32(11) == 1));
+        }
+
+        return new PageResult<JobPostingListItem>(items, Math.Max(page, 1), limit, total);
     }
 
     public async Task<IReadOnlyList<JobListing>> SearchListedAsync(SearchFilter filter, int limit, CancellationToken cancellationToken)

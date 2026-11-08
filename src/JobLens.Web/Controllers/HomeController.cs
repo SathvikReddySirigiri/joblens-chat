@@ -16,7 +16,7 @@ public sealed class HomeController(HomeService home, IWebHostEnvironment environ
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View(new ErrorViewModel
+        return View("~/Views/Shared/Error.cshtml", new ErrorViewModel
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
             ShowDetails = environment.IsDevelopment(),
@@ -29,7 +29,7 @@ public sealed class HomeController(HomeService home, IWebHostEnvironment environ
         Response.StatusCode = code;
         return code switch
         {
-            StatusCodes.Status403Forbidden => View("Forbidden"),
+            StatusCodes.Status403Forbidden => View("~/Views/Account/AccessDenied.cshtml"),
             StatusCodes.Status404NotFound => View("NotFound"),
             _ => View("StatusCode", code),
         };

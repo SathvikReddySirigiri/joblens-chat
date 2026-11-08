@@ -1,0 +1,90 @@
+@model ResumePageModel
+@{
+    ViewData["Title"] = "My Resume";
+}
+<section class="page-header">
+    <div class="page-heading">
+        <h1>My Resume</h1>
+        <p class="help">Upload a PDF or DOCX for a privacy check, skill extraction, and job match. JobLens never saves the original file.</p>
+    </div>
+</section>
+
+<section class="card">
+    <h2>Upload</h2>
+    @if (!string.IsNullOrWhiteSpace(Model.UploadError))
+    {
+        <p class="alert alert-error" role="alert">@Model.UploadError</p>
+    }
+    <form method="post" asp-action="Upload" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div class="field">
+            <label for="file">PDF or Word resume</label>
+            <input id="file" name="file" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+            <p class="help">2 MB or smaller. Demo samples: docs/demo/resume_clean.docx and docs/demo/resume_risky.docx.</p>
+        </div>
+        <button class="btn btn-primary" type="submit">Scan resume</button>
+    </form>
+</section>
+
+@if (Model.Resume is { } resume)
+{
+    <section class="card">
+        <h2>Saved resume</h2>
+        <p><strong>@resume.FileName</strong> · uploaded @resume.UploadedAt</p>
+        <p class="help">@resume.PrivacyIssueCount privacy finding(s). Only redacted text and skills are stored.</p>
+        <form method="post" asp-action="Delete">
+            @Html.AntiForgeryToken()
+            <button class="btn btn-secondary" type="submit">Delete my resume</button>
+        </form>
+    </section>
+
+    <section class="card" aria-labelledby="privacy-title">
+        <h2 id="privacy-title">Privacy findings</h2>
+        @if (Model.Findings.Count == 0)
+        {
+            <p class="alert alert-neutral" role="status">No high-risk personal details were flagged.</p>
+        }
+        else
+        {
+            <ul class="reason-list">
+                @foreach (var finding in Model.Findings)
+                {
+                    var badge = finding.Severity == "High" ? "badge-high" : "badge-medium";
+                    <li>
+                        <span class="badge @badge">@finding.Severity</span>
+                        <strong>@finding.Category</strong>
+                        <blockquote><mark>@finding.MaskedLine</mark></blockquote>
+                        <p class="help">@finding.Advice</p>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+
+    <section class="card" aria-labelledby="skills-title">
+        <h2 id="skills-title">Skills</h2>
+        @if (Model.Skills.Count == 0)
+        {
+            <p class="help">No catalog skills were detected. Add a clear skills section and re-upload.</p>
+        }
+        else
+        {
+            <ul class="chip-list" aria-label="Detected skills">
+                @foreach (var skill in Model.Skills)
+                {
+                    <li><span class="chip">@skill</span></li>
+                }
+            </ul>
+        }
+    </section>
+
+    <section class="card" aria-labelledby="tips-title">
+        <h2 id="tips-title">Improvement tips</h2>
+        <ul>
+            @foreach (var tip in Model.Tips)
+            {
+                <li>@tip</li>
+            }
+        </ul>
+    </section>
+}

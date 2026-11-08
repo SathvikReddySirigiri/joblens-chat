@@ -30,6 +30,7 @@ public sealed class ChatController(ChatOrchestrator orchestrator, ILogger<ChatCo
         "search_jobs",
         "get_company_profile",
         "analyze_offer",
+        "search_live_jobs",
     ];
 
     private static readonly string[] Samples =

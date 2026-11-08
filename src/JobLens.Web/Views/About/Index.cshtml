@@ -13,7 +13,7 @@
 <section class="card" aria-labelledby="mission-title">
     <h2 id="mission-title">Mission</h2>
     <p>Students and career-center staff face recruiter emails and offer letters that look legitimate but ask for money, equipment purchases, or personal data. Impersonation of real employers is common, and staff need a shared place to record what they have seen.</p>
-    <p>JobLens is a data-grounded assistant for that workflow: check a recruiter, analyze an offer, browse synthetic scam reports, and ask the chatbot questions that must be answered from MCP tools over SQLite—not from free-form invention.</p>
+    <p>JobLens is a data-grounded assistant for that workflow: check a recruiter, analyze an offer, browse community scam reports, and ask JobLens questions that must be answered from MCP tools over SQLite—not from free-form invention.</p>
     <p>The product is built for a university analytics course (ISM 6225). All report data is synthetic training data. It is not legal advice and does not accuse real companies of fraud; reports describe impersonation patterns that use company names as cover.</p>
 </section>
 
@@ -128,11 +128,18 @@
                     <td>Moderators only</td>
                 </tr>
                 <tr>
-                    <td>Job postings</td>
+                    <td>Job postings (Jobs → JobLens tab)</td>
                     <td>Yes</td>
                     <td>Yes</td>
                     <td>Yes</td>
                     <td>Moderators only</td>
+                </tr>
+                <tr>
+                    <td>Live openings (Jobs → Live tab)</td>
+                    <td>No (fetched on demand)</td>
+                    <td>Yes (USAJOBS / The Muse + trust notes)</td>
+                    <td>No</td>
+                    <td>Public; not stored in SQLite</td>
                 </tr>
                 <tr>
                     <td>Check logs</td>

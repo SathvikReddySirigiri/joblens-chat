@@ -1,0 +1,17 @@
+@model JobApplication
+@{
+    ViewData["Title"] = "Delete application";
+}
+<section class="page-header">
+    <h1>Delete this application?</h1>
+    <p class="help">@Model.RoleTitle · @Model.CompanyName · @Model.Status. This cannot be undone.</p>
+</section>
+<section class="card">
+    <form method="post" asp-action="Delete" asp-route-id="@Model.ApplicationId">
+        @Html.AntiForgeryToken()
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Delete application</button>
+            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.ApplicationId">Cancel</a>
+        </div>
+    </form>
+</section>

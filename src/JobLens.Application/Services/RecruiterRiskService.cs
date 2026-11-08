@@ -8,7 +8,7 @@ namespace JobLens.Application.Services;
 /// <summary>
 /// Deterministic recruiter-email risk score. No model calls; every point comes from a fixed rule.
 /// </summary>
-public sealed class RecruiterRiskService(IScamQueryRepository repository, IRdapClient? rdap = null, IEdgarClient? edgar = null)
+public sealed class RecruiterRiskService(IScamAnalyticsRepository repository, IRdapClient? rdap = null, IEdgarClient? edgar = null)
 {
     private static readonly HashSet<string> FreeProviders = new(StringComparer.OrdinalIgnoreCase)
     {

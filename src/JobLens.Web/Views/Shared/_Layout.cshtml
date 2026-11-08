@@ -16,7 +16,9 @@
         var controller = ViewContext.RouteData.Values["controller"]?.ToString();
         var action = ViewContext.RouteData.Values["action"]?.ToString();
         var checkSection = controller is "CheckRecruiter" or "OfferAnalyzer";
-        var dataSection = controller is "ScamReports" or "Companies" or "Recruiters" or "JobPostings" or "InterviewReviews";
+        var communitySection = controller is "ScamReports" or "Companies" or "Recruiters" or "InterviewReviews";
+        var jobsSection = controller is "Jobs" or "JobPostings" or "LiveJobs";
+        var myJobLensSection = controller is "Applications" or "EmailDrafts" or "Resume";
         var aboutSection = controller is "About";
         var year = DateTime.UtcNow.Year;
     }
@@ -34,19 +36,24 @@
                            aria-current="@(controller == "Home" && action == "Index" ? "page" : null)">Home</a>
                     </li>
                     <li class="nav-item" data-dropdown>
-                        <button class="nav-link @(checkSection ? "active" : null)" type="button" data-dropdown-button aria-expanded="false" aria-controls="check-menu">Check</button>
+                        <button class="nav-link @(checkSection ? "active" : null)" type="button" data-dropdown-button aria-expanded="false" aria-controls="check-menu">Check <span class="nav-caret" aria-hidden="true">▾</span></button>
                         <div id="check-menu" class="dropdown-panel" data-dropdown-panel hidden>
                             <a class="nav-link @(controller == "CheckRecruiter" ? "active" : null)" asp-controller="CheckRecruiter" asp-action="Index">Check Recruiter</a>
                             <a class="nav-link @(controller == "OfferAnalyzer" ? "active" : null)" asp-controller="OfferAnalyzer" asp-action="Index">Offer Analyzer</a>
                         </div>
                     </li>
+                    <li>
+                        <a class="nav-link @(jobsSection ? "active" : null)"
+                           asp-controller="Jobs"
+                           asp-action="Index"
+                           aria-current="@(jobsSection ? "page" : null)">Jobs</a>
+                    </li>
                     <li class="nav-item" data-dropdown>
-                        <button class="nav-link @(dataSection ? "active" : null)" type="button" data-dropdown-button aria-expanded="false" aria-controls="data-menu">Data</button>
-                        <div id="data-menu" class="dropdown-panel" data-dropdown-panel hidden>
+                        <button class="nav-link @(communitySection ? "active" : null)" type="button" data-dropdown-button aria-expanded="false" aria-controls="community-menu">Community <span class="nav-caret" aria-hidden="true">▾</span></button>
+                        <div id="community-menu" class="dropdown-panel" data-dropdown-panel hidden>
                             <a class="nav-link @(controller == "ScamReports" ? "active" : null)" asp-controller="ScamReports" asp-action="Index">Scam Reports</a>
                             <a class="nav-link @(controller == "Companies" ? "active" : null)" asp-controller="Companies" asp-action="Index">Companies</a>
                             <a class="nav-link @(controller == "Recruiters" ? "active" : null)" asp-controller="Recruiters" asp-action="Index">Recruiters</a>
-                            <a class="nav-link @(controller == "JobPostings" ? "active" : null)" asp-controller="JobPostings" asp-action="Index">Job Postings</a>
                             <a class="nav-link @(controller == "InterviewReviews" ? "active" : null)" asp-controller="InterviewReviews" asp-action="Index">Interview Reviews</a>
                         </div>
                     </li>
@@ -56,14 +63,25 @@
                            asp-action="Index"
                            aria-current="@(controller == "Dashboard" ? "page" : null)">Dashboard</a>
                     </li>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <li class="nav-item" data-dropdown>
+                            <button class="nav-link @(myJobLensSection ? "active" : null)" type="button" data-dropdown-button aria-expanded="false" aria-controls="my-joblens-menu">My JobLens <span class="nav-caret" aria-hidden="true">▾</span></button>
+                            <div id="my-joblens-menu" class="dropdown-panel" data-dropdown-panel hidden>
+                                <a class="nav-link @(controller == "Applications" ? "active" : null)" asp-controller="Applications" asp-action="Index">My Applications</a>
+                                <a class="nav-link @(controller == "EmailDrafts" ? "active" : null)" asp-controller="EmailDrafts" asp-action="Index">Email drafts</a>
+                                <a class="nav-link @(controller == "Resume" ? "active" : null)" asp-controller="Resume" asp-action="Index">My Resume</a>
+                            </div>
+                        </li>
+                    }
                     <li>
                         <a class="nav-link @(controller == "Chat" ? "active" : null)"
                            asp-controller="Chat"
                            asp-action="Index"
-                           aria-current="@(controller == "Chat" ? "page" : null)">Chat</a>
+                           aria-current="@(controller == "Chat" ? "page" : null)">Ask JobLens</a>
                     </li>
                     <li class="nav-item" data-dropdown>
-                        <button class="nav-link @(aboutSection ? "active" : null)" type="button" data-dropdown-button aria-expanded="false" aria-controls="about-menu">About</button>
+                        <button class="nav-link @(aboutSection ? "active" : null)" type="button" data-dropdown-button aria-expanded="false" aria-controls="about-menu">About <span class="nav-caret" aria-hidden="true">▾</span></button>
                         <div id="about-menu" class="dropdown-panel" data-dropdown-panel hidden>
                             <a class="nav-link @(controller == "About" && action == "Index" ? "active" : null)" asp-controller="About" asp-action="Index">About Us</a>
                             <a class="nav-link @(controller == "About" && action == "Architecture" ? "active" : null)" asp-controller="About" asp-action="Architecture">Architecture</a>
@@ -105,15 +123,12 @@
     </main>
     <footer class="site-footer">
         <div class="container footer-grid">
-            <p class="footer-product">JobLens — verify the recruiter, not just the job.</p>
             <nav class="footer-links" aria-label="Footer">
-                <a asp-controller="About" asp-action="Index">About</a>
-                <a asp-controller="About" asp-action="Architecture">Architecture</a>
                 <a href="https://github.com/SathvikReddySirigiri/joblens-chat" target="_blank" rel="noopener">GitHub repo</a>
                 <a href="https://github.com/SathvikReddySirigiri/joblens-chat/blob/main/docs/DOCUMENTATION.md" target="_blank" rel="noopener">Documentation</a>
             </nav>
-            <p>ISM 6225 · App Dev for Analytics · @year</p>
-            <p class="footer-disclaimer">Synthetic data — not legal advice.</p>
+            <p class="footer-disclaimer">Scam data is sample data for education.</p>
+            <p class="footer-copy">© @year JobLens · ISM 6225</p>
         </div>
     </footer>
     <script src="~/js/site.js" asp-append-version="true"></script>

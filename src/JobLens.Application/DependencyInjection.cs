@@ -17,9 +17,12 @@ public static class DependencyInjection
         services.AddScoped<SmartSearchService>();
         services.AddScoped<RecruiterRiskService>();
         services.AddScoped<HomeService>();
-        services.AddScoped<DataCheckService>();
         services.AddScoped<CheckRecruiterFacade>();
         services.AddScoped<AccountService>();
+        services.AddScoped<LiveJobsService>();
+        services.AddScoped<ApplicationService>();
+        services.AddScoped<EmailDraftService>();
+        services.AddScoped<ResumeService>();
         services.AddSingleton<PiiRedactor>();
         return services;
     }

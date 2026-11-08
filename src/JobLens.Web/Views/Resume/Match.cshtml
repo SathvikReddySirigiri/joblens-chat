@@ -1,0 +1,64 @@
+@model ResumeMatchResult
+@{
+    ViewData["Title"] = "Resume match";
+    var title = ViewBag.JobTitle as string;
+    var company = ViewBag.CompanyName as string;
+    var returnUrl = ViewBag.ReturnUrl as string ?? Url.Action("Index");
+}
+<section class="page-header">
+    <div class="page-heading">
+        <h1>Resume match</h1>
+        <p class="help">
+            @if (!string.IsNullOrWhiteSpace(title) || !string.IsNullOrWhiteSpace(company))
+            {
+                <span>@(title ?? "Role")@(string.IsNullOrWhiteSpace(company) ? "" : " · " + company)</span>
+            }
+            else
+            {
+                <span>Skills from your saved resume compared to this job description.</span>
+            }
+        </p>
+    </div>
+</section>
+
+<section class="card kpi">
+    <h2>Match score</h2>
+    <p class="kpi-value">@Model.ScorePercent%</p>
+    <p class="help">@Model.MatchedSkills.Count of @Model.RequiredSkills.Count catalog skills found in the job text also appear on your resume.</p>
+</section>
+
+<section class="card">
+    <h2>Matched</h2>
+    @if (Model.MatchedSkills.Count == 0)
+    {
+        <p class="help">No overlapping catalog skills.</p>
+    }
+    else
+    {
+        <ul class="chip-list">
+            @foreach (var skill in Model.MatchedSkills)
+            {
+                <li><span class="chip">@skill</span></li>
+            }
+        </ul>
+    }
+</section>
+
+<section class="card">
+    <h2>Missing</h2>
+    @if (Model.MissingSkills.Count == 0)
+    {
+        <p class="help">No missing catalog skills for this posting.</p>
+    }
+    else
+    {
+        <ul class="chip-list">
+            @foreach (var skill in Model.MissingSkills)
+            {
+                <li><span class="chip">@skill</span></li>
+            }
+        </ul>
+    }
+</section>
+
+<p><a class="btn btn-secondary" href="@returnUrl">Back</a> <a class="btn btn-primary" asp-action="Index">My Resume</a></p>

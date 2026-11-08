@@ -9,13 +9,16 @@ public sealed partial class PiiRedactor
 {
     public const int MaxChars = 12_000;
 
-    public string Redact(string? text)
+    public string Redact(string? text) => Redact(text, MaxChars);
+
+    public string Redact(string? text, int maxChars)
     {
         if (string.IsNullOrEmpty(text))
         {
             return "";
         }
 
+        var limit = maxChars <= 0 ? MaxChars : maxChars;
         var value = CardPattern().Replace(text, "***");
         value = SsnDashedPattern().Replace(value, "***");
         value = PhonePattern().Replace(value, "***");
@@ -27,7 +30,7 @@ public sealed partial class PiiRedactor
             return first + "***@" + match.Groups[2].Value;
         });
 
-        return value.Length <= MaxChars ? value : value[..MaxChars];
+        return value.Length <= limit ? value : value[..limit];
     }
 
     [GeneratedRegex(@"\b(?:\d{4}[ -]){3}\d{4}\b|\b\d{13,19}\b", RegexOptions.CultureInvariant)]

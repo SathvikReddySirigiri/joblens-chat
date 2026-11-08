@@ -14,7 +14,7 @@ public sealed class JobPostingsController(
 {
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> Index(
+    public IActionResult Index(
         string? search,
         int? company,
         bool? remote,
@@ -24,26 +24,25 @@ public sealed class JobPostingsController(
         bool exclude = false,
         string? q = null,
         bool asked = false,
-        int page = 1,
-        CancellationToken cancellationToken = default)
+        int page = 1)
     {
-        var companyList = await companies.GetAllAsync(cancellationToken);
-        var selected = companyList.FirstOrDefault(item => item.CompanyId == company);
-        var filter = new SearchFilter(search, company, selected?.Name, state, remote, paid, minPay, exclude);
-        ViewBag.Page = await postings.SearchPageAsync(filter, page, cancellationToken);
-        ViewBag.Companies = companyList;
-        ViewBag.Search = search;
-        ViewBag.Company = company;
-        ViewBag.Remote = remote;
-        ViewBag.Paid = paid;
-        ViewBag.State = state;
-        ViewBag.MinPay = minPay;
-        ViewBag.Exclude = exclude;
-        ViewBag.Question = q;
-        ViewBag.Asked = asked;
-        ViewBag.Filter = filter;
-        ViewBag.IsModerator = User.IsInRole(ActingUser.ModeratorRole);
-        return View();
+        return RedirectToAction(
+            "Index",
+            "Jobs",
+            new
+            {
+                tab = ViewModels.JobsPageVm.JobLensTab,
+                search,
+                company,
+                remote,
+                paid,
+                state,
+                minPay,
+                exclude,
+                q,
+                asked,
+                page,
+            });
     }
 
     [HttpPost]
@@ -58,18 +57,22 @@ public sealed class JobPostingsController(
         }
 
         var filter = await smartSearch.InterpretAsync(question, cancellationToken);
-        return RedirectToAction(nameof(Index), new
-        {
-            search = filter.Keyword,
-            company = filter.CompanyId,
-            remote = filter.IsRemote,
-            paid = filter.IsPaid,
-            state = filter.State,
-            minPay = filter.MinPayPerHour,
-            exclude = filter.ExcludeCompaniesWithApprovedReports,
-            q = question,
-            asked = true,
-        });
+        return RedirectToAction(
+            "Index",
+            "Jobs",
+            new
+            {
+                tab = ViewModels.JobsPageVm.JobLensTab,
+                search = filter.Keyword,
+                company = filter.CompanyId,
+                remote = filter.IsRemote,
+                paid = filter.IsPaid,
+                state = filter.State,
+                minPay = filter.MinPayPerHour,
+                exclude = filter.ExcludeCompaniesWithApprovedReports,
+                q = question,
+                asked = true,
+            });
     }
 
     [HttpGet]
@@ -185,7 +188,9 @@ public sealed class JobPostingsController(
     {
         var result = await postings.DeleteAsync(id, ActingUserFactory.Require(User), cancellationToken);
         TempData[result.Success ? "Success" : "Error"] = result.Success ? "Job posting deleted." : result.ErrorMessage;
-        return result.Success ? RedirectToAction(nameof(Index)) : RedirectToAction(nameof(Delete), new { id });
+        return result.Success
+            ? RedirectToAction("Index", "Jobs", new { tab = ViewModels.JobsPageVm.JobLensTab })
+            : RedirectToAction(nameof(Delete), new { id });
     }
 
     private async Task LoadCompaniesAsync(CancellationToken cancellationToken)

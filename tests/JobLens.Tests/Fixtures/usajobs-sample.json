@@ -1,0 +1,67 @@
+{
+  "LanguageCode": "EN",
+  "SearchResult": {
+    "SearchResultCount": 2,
+    "SearchResultCountAll": 40,
+    "SearchResultItems": [
+      {
+        "MatchedObjectId": "800001",
+        "MatchedObjectDescriptor": {
+          "PositionID": "DE-800001-26",
+          "PositionTitle": "Data Scientist Intern",
+          "PositionURI": "https://www.usajobs.gov/GetJob/ViewDetails/800001",
+          "ApplyURI": [
+            "https://www.usajobs.gov/GetJob/ViewDetails/800001?PostingChannelID=RESTAPI"
+          ],
+          "PositionLocationDisplay": "Tampa, Florida",
+          "OrganizationName": "Department of Veterans Affairs",
+          "DepartmentName": "Department of Veterans Affairs",
+          "JobCategory": [
+            { "Name": "Data Science", "Code": "1560" }
+          ],
+          "PositionRemuneration": [
+            {
+              "MinimumRange": "45000.00",
+              "MaximumRange": "65000.00",
+              "RateIntervalCode": "Per Year"
+            }
+          ],
+          "PublicationStartDate": "2026-03-01",
+          "ApplicationCloseDate": "2026-04-01",
+          "UserArea": {
+            "Details": {
+              "JobSummary": "<p>Analyze <b>health</b> datasets with mentors.</p>",
+              "LowGrade": "7",
+              "HighGrade": "9",
+              "RemoteIndicator": false
+            }
+          }
+        }
+      },
+      {
+        "MatchedObjectId": "800002",
+        "MatchedObjectDescriptor": {
+          "PositionTitle": "IT Specialist (Recent Grad)",
+          "PositionURI": "https://evil.example/apply/800002",
+          "ApplyURI": [
+            "https://evil.example/apply/800002"
+          ],
+          "OrganizationName": "Department of Commerce",
+          "DepartmentName": "Department of Commerce",
+          "JobCategory": [
+            { "Name": "Information Technology Management", "Code": "2210" }
+          ],
+          "PublicationStartDate": "2026-03-02",
+          "UserArea": {
+            "Details": {
+              "JobSummary": "Support agency systems. No pay or location on this fixture row.",
+              "LowGrade": "5",
+              "HighGrade": "7",
+              "RemoteIndicator": "true"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+@model JobsPageVm
+@{
+    ViewData["Title"] = "Jobs";
+    ViewData["PageTitle"] = "Jobs";
+    ViewData["PageSubtitle"] = "Live openings and JobLens-curated postings — every listing comes with scam checks.";
+    var liveSelected = Model.IsLiveTab;
+}
+<section class="page-header jobs-page-header">
+    <partial name="_PageHeader" />
+</section>
+
+<div class="jobs-tabs" data-jobs-tabs>
+    <div class="tab-list" role="tablist" aria-label="Jobs sources">
+        <a class="btn @(liveSelected ? "btn-primary" : "btn-secondary")"
+           role="tab"
+           id="tab-live"
+           href="@Url.Action("Index", "Jobs", new { tab = JobsPageVm.LiveTab })"
+           aria-selected="@(liveSelected ? "true" : "false")"
+           aria-controls="panel-live"
+           tabindex="@(liveSelected ? "0" : "-1")">Live openings</a>
+        <a class="btn @(!liveSelected ? "btn-primary" : "btn-secondary")"
+           role="tab"
+           id="tab-joblens"
+           href="@Url.Action("Index", "Jobs", new { tab = JobsPageVm.JobLensTab })"
+           aria-selected="@(!liveSelected ? "true" : "false")"
+           aria-controls="panel-joblens"
+           tabindex="@(!liveSelected ? "0" : "-1")">JobLens postings</a>
+    </div>
+
+    <div id="panel-live" role="tabpanel" aria-labelledby="tab-live" @(liveSelected ? null : "hidden")>
+        @if (liveSelected && Model.Live is not null)
+        {
+            <partial name="_LiveJobsTab" model="Model.Live" />
+        }
+    </div>
+    <div id="panel-joblens" role="tabpanel" aria-labelledby="tab-joblens" @(!liveSelected ? null : "hidden")>
+        @if (!liveSelected)
+        {
+            <partial name="_JobLensPostingsTab" />
+        }
+    </div>
+</div>

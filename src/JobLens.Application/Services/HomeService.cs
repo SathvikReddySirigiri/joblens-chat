@@ -3,7 +3,7 @@ using JobLens.Application.Interfaces;
 
 namespace JobLens.Application.Services;
 
-public sealed class HomeService(IScamQueryRepository queries)
+public sealed class HomeService(IScamAnalyticsRepository queries)
 {
     public Task<DataCounts> GetCountsAsync(CancellationToken cancellationToken) =>
         queries.GetCountsAsync(cancellationToken);

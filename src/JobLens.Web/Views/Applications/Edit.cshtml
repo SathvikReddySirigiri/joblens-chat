@@ -1,0 +1,20 @@
+@model JobApplicationFormVm
+@{
+    ViewData["Title"] = "Edit application";
+}
+<section class="page-header">
+    <div class="page-heading">
+        <h1>Edit application</h1>
+        <p class="help">@Model.CompanyName · @Model.RoleTitle</p>
+    </div>
+</section>
+<section class="card">
+    <form method="post" asp-action="Edit">
+        @Html.AntiForgeryToken()
+        <partial name="_Form" />
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Save changes</button>
+            <a class="btn btn-secondary" asp-action="Details" asp-route-id="@Model.ApplicationId">Cancel</a>
+        </div>
+    </form>
+</section>

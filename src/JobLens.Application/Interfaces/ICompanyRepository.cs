@@ -5,7 +5,7 @@ namespace JobLens.Application.Interfaces;
 
 public interface ICompanyRepository
 {
-    Task<CompanyActivity> GetActivityAsync(int companyId, CancellationToken cancellationToken);
+    Task<CompanyActivitySummary> GetActivityAsync(int companyId, CancellationToken cancellationToken);
     Task<CompanyProfile?> GetProfileAsync(string name, CancellationToken cancellationToken);
     Task<IReadOnlyList<Company>> GetAllAsync(CancellationToken cancellationToken);
     Task<Company?> GetByIdAsync(int companyId, CancellationToken cancellationToken);

@@ -1,0 +1,319 @@
+@model LiveJobsPage
+@{
+    var search = Model.Search;
+    var isUsaJobs = Model.ProviderName.Contains("USAJOBS", StringComparison.OrdinalIgnoreCase);
+    var museCategories = LiveJobsService.AllowedCategories;
+    var museLevels = LiveJobsService.AllowedLevels;
+    var usaCategories = LiveJobsService.UsaJobsCategories;
+}
+
+<section class="card">
+    <form method="get" asp-controller="Jobs" asp-action="Index" class="live-filters" aria-label="Live job filters">
+        <input type="hidden" name="tab" value="@JobsPageVm.LiveTab" />
+        <div class="field">
+            <label for="keyword">Keyword</label>
+            <input id="keyword" name="keyword" value="@search.Keyword" maxlength="60" placeholder="data, analyst, intern…" />
+        </div>
+        <div class="field">
+            <label for="location">Location</label>
+            <input id="location" name="location" value="@search.Location" maxlength="60" placeholder="Tampa, FL or Remote" />
+        </div>
+        @if (isUsaJobs)
+        {
+            <div class="field">
+                <label for="categoryCode">Category</label>
+                <select id="categoryCode" name="categoryCode">
+                    <option value="">Any category</option>
+                    @foreach (var category in usaCategories)
+                    {
+                        if (search.CategoryCode == category.Code)
+                        {
+                            <option value="@category.Code" selected>@category.Label (@category.Code)</option>
+                        }
+                        else
+                        {
+                            <option value="@category.Code">@category.Label (@category.Code)</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="field">
+                <label for="hiringPath">Hiring path</label>
+                <select id="hiringPath" name="hiringPath">
+                    @if ((search.HiringPath ?? "student") == "student")
+                    {
+                        <option value="student" selected>Students &amp; interns</option>
+                    }
+                    else
+                    {
+                        <option value="student">Students &amp; interns</option>
+                    }
+                    @if (search.HiringPath == "graduates")
+                    {
+                        <option value="graduates" selected>Recent graduates</option>
+                    }
+                    else
+                    {
+                        <option value="graduates">Recent graduates</option>
+                    }
+                    @if (search.HiringPath == "public")
+                    {
+                        <option value="public" selected>Open to the public</option>
+                    }
+                    else
+                    {
+                        <option value="public">Open to the public</option>
+                    }
+                </select>
+            </div>
+            <div class="field field-checkbox">
+                <label>
+                    @if (search.RemoteOnly)
+                    {
+                        <input type="checkbox" name="remoteOnly" value="true" checked />
+                    }
+                    else
+                    {
+                        <input type="checkbox" name="remoteOnly" value="true" />
+                    }
+                    Remote only
+                </label>
+            </div>
+        }
+        else
+        {
+            <div class="field">
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <option value="">Any category</option>
+                    @foreach (var category in museCategories)
+                    {
+                        if (search.Category == category)
+                        {
+                            <option value="@category" selected>@category</option>
+                        }
+                        else
+                        {
+                            <option value="@category">@category</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="field">
+                <label for="level">Level</label>
+                <select id="level" name="level">
+                    @foreach (var level in museLevels)
+                    {
+                        if ((search.Level ?? "Internship") == level)
+                        {
+                            <option value="@level" selected>@level</option>
+                        }
+                        else
+                        {
+                            <option value="@level">@level</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="field">
+                <label for="companyName">Company</label>
+                <input id="companyName" name="companyName" value="@search.CompanyName" maxlength="80" placeholder="Company name" />
+            </div>
+        }
+        <button class="btn btn-primary" type="submit">Search live jobs</button>
+    </form>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(Model.DebugDetail))
+{
+    <p class="live-debug" role="status">Debug: @Model.DebugDetail</p>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Message))
+{
+    <p class="alert alert-error" role="alert">@Model.Message</p>
+}
+
+@if (Model.Items.Count == 0 && string.IsNullOrWhiteSpace(Model.Message))
+{
+    <p class="alert alert-neutral" role="status">No live jobs matched these filters. Try a broader location or another category.</p>
+}
+
+@if (Model.Items.Count > 0)
+{
+    var pageSize = isUsaJobs ? 20 : Math.Max(Model.Items.Count, 1);
+    var from = ((Model.Page - 1) * pageSize) + 1;
+    var to = from + Model.Items.Count - 1;
+    var total = Model.Page < Model.PageCount
+        ? Model.PageCount * pageSize
+        : to;
+    <p class="help live-meta">
+        Showing @from–@to of @total jobs
+        @if (Model.FromCache)
+        {
+            <span>· served from short-term cache</span>
+        }
+    </p>
+
+    <div class="live-job-list">
+        @foreach (var listing in Model.Items)
+        {
+            var job = listing.Job;
+            var trust = listing.Trust;
+            <article class="card live-job-card">
+                <header class="live-job-header">
+                    <h2 class="live-job-title">@job.Title</h2>
+                    <p class="live-job-company">@job.CompanyName</p>
+                    <p class="help">
+                        @if (!string.IsNullOrWhiteSpace(job.Locations))
+                        {
+                            <span>@job.Locations</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(job.PublishedDate))
+                        {
+                            <span>· Posted @job.PublishedDate</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(job.CloseDate))
+                        {
+                            <span>· Closes @job.CloseDate</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(job.PayRange))
+                        {
+                            <span>· @job.PayRange</span>
+                        }
+                    </p>
+                    <div class="chip-row">
+                        @if (job.IsRemote)
+                        {
+                            <span class="badge badge-neutral">Remote</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(job.Levels))
+                        {
+                            <span class="badge badge-neutral">@job.Levels</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(job.Categories))
+                        {
+                            <span class="badge badge-neutral">@job.Categories</span>
+                        }
+                    </div>
+                </header>
+
+                @if (!string.IsNullOrWhiteSpace(job.DescriptionSnippet))
+                {
+                    <p class="live-job-snippet">@job.DescriptionSnippet</p>
+                }
+
+                <p class="header-actions">
+                    @if (!string.IsNullOrWhiteSpace(job.ApplyUrl))
+                    {
+                        <a class="btn btn-primary"
+                           href="@job.ApplyUrl"
+                           target="_blank"
+                           rel="noopener noreferrer nofollow">View &amp; apply</a>
+                    }
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <a class="btn btn-secondary"
+                           asp-controller="Applications"
+                           asp-action="Create"
+                           asp-route-company="@job.CompanyName"
+                           asp-route-title="@job.Title"
+                           asp-route-url="@job.ApplyUrl"
+                           asp-route-source="LiveJobs">Track this job</a>
+                        <form method="post" asp-controller="Resume" asp-action="Match" class="inline-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="jobTitle" value="@job.Title" />
+                            <input type="hidden" name="companyName" value="@job.CompanyName" />
+                            <input type="hidden" name="jobText" value="@(job.DescriptionSnippet) @(job.Categories) @(job.Levels)" />
+                            <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Jobs", new { tab = JobsPageVm.LiveTab })" />
+                            <button class="btn btn-secondary" type="submit">Match my resume</button>
+                        </form>
+                    }
+                </p>
+
+                <aside class="trust-card" aria-label="JobLens trust signals">
+                    <h3>JobLens trust</h3>
+                    @if (trust.IsOfficialGovSource)
+                    {
+                        <p><span class="badge badge-low">Official .gov source</span></p>
+                    }
+                    else if (!string.IsNullOrWhiteSpace(trust.MatchedCompany))
+                    {
+                        <p>
+                            Matched company: <strong>@trust.MatchedCompany</strong>
+                            @if (!string.IsNullOrWhiteSpace(trust.OfficialDomain))
+                            {
+                                <span class="badge badge-low">@trust.OfficialDomain</span>
+                            }
+                        </p>
+                        @if (trust.ApprovedScamReports > 0)
+                        {
+                            <p class="alert alert-error" role="status">@trust.ApprovedScamReports approved scam reports impersonate this company.</p>
+                        }
+                    }
+                    else
+                    {
+                        <p class="help">No JobLens company match.</p>
+                    }
+                    <ul class="reason-list">
+                        @foreach (var note in trust.Notes)
+                        {
+                            <li>@note</li>
+                        }
+                    </ul>
+                    <div class="header-actions">
+                        <a class="btn btn-secondary" asp-controller="CheckRecruiter" asp-action="Index">Check a recruiter</a>
+                        @if (listing.MatchedCompanyId is int companyId)
+                        {
+                            <a class="btn btn-secondary" asp-controller="ScamReports" asp-action="Create" asp-route-company="@companyId">Report a scam</a>
+                        }
+                        else if (!trust.IsOfficialGovSource)
+                        {
+                            <a class="btn btn-secondary" asp-controller="ScamReports" asp-action="Create">Report a scam</a>
+                        }
+                    </div>
+                </aside>
+            </article>
+        }
+    </div>
+
+    <nav class="pager live-pager" aria-label="Live jobs pages">
+        @if (Model.Page > 1)
+        {
+            <a class="btn btn-secondary"
+               asp-controller="Jobs"
+               asp-action="Index"
+               asp-route-tab="@JobsPageVm.LiveTab"
+               asp-route-category="@search.Category"
+               asp-route-categoryCode="@search.CategoryCode"
+               asp-route-level="@search.Level"
+               asp-route-location="@search.Location"
+               asp-route-companyName="@search.CompanyName"
+               asp-route-keyword="@search.Keyword"
+               asp-route-hiringPath="@search.HiringPath"
+               asp-route-remoteOnly="@(search.RemoteOnly ? "true" : null)"
+               asp-route-page="@(Model.Page - 1)">Previous</a>
+        }
+        @if (Model.Page < Math.Min(Model.PageCount, 5))
+        {
+            <a class="btn btn-secondary"
+               asp-controller="Jobs"
+               asp-action="Index"
+               asp-route-tab="@JobsPageVm.LiveTab"
+               asp-route-category="@search.Category"
+               asp-route-categoryCode="@search.CategoryCode"
+               asp-route-level="@search.Level"
+               asp-route-location="@search.Location"
+               asp-route-companyName="@search.CompanyName"
+               asp-route-keyword="@search.Keyword"
+               asp-route-hiringPath="@search.HiringPath"
+               asp-route-remoteOnly="@(search.RemoteOnly ? "true" : null)"
+               asp-route-page="@(Model.Page + 1)">Next</a>
+        }
+    </nav>
+}
+
+<p class="help live-attribution">
+    @Model.AttributionText
+    <a href="@Model.AttributionUrl" target="_blank" rel="noopener noreferrer">@Model.AttributionUrl</a>
+</p>

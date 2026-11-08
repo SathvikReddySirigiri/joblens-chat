@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = Model.Title;
     var company = ViewBag.Company as Company;
-    var activity = (CompanyActivity)ViewBag.Activity;
+    var activity = (CompanyActivitySummary)ViewBag.Activity;
 }
 <partial name="_Alerts" />
 <section class="page-header">
@@ -11,6 +11,23 @@
         <p class="help">@Model.CompanyName · @Model.PostedDate</p>
     </div>
     <div class="form-actions">
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a class="btn btn-primary"
+               asp-controller="Applications"
+               asp-action="Create"
+               asp-route-company="@Model.CompanyName"
+               asp-route-title="@Model.Title"
+               asp-route-source="JobLensPosting">Track this job</a>
+            <form method="post" asp-controller="Resume" asp-action="Match" class="inline-form">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="jobTitle" value="@Model.Title" />
+                <input type="hidden" name="companyName" value="@Model.CompanyName" />
+                <input type="hidden" name="jobText" value="@Model.Description" />
+                <input type="hidden" name="returnUrl" value="@Url.Action("Details", "JobPostings", new { id = Model.PostingId })" />
+                <button class="btn btn-secondary" type="submit">Match my resume</button>
+            </form>
+        }
         @if (ViewBag.IsModerator == true)
         {
             <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.PostingId">Edit</a>

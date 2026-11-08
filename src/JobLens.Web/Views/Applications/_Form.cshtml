@@ -1,0 +1,62 @@
+@model JobApplicationFormVm
+@{
+    var sources = ViewBag.Sources as string[] ?? Array.Empty<string>();
+    var statuses = ViewBag.Statuses as string[] ?? Array.Empty<string>();
+}
+<div asp-validation-summary="ModelOnly" class="alert alert-error" role="alert"></div>
+<input type="hidden" asp-for="ApplicationId" />
+<div class="field">
+    <label asp-for="CompanyName">Company name</label>
+    <input asp-for="CompanyName" maxlength="120" />
+    <span asp-validation-for="CompanyName" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="RoleTitle">Role title</label>
+    <input asp-for="RoleTitle" maxlength="120" />
+    <span asp-validation-for="RoleTitle" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="Source">Source</label>
+    <select asp-for="Source">
+        @foreach (var source in sources)
+        {
+            <option value="@source">@source</option>
+        }
+    </select>
+    <span asp-validation-for="Source" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="Status">Status</label>
+    <select asp-for="Status">
+        @foreach (var status in statuses)
+        {
+            <option value="@status">@status</option>
+        }
+    </select>
+    <span asp-validation-for="Status" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="JobUrl">Job URL</label>
+    <input asp-for="JobUrl" maxlength="500" placeholder="https://..." />
+    <span asp-validation-for="JobUrl" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="RecruiterEmail">Recruiter email</label>
+    <input asp-for="RecruiterEmail" maxlength="200" />
+    <span asp-validation-for="RecruiterEmail" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="AppliedDate">Applied date</label>
+    <input asp-for="AppliedDate" placeholder="yyyy-MM-dd" />
+    <span asp-validation-for="AppliedDate" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="NextFollowUpDate">Next follow-up</label>
+    <input asp-for="NextFollowUpDate" placeholder="yyyy-MM-dd" />
+    <span asp-validation-for="NextFollowUpDate" class="field-error"></span>
+</div>
+<div class="field">
+    <label asp-for="Notes">Notes</label>
+    <textarea asp-for="Notes" maxlength="1000" rows="4"></textarea>
+    <span asp-validation-for="Notes" class="field-error"></span>
+</div>

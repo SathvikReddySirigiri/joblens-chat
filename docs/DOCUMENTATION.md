@@ -1,16 +1,29 @@
 # JobLens documentation
 
-Class documentation for **ISM 6225 · App Dev for Analytics**.
+Index of project docs for the ISM 6225 JobLens final project.
 
-| Document | Purpose |
-| --- | --- |
-| [README.md](../README.md) | Run locally, configuration keys, demo accounts |
-| [proposal.md](proposal.md) | Project proposal |
-| [architecture/](architecture/) | Architecture notes |
-| [testing/test-matrix.md](testing/test-matrix.md) | Test matrix |
-| [testing/known-answers.md](testing/known-answers.md) | Seeded known answers |
-| [ai-use-record.md](ai-use-record.md) | AI use record |
-| [team-record.md](team-record.md) | Team record |
-| [demo/](demo/) | Sample offer files |
+## Project records
 
-The live About Us and Architecture pages in the web app summarize APIs, CRUD permissions, the ERD, MCP tools, and security practices.
+- [Proposal](proposal.md)
+- [Team record](team-record.md)
+- [AI use record](ai-use-record.md)
+
+## Testing
+
+- [Test matrix](testing/test-matrix.md)
+- [Known answers](testing/known-answers.md)
+
+## Demo
+
+Sample offer files used in demos and the Offer Analyzer:
+
+- [demo/fake_offer.pdf](demo/fake_offer.pdf)
+- [demo/fake_offer.docx](demo/fake_offer.docx)
+- [demo/legit_offer.pdf](demo/legit_offer.pdf)
+- [demo/legit_offer.docx](demo/legit_offer.docx)
+
+## Evidence
+
+- [evidence/](evidence/) — screenshots and MCP/Inspector evidence for grading
+
+The live About Us and Architecture pages in the web app summarize APIs, CRUD permissions, the ERD, MCP tools, and security practices. Run instructions and configuration keys live in the root [README.md](../README.md).

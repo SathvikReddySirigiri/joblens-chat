@@ -56,6 +56,33 @@ public static class LoginRateLimiting
         httpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
 
         var path = httpContext.Request.Path.Value ?? "";
+        if (path.StartsWith("/Jobs", StringComparison.OrdinalIgnoreCase)
+            || path.StartsWith("/LiveJobs", StringComparison.OrdinalIgnoreCase))
+        {
+            await RenderViewAsync(
+                httpContext,
+                "~/Views/Jobs/Index.cshtml",
+                "Jobs",
+                "Index",
+                new JobsPageVm
+                {
+                    Tab = JobsPageVm.LiveTab,
+                    Live = new LiveJobsPage(
+                        [],
+                        1,
+                        1,
+                        ExpensiveWaitMessage,
+                        false,
+                        new LiveJobsQuery(HiringPath: "student"),
+                        "USAJOBS",
+                        "Job listings from USAJOBS.gov (official U.S. government source). Fetched on demand, not stored by JobLens.",
+                        "https://www.usajobs.gov"),
+                },
+                ExpensiveWaitMessage,
+                cancellationToken);
+            return;
+        }
+
         if (path.StartsWith("/OfferAnalyzer", StringComparison.OrdinalIgnoreCase))
         {
             await RenderViewAsync(
@@ -64,6 +91,19 @@ public static class LoginRateLimiting
                 "OfferAnalyzer",
                 "Index",
                 new OfferAnalyzerPageVm(),
+                ExpensiveWaitMessage,
+                cancellationToken);
+            return;
+        }
+
+        if (path.StartsWith("/EmailDrafts", StringComparison.OrdinalIgnoreCase))
+        {
+            await RenderViewAsync(
+                httpContext,
+                "~/Views/EmailDrafts/Index.cshtml",
+                "EmailDrafts",
+                "Index",
+                new EmailDraftPageVm(),
                 ExpensiveWaitMessage,
                 cancellationToken);
             return;

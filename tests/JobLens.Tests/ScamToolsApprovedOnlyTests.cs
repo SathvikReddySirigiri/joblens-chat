@@ -94,7 +94,7 @@ public sealed class ScamToolsApprovedOnlyTests
             "2026-03-01",
             "Synthetic");
 
-    private sealed class StubQueryRepo(IReadOnlyList<ScamReport> reports) : IScamQueryRepository
+    private sealed class StubQueryRepo(IReadOnlyList<ScamReport> reports) : IScamAnalyticsRepository
     {
         public string? LastSearchStatus { get; private set; }
 

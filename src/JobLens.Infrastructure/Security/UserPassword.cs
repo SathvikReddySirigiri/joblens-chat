@@ -1,3 +1,4 @@
+using JobLens.Domain.Entities;
 using JobLens.Application.Dtos;
 using Microsoft.AspNetCore.Identity;
 

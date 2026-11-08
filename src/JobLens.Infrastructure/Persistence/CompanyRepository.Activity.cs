@@ -7,7 +7,7 @@ namespace JobLens.Infrastructure.Persistence;
 
 public sealed partial class CompanyRepository : ICompanyRepository
 {
-    public async Task<CompanyActivity> GetActivityAsync(int companyId, CancellationToken cancellationToken)
+    public async Task<CompanyActivitySummary> GetActivityAsync(int companyId, CancellationToken cancellationToken)
     {
         await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);
         await using var command = connection.CreateCommand();
@@ -23,7 +23,7 @@ public sealed partial class CompanyRepository : ICompanyRepository
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
         await reader.ReadAsync(cancellationToken);
         double? average = reader.IsDBNull(4) ? null : Math.Round(reader.GetDouble(4), 2, MidpointRounding.AwayFromZero);
-        return new CompanyActivity(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2), reader.GetInt32(3), average);
+        return new CompanyActivitySummary(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2), reader.GetInt32(3), average);
     }
 
     public async Task<CompanyProfile?> GetProfileAsync(string name, CancellationToken cancellationToken)

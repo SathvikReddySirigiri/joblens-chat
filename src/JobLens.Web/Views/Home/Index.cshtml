@@ -1,21 +1,43 @@
-﻿@model DataCounts
+@model DataCounts
 @{
     ViewData["Title"] = "Home";
 }
 
 <section class="hero home-hero" aria-labelledby="home-hero-title">
-    <p class="pill">Job &amp; internship scam shield for students and career centers</p>
-    <h1 id="home-hero-title">We verify the recruiter, not just the job.</h1>
-    <p class="lead">JobLens checks recruiter emails, domains, and synthetic scam reports so career centers and students can decide what to trust before anyone sends money or personal data.</p>
-    <div class="header-actions">
-        <a class="btn btn-primary" asp-controller="CheckRecruiter" asp-action="Index">Check a recruiter</a>
-        <a class="btn btn-secondary" asp-controller="Chat" asp-action="Index">Ask the JobLens chat</a>
+    <div class="home-hero-grid">
+        <div class="home-hero-copy">
+            <p class="pill">Job &amp; internship scam shield for students and career centers</p>
+            <h1 id="home-hero-title">We verify the recruiter, not just the job.</h1>
+            <p class="lead">JobLens checks recruiter emails, domains, and community scam reports so career centers and students can decide what to trust before anyone sends money or personal data.</p>
+            <form class="quick-check" method="get" asp-controller="CheckRecruiter" asp-action="Index" aria-label="Quick recruiter check">
+                <label class="visually-hidden" for="home-email">Recruiter email</label>
+                <input id="home-email" name="email" type="email" placeholder="recruiter@example.com" autocomplete="off" required />
+                <button class="btn btn-primary" type="submit">Check</button>
+            </form>
+            <div class="header-actions home-hero-actions">
+                <a class="btn btn-primary-outline" asp-controller="OfferAnalyzer" asp-action="Index">Analyze an offer</a>
+                <a class="btn btn-secondary" asp-controller="Chat" asp-action="Index">Ask JobLens</a>
+            </div>
+        </div>
+        <aside class="home-hero-sample" aria-label="Sample recruiter check result">
+            <article class="card sample-result-card">
+                <p class="sample-result-email">hr@amaz0n-careers.net</p>
+                <p>
+                    <span class="badge badge-high">High risk</span>
+                    <span class="score-label">92/100</span>
+                </p>
+                <h2 class="sample-result-heading">Red flags</h2>
+                <ul class="reason-list">
+                    <li>Look-alike domain of amazon.com</li>
+                    <li>Domain registered recently</li>
+                    <li>2 approved scam reports for this domain</li>
+                </ul>
+                <p>
+                    <button type="button" class="btn btn-secondary" data-fill-email="hr@amaz0n-careers.net" data-fill-target="home-email">Try it</button>
+                </p>
+            </article>
+        </aside>
     </div>
-    <form class="quick-check" method="get" asp-controller="CheckRecruiter" asp-action="Index" aria-label="Quick recruiter check">
-        <label class="visually-hidden" for="home-email">Recruiter email</label>
-        <input id="home-email" name="email" type="email" placeholder="recruiter@example.com" autocomplete="off" required />
-        <button class="btn btn-primary" type="submit">Check</button>
-    </form>
 </section>
 
 <section class="stats-strip" aria-label="Live database counts">
@@ -55,10 +77,10 @@
             <h3>Scam Reports</h3>
             <p>Browse community reports; students can submit; moderators approve or reject.</p>
         </a>
-        <a class="feature-card" asp-controller="JobPostings" asp-action="Index">
+        <a class="feature-card" asp-controller="Jobs" asp-action="Index">
             <span class="feature-icon" aria-hidden="true">💼</span>
-            <h3>Job Postings + Smart Search</h3>
-            <p>Filter synthetic postings and ask plain-English search questions.</p>
+            <h3>Jobs</h3>
+            <p>Two tabs: live openings from USAJOBS (or The Muse) with trust signals, and JobLens-curated postings with Smart Search.</p>
         </a>
         <a class="feature-card" asp-controller="Dashboard" asp-action="Index">
             <span class="feature-icon" aria-hidden="true">📊</span>
@@ -67,7 +89,7 @@
         </a>
         <a class="feature-card" asp-controller="Chat" asp-action="Index">
             <span class="feature-icon" aria-hidden="true">💬</span>
-            <h3>AI Chat (MCP tools)</h3>
+            <h3>Ask JobLens</h3>
             <p>Ask questions grounded only in read-only MCP tools over the database.</p>
         </a>
     </div>
@@ -84,7 +106,7 @@
         <li class="card">
             <span class="step">2</span>
             <h3>JobLens checks the evidence</h3>
-            <p>We compare domains, synthetic reports, and live registry panels (RDAP and SEC EDGAR).</p>
+            <p>We compare domains, community reports, and live registry panels (RDAP and SEC EDGAR).</p>
         </li>
         <li class="card">
             <span class="step">3</span>

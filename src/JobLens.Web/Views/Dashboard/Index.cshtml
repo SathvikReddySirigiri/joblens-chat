@@ -27,6 +27,47 @@
 <p class="help">Live from the JobLens database — changes on the Scam Reports page appear here immediately.</p>
 <div id="dashboard-error" class="alert alert-error" hidden>Couldn't load dashboard data</div>
 
+@if (ViewBag.StudentPipeline is JobApplicationPipeline pipeline)
+{
+    var total = Math.Max(1, pipeline.ByStatus.Sum(row => row.Count));
+    var x = 0.0;
+    <section class="card pipeline-card" aria-labelledby="pipeline-title">
+        <h2 id="pipeline-title">My pipeline</h2>
+        <p class="help">Your tracked applications by status. <a asp-controller="Applications" asp-action="Index">Open My Applications</a></p>
+        <svg class="pipeline-bar" viewBox="0 0 100 10" role="img" aria-label="Applications by status">
+            @foreach (var row in pipeline.ByStatus.Where(row => row.Count > 0))
+            {
+                var width = row.Count * 100.0 / total;
+                <rect class="pipeline-segment status-@row.Status.ToLowerInvariant()"
+                      x="@x.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)"
+                      y="0"
+                      width="@width.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)"
+                      height="10">
+                    <title>@row.Status: @row.Count</title>
+                </rect>
+                x += width;
+            }
+        </svg>
+        <ul class="pipeline-legend">
+            @foreach (var row in pipeline.ByStatus)
+            {
+                <li><span class="pipeline-swatch status-@row.Status.ToLowerInvariant()"></span>@row.Status (@row.Count)</li>
+            }
+        </ul>
+        <p class="help">Applied @pipeline.Applied · Interviewing @pipeline.Interviewing · Offers @pipeline.Offers · Response rate @pipeline.ResponseRatePercent.ToString("0.#")%</p>
+    </section>
+}
+else if (ViewBag.TotalApplications is int totalApplications)
+{
+    <section class="kpi-grid" aria-label="Moderator application totals">
+        <article class="card kpi">
+            <h2>Applications tracked</h2>
+            <p class="kpi-value">@totalApplications</p>
+            <p class="help">Site-wide count across all students.</p>
+        </article>
+    </section>
+}
+
 <section class="kpi-grid" aria-label="Key figures">
     <article class="card kpi">
         <h2>Total reports</h2>

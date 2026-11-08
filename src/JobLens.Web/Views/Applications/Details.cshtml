@@ -1,0 +1,60 @@
+@using JobLens.Domain.Constants
+@model JobApplication
+@{
+    ViewData["Title"] = Model.RoleTitle;
+    var followUpDue = ViewBag.FollowUpDue as bool? == true;
+}
+<section class="page-header">
+    <div class="page-heading">
+        <h1>@Model.RoleTitle</h1>
+        <p class="help">@Model.CompanyName · @Model.Status</p>
+    </div>
+    <div class="form-actions">
+        <a class="btn btn-primary"
+           asp-controller="EmailDrafts"
+           asp-action="Index"
+           asp-route-applicationId="@Model.ApplicationId">Draft email</a>
+        <form method="post" asp-controller="Resume" asp-action="Match" class="inline-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="jobTitle" value="@Model.RoleTitle" />
+            <input type="hidden" name="companyName" value="@Model.CompanyName" />
+            <input type="hidden" name="jobText" value="@Model.Notes" />
+            <input type="hidden" name="returnUrl" value="@Url.Action("Details", "Applications", new { id = Model.ApplicationId })" />
+            <button class="btn btn-secondary" type="submit">Match my resume</button>
+        </form>
+        <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.ApplicationId">Edit</a>
+        <a class="btn btn-secondary" asp-action="Delete" asp-route-id="@Model.ApplicationId">Delete</a>
+    </div>
+</section>
+@if (followUpDue)
+{
+    <p class="alert alert-neutral" role="status"><span class="badge badge-medium">Follow-up due</span> Next follow-up is @Model.NextFollowUpDate or earlier.</p>
+}
+@if (string.Equals(Model.RiskVerdict, ApplicationRiskVerdicts.High, StringComparison.OrdinalIgnoreCase))
+{
+    <p class="alert alert-error" role="alert">
+        <span class="badge badge-high">High risk</span>
+        Recruiter email flagged at save time.
+        @if (!string.IsNullOrWhiteSpace(Model.RecruiterEmail))
+        {
+            <a asp-controller="CheckRecruiter" asp-action="Index" asp-route-email="@Model.RecruiterEmail">Why?</a>
+        }
+    </p>
+}
+<section class="card">
+    <dl class="detail-list">
+        <div><dt>Company</dt><dd>@Model.CompanyName</dd></div>
+        <div><dt>Role</dt><dd>@Model.RoleTitle</dd></div>
+        <div><dt>Source</dt><dd>@Model.Source</dd></div>
+        <div><dt>Status</dt><dd>@Model.Status</dd></div>
+        <div><dt>Job URL</dt><dd>@(string.IsNullOrWhiteSpace(Model.JobUrl) ? "—" : Model.JobUrl)</dd></div>
+        <div><dt>Recruiter email</dt><dd>@(Model.RecruiterEmail ?? "—")</dd></div>
+        <div><dt>Risk verdict</dt><dd>@(Model.RiskVerdict ?? "—")</dd></div>
+        <div><dt>Applied</dt><dd>@(Model.AppliedDate ?? "—")</dd></div>
+        <div><dt>Next follow-up</dt><dd>@(Model.NextFollowUpDate ?? "—")</dd></div>
+        <div><dt>Closed</dt><dd>@(Model.ClosedDate ?? "—")</dd></div>
+        <div><dt>Notes</dt><dd>@(Model.Notes ?? "—")</dd></div>
+        <div><dt>Updated</dt><dd>@Model.UpdatedAt</dd></div>
+    </dl>
+</section>
+<p><a asp-action="Index">Back to My Applications</a></p>

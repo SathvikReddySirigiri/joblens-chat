@@ -10,4 +10,5 @@ public sealed record DataCounts(
     int InterviewReviews = 0,
     int CheckLogs = 0,
     int Recruiters = 0,
-    int Users = 0);
+    int Users = 0,
+    int JobApplications = 0);

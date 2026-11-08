@@ -1,4 +1,4 @@
-﻿// Chat composer: character count, sample questions, and a single in-flight submit.
+// Chat composer: character count, sample questions, and a single in-flight submit.
 (function () {
     var form = document.getElementById("ask-form");
     var question = document.getElementById("Question");
@@ -103,6 +103,20 @@
         showDomain();
     }
 
+    document.querySelectorAll("[data-fill-email]").forEach(function (trigger) {
+        trigger.addEventListener("click", function () {
+            var email = trigger.getAttribute("data-fill-email") || "";
+            var targetId = trigger.getAttribute("data-fill-target") || "home-email";
+            var input = document.getElementById(targetId);
+            if (!input) {
+                return;
+            }
+            input.value = email;
+            input.focus();
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+    });
+
     document.querySelectorAll("[data-counter]").forEach(function (field) {
         var target = document.getElementById(field.getAttribute("data-counter"));
         if (!target) {
@@ -127,6 +141,36 @@
             document.querySelectorAll("[role='tabpanel']").forEach(function (panel) {
                 panel.hidden = target ? panel !== target : false;
             });
+        });
+    });
+
+    document.querySelectorAll("[data-jobs-tabs]").forEach(function (root) {
+        var tabs = Array.prototype.slice.call(root.querySelectorAll('[role="tab"]'));
+        if (tabs.length === 0) {
+            return;
+        }
+
+        root.querySelector('[role="tablist"]').addEventListener("keydown", function (event) {
+            var current = tabs.indexOf(document.activeElement);
+            if (current < 0) {
+                return;
+            }
+
+            var next = current;
+            if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+                next = (current + 1) % tabs.length;
+            } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+                next = (current - 1 + tabs.length) % tabs.length;
+            } else if (event.key === "Home") {
+                next = 0;
+            } else if (event.key === "End") {
+                next = tabs.length - 1;
+            } else {
+                return;
+            }
+
+            event.preventDefault();
+            tabs[next].focus();
         });
     });
 

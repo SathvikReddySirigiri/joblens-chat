@@ -40,10 +40,11 @@ public static partial class DatabaseInitializer
         await SeedRecruitersIfEmptyAsync(connection, cancellationToken);
         var (moderatorPassword, studentPassword) = DemoPasswords(configuration, environment, logger);
         await SeedUsersIfEmptyAsync(connection, moderatorPassword, studentPassword, cancellationToken);
+        await SeedJobApplicationsIfEmptyAsync(connection, cancellationToken);
 
         var counts = await ReadCountsAsync(connection, cancellationToken);
         logger.LogInformation(
-            "JobLens database ready at {DatabasePath}. Companies={Companies}, Recruiters={Recruiters}, Reports={Reports}, Approved={Approved}, Pending={Pending}, Rejected={Rejected}, JobPostings={JobPostings}, InterviewReviews={InterviewReviews}, CheckLogs={CheckLogs}, Users={Users}.",
+            "JobLens database ready at {DatabasePath}. Companies={Companies}, Recruiters={Recruiters}, Reports={Reports}, Approved={Approved}, Pending={Pending}, Rejected={Rejected}, JobPostings={JobPostings}, InterviewReviews={InterviewReviews}, CheckLogs={CheckLogs}, Users={Users}, JobApplications={JobApplications}.",
             path,
             counts.Companies,
             counts.Recruiters,
@@ -54,7 +55,8 @@ public static partial class DatabaseInitializer
             counts.JobPostings,
             counts.InterviewReviews,
             counts.CheckLogs,
-            counts.Users);
+            counts.Users,
+            counts.JobApplications);
     }
 
     private static async Task CreateSchemaAsync(SqliteConnection connection, CancellationToken cancellationToken)
@@ -144,6 +146,42 @@ public static partial class DatabaseInitializer
 
             CREATE INDEX IF NOT EXISTS IX_Recruiters_CompanyId ON Recruiters(CompanyId);
             CREATE INDEX IF NOT EXISTS IX_Recruiters_Domain ON Recruiters(Domain);
+
+            CREATE TABLE IF NOT EXISTS JobApplications (
+                ApplicationId INTEGER PRIMARY KEY AUTOINCREMENT,
+                UserId INTEGER NOT NULL REFERENCES Users(UserId) ON DELETE CASCADE,
+                CompanyName TEXT NOT NULL,
+                CompanyId INTEGER NULL REFERENCES Companies(CompanyId) ON DELETE SET NULL,
+                RoleTitle TEXT NOT NULL,
+                Source TEXT NOT NULL CHECK (Source IN (
+                    'LiveJobs', 'JobLensPosting', 'Handshake', 'LinkedIn',
+                    'Referral', 'CompanyWebsite', 'Other')),
+                JobUrl TEXT NULL,
+                RecruiterEmail TEXT NULL,
+                Status TEXT NOT NULL CHECK (Status IN (
+                    'Saved', 'Applied', 'Interviewing', 'Offer',
+                    'Rejected', 'Withdrawn', 'NoResponse')),
+                AppliedDate TEXT NULL,
+                NextFollowUpDate TEXT NULL,
+                Notes TEXT NULL CHECK (Notes IS NULL OR length(Notes) <= 1000),
+                RiskVerdict TEXT NULL CHECK (RiskVerdict IS NULL OR RiskVerdict IN ('Low', 'Medium', 'High')),
+                ClosedDate TEXT NULL,
+                CreatedAt TEXT NOT NULL,
+                UpdatedAt TEXT NOT NULL
+            );
+
+            CREATE INDEX IF NOT EXISTS IX_JobApplications_UserId_Status ON JobApplications(UserId, Status);
+
+            CREATE TABLE IF NOT EXISTS Resumes (
+                ResumeId INTEGER PRIMARY KEY AUTOINCREMENT,
+                UserId INTEGER NOT NULL UNIQUE REFERENCES Users(UserId) ON DELETE CASCADE,
+                FileName TEXT NOT NULL,
+                RedactedText TEXT NOT NULL CHECK (length(RedactedText) <= 20000),
+                SkillsCsv TEXT NOT NULL,
+                PrivacyIssueCount INTEGER NOT NULL CHECK (PrivacyIssueCount >= 0),
+                PrivacyFindingsJson TEXT NOT NULL DEFAULT '[]',
+                UploadedAt TEXT NOT NULL
+            );
             """;
         await command.ExecuteNonQueryAsync(cancellationToken);
         await EnsureDescriptionColumnAsync(connection, cancellationToken);
@@ -281,7 +319,8 @@ public static partial class DatabaseInitializer
                 (SELECT COUNT(*) FROM InterviewReviews),
                 (SELECT COUNT(*) FROM CheckLogs),
                 (SELECT COUNT(*) FROM Recruiters),
-                (SELECT COUNT(*) FROM Users);
+                (SELECT COUNT(*) FROM Users),
+                (SELECT COUNT(*) FROM JobApplications);
             """;
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
         await reader.ReadAsync(cancellationToken);
@@ -295,7 +334,8 @@ public static partial class DatabaseInitializer
             reader.GetInt32(6),
             reader.GetInt32(7),
             reader.GetInt32(8),
-            reader.GetInt32(9));
+            reader.GetInt32(9),
+            reader.GetInt32(10));
     }
 
     private static async Task<int> ScalarAsync(SqliteConnection connection, string sql, CancellationToken cancellationToken)

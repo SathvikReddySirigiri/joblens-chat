@@ -184,6 +184,105 @@ public static partial class DatabaseInitializer
         await SeedIfEmptyAsync(connection, "SELECT COUNT(*) FROM CheckLogs;", InsertCheckLogsAsync, cancellationToken);
     }
 
+    private static async Task SeedJobApplicationsIfEmptyAsync(SqliteConnection connection, CancellationToken cancellationToken)
+    {
+        if (await ScalarAsync(connection, "SELECT COUNT(*) FROM JobApplications;", cancellationToken) > 0)
+        {
+            return;
+        }
+
+        await using var transaction = (SqliteTransaction)await connection.BeginTransactionAsync(cancellationToken);
+        await InsertJobApplicationsAsync(connection, transaction, cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+    }
+
+    private static async Task InsertJobApplicationsAsync(
+        SqliteConnection connection,
+        SqliteTransaction transaction,
+        CancellationToken cancellationToken)
+    {
+        int? studentId = null;
+        await using (var lookup = connection.CreateCommand())
+        {
+            lookup.Transaction = transaction;
+            lookup.CommandText = "SELECT UserId FROM Users WHERE Email = 'student1@joblens.demo' LIMIT 1;";
+            var value = await lookup.ExecuteScalarAsync(cancellationToken);
+            if (value is not null and not DBNull)
+            {
+                studentId = Convert.ToInt32(value, System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
+
+        if (studentId is null)
+        {
+            return;
+        }
+
+        var companyIds = await LoadCompanyIdsAsync(connection, transaction, cancellationToken);
+        await using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = """
+            INSERT INTO JobApplications (
+                UserId, CompanyName, CompanyId, RoleTitle, Source, JobUrl, RecruiterEmail,
+                Status, AppliedDate, NextFollowUpDate, Notes, RiskVerdict, ClosedDate, CreatedAt, UpdatedAt)
+            VALUES (
+                $userId, $companyName, $companyId, $roleTitle, $source, $jobUrl, $recruiterEmail,
+                $status, $appliedDate, $nextFollowUpDate, $notes, $riskVerdict, $closedDate, $createdAt, $updatedAt);
+            """;
+        var userId = command.Parameters.Add("$userId", SqliteType.Integer);
+        var companyName = command.Parameters.Add("$companyName", SqliteType.Text);
+        var companyId = command.Parameters.Add("$companyId", SqliteType.Integer);
+        var roleTitle = command.Parameters.Add("$roleTitle", SqliteType.Text);
+        var source = command.Parameters.Add("$source", SqliteType.Text);
+        var jobUrl = command.Parameters.Add("$jobUrl", SqliteType.Text);
+        var recruiterEmail = command.Parameters.Add("$recruiterEmail", SqliteType.Text);
+        var status = command.Parameters.Add("$status", SqliteType.Text);
+        var appliedDate = command.Parameters.Add("$appliedDate", SqliteType.Text);
+        var nextFollowUpDate = command.Parameters.Add("$nextFollowUpDate", SqliteType.Text);
+        var notes = command.Parameters.Add("$notes", SqliteType.Text);
+        var riskVerdict = command.Parameters.Add("$riskVerdict", SqliteType.Text);
+        var closedDate = command.Parameters.Add("$closedDate", SqliteType.Text);
+        var createdAt = command.Parameters.Add("$createdAt", SqliteType.Text);
+        var updatedAt = command.Parameters.Add("$updatedAt", SqliteType.Text);
+
+        // Demo pipeline for student1: mixed statuses, two High-risk recruiter emails from seeded scam domains.
+        var rows = new (string Company, string Role, string Source, string? Url, string? Email, string Status, string? Applied, string? FollowUp, string? Notes, string? Risk, string? Closed)[]
+        {
+            ("Amazon", "Backend Intern", "JobLensPosting", "https://amazon.jobs/intern", "talent@amazon.com", "Interviewing", "2026-10-12", "2026-11-05", "Phone screen scheduled.", "Low", null),
+            ("Microsoft", "Software Engineer Intern", "LinkedIn", "https://careers.microsoft.com", "hr@amaz0n-careers.net", "Applied", "2026-10-20", "2026-11-01", "Recruiter email looked off — verify domain.", "High", null),
+            ("Google", "STEP Intern", "Handshake", null, "campus@google.com", "Applied", "2026-10-28", "2026-11-10", null, "Low", null),
+            ("Deloitte", "Technology Consultant Intern", "Referral", null, null, "Saved", null, "2026-11-08", "Ask alumni contact for intro.", null, null),
+            ("JPMorgan Chase", "Summer Analyst", "CompanyWebsite", "https://careers.jpmorgan.com", "recruiting@jpmorgan.com", "Offer", "2026-09-15", null, "Offer letter received.", "Low", "2026-10-30"),
+            ("Meta", "Data Science Intern", "LiveJobs", "https://www.metacareers.com", null, "NoResponse", "2026-09-01", "2026-10-15", "No reply after two follow-ups.", null, null),
+            ("Apple", "Hardware Intern", "Other", null, "jobs@rnicrosoft-hiring.com", "Rejected", "2026-08-20", null, "Suspicious recruiter domain.", "High", "2026-09-12"),
+            ("IBM", "Cloud Intern", "JobLensPosting", null, "campus@ibm.com", "Interviewing", "2026-10-05", "2026-11-12", "Final round next week.", "Low", null),
+            ("Salesforce", "AMTS Intern", "LinkedIn", "https://salesforce.com/careers", null, "Withdrawn", "2026-09-22", null, "Withdrew after accepting Chase.", null, "2026-10-31"),
+            ("Adobe", "Product Design Intern", "Handshake", null, "university@adobe.com", "Applied", "2026-11-02", "2026-11-16", null, "Low", null),
+            ("Oracle", "Database Intern", "LiveJobs", null, null, "Saved", null, null, "Save for spring cycle.", null, null),
+            ("Cisco", "Network Engineer Intern", "Referral", null, "internships@cisco.com", "Applied", "2026-10-18", "2026-11-06", "Follow up with referral.", "Low", null),
+        };
+
+        foreach (var row in rows)
+        {
+            userId.Value = studentId.Value;
+            companyName.Value = row.Company;
+            companyId.Value = companyIds.TryGetValue(row.Company, out var linkedId) ? linkedId : (object)DBNull.Value;
+            roleTitle.Value = row.Role;
+            source.Value = row.Source;
+            jobUrl.Value = (object?)row.Url ?? DBNull.Value;
+            recruiterEmail.Value = (object?)row.Email ?? DBNull.Value;
+            status.Value = row.Status;
+            appliedDate.Value = (object?)row.Applied ?? DBNull.Value;
+            nextFollowUpDate.Value = (object?)row.FollowUp ?? DBNull.Value;
+            notes.Value = (object?)row.Notes ?? DBNull.Value;
+            riskVerdict.Value = (object?)row.Risk ?? DBNull.Value;
+            closedDate.Value = (object?)row.Closed ?? DBNull.Value;
+            createdAt.Value = "2026-10-01";
+            updatedAt.Value = "2026-11-01";
+            await command.ExecuteNonQueryAsync(cancellationToken);
+        }
+    }
+
     private static async Task SeedIfEmptyAsync(
         SqliteConnection connection,
         string countSql,

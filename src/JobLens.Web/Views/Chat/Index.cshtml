@@ -1,6 +1,6 @@
 @model ChatViewModel
 @{
-    ViewData["Title"] = "Chat";
+    ViewData["Title"] = "Ask JobLens";
     var toolDescriptions = new Dictionary<string, string>(StringComparer.Ordinal)
     {
         ["get_domain_report"] = "Reports filed for one exact recruiter domain.",
@@ -12,13 +12,14 @@
         ["search_jobs"] = "Filtered search of job postings, including impersonation flags.",
         ["get_company_profile"] = "Domain, postings, ratings, and scam reports for one company.",
         ["analyze_offer"] = "Red-flag check of pasted offer text. The text is not stored.",
+        ["search_live_jobs"] = "LIVE openings from USAJOBS or The Muse (external; not verified by JobLens).",
     };
 }
 
 <div class="chat-layout">
     <section class="chat-main" aria-labelledby="chat-title">
         <header class="chat-header">
-            <h1 id="chat-title">JobLens Chat</h1>
+            <h1 id="chat-title">Ask JobLens</h1>
             <p class="mode-badge @(Model.IsAiMode ? "badge-low" : "badge-medium")">@Model.ProviderLabel</p>
         </header>
 

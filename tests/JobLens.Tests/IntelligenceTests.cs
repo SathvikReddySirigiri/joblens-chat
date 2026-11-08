@@ -185,7 +185,7 @@ public sealed class IntelligenceTests
         try
         {
             await DatabaseInitializer.InitializeAsync(configuration, environment, NullLogger.Instance);
-            var risk = new RecruiterRiskService(new ScamRepository(configuration, environment));
+            var risk = new RecruiterRiskService(new ScamAnalyticsRepository(configuration, environment));
             Assert.Equal("HIGH", (await risk.CheckAsync("hr@amaz0n-careers.net", CancellationToken.None)).Verdict);
             Assert.Equal("HIGH", (await risk.CheckAsync("talent@rnicrosoft-hiring.com", CancellationToken.None)).Verdict);
             Assert.Equal("LOW", (await risk.CheckAsync("recruiting@google.com", CancellationToken.None)).Verdict);
