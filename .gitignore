@@ -442,3 +442,6 @@ appsettings.*.local.json
 secrets.json
 .env
 
+
+# Azure deploy package
+*.zip
