@@ -22,6 +22,10 @@ Capture screenshots / Inspector exports under this folder using the exact names 
 - [ ] `A7_counts_after.png`
 - [ ] `A8_validation.png`
 - [ ] `A9_azure_T01.png`
+- [ ] `A9_azure_T02.png`
+- [ ] `A9_azure_T04.png`
+- [ ] `A9_azure_T09.png`
+- [ ] `A9_azure_T12.png`
 - [ ] `A9_azure_inspector.png`
 - [ ] `A10_restart_before.png`
 - [ ] `A10_restart_after.png`

@@ -1,11 +1,13 @@
-Project: JobLens Chat — ISM 6225 group assignment "Build a Data-Grounded Business Chatbot".
+Project: JobLens — ISM 6225 final project: job & internship scam shield for students and career
+centers (ASP.NET Core MVC + MCP chatbot).
 Stack (pinned, do not change versions): C#, .NET 10 (net10.0), ASP.NET Core MVC,
 ModelContextProtocol.AspNetCore 2.2.0, Microsoft.Data.Sqlite 10.0.12,
 Microsoft.Extensions.AI 10.10.0, Microsoft.Extensions.AI.OpenAI 10.10.0, OpenAI 2.14.0.
 Do NOT use Entity Framework. Use ADO.NET with Microsoft.Data.Sqlite.
 
-Domain: job/internship scam intelligence for university career centers (synthetic data only).
-Tables: Companies (PK CompanyId), ScamReports (PK ReportId, FK CompanyId → Companies), JobPostings, InterviewReviews, CheckLogs, Recruiters, Users.
+Domain: job/internship scam safety for students and university career centers (sample data).
+Tables: Companies (PK CompanyId), ScamReports (PK ReportId, FK CompanyId → Companies), JobPostings, InterviewReviews, CheckLogs, Recruiters, Users, JobApplications (owner-only, FK UserId → Users), Resumes (one per user, redacted text only).
+Live jobs come only from USAJOBS (ILiveJobsProvider → UsaJobsClient). Do not add other job providers.
 
 Solution layout (Clean Architecture):
 - src/JobLens.Domain — entities and domain constants (no package references)

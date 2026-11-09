@@ -11,14 +11,14 @@ Columns: ID | Question / input | Expected tool/page | Expected result | Actual r
 | ID | Question / input | Expected tool/page | Expected result | Actual result | Pass/Fail | Evaluator | Evidence |
 |---|---|---|---|---|---|---|---|
 | A1 | Release build + full test suite | `dotnet build` / `dotnet test` | Build succeeds; all tests pass (see SeedDataTests counts) |  |  |  | A1_release_build.png, A1_tests.png |
-| A2 | Seeded database counts | `scripts/db-counts.sql` or SeedDataTests | Companies 20; ScamReports 120 (85/23/12); Recruiters 130; JobPostings 70; InterviewReviews 50; CheckLogs 100; Users 5; JobApplications 12; Resumes 0 |  |  |  | A2_seed_counts.png |
+| A2 | Seeded database counts | `scripts/db-counts.sql` or SeedDataTests | Companies 20; ScamReports 120 (85/23/12); Recruiters 130; JobPostings 70; InterviewReviews 50; CheckLogs 100; Users 5; JobApplications 12; Resumes 0; Suspicious interviews 7 |  |  |  | A2_seed_counts.png |
 | A3 | MCP tool list via Inspector | Inspector → tools | All 10 tools listed: get_domain_report, search_scam_reports, summarize_scams, top_impersonated_companies, check_recruiter_email, lookup_domain_registration, search_jobs, get_company_profile, analyze_offer, search_live_jobs |  |  |  | A3_tools_list.png |
 | A4 | Call each MCP tool once | Inspector (Table B) | Each tool returns a valid JSON/text payload (or honest unavailable for live tools) |  |  |  | A4_&lt;tool&gt;.png |
 | A5 | Chat answers are tool-grounded | Chat / Ask JobLens | Answers for T01–T08 match known-answers; tools appear in transcript chips |  |  |  | fill from Inspector run |
 | A6 | Honest no-result | Chat T09 / get_domain_report | safe-company-example.com → 0 reports; no invented rows |  |  |  | fill from Inspector run |
 | A7 | SQL injection resistance | Scam Reports search + Chat | Counts unchanged before/after injection strings (see S03/S04) |  |  |  | A7_counts_before.png, A7_counts_after.png |
 | A8 | Input validation | Forms / MCP args | Friendly validation errors; no stack traces to user |  |  |  | A8_validation.png |
-| A9 | Azure deployment smoke | Azure site + Inspector | T01 works on Azure; Inspector can call a tool against Azure `/mcp` with key |  |  |  | A9_azure_T01.png, A9_azure_inspector.png |
+| A9 | Azure deployment smoke | Azure site + Inspector | T01, T02, T04, T09, T12 match the local answers; Inspector lists 10 tools on Azure `/mcp` |  |  |  | A9_azure_T01.png, A9_azure_T02.png, A9_azure_T04.png, A9_azure_T09.png, A9_azure_T12.png, A9_azure_inspector.png |
 | A10 | Restart durability | App recycle / restart | Seed/data still present; counts match A2 after restart |  |  |  | A10_restart_before.png, A10_restart_after.png |
 
 ---
