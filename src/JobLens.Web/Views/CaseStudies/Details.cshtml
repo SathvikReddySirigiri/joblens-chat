@@ -1,0 +1,112 @@
+@model CaseStudy
+@{
+    ViewData["Title"] = Model.Title;
+    ViewData["PageTitle"] = Model.Title;
+    ViewData["PageSubtitle"] = Model.Summary;
+    var previous = ViewBag.Previous as CaseStudy;
+    var next = ViewBag.Next as CaseStudy;
+}
+<section class="page-header">
+    <partial name="_PageHeader" />
+    <div class="header-actions">
+        <span class="badge badge-high">@Model.ScamType</span>
+    </div>
+</section>
+
+<section class="section" aria-labelledby="story-title">
+    <h2 id="story-title">How the scam unfolded</h2>
+    <div class="case-steps">
+        @foreach (var email in Model.Emails)
+        {
+            <article class="card case-step">
+                <h3>@email.Step</h3>
+                <a href="~/images/cases/@email.ImageFile" target="_blank" rel="noopener noreferrer">
+                    <img class="case-email-img"
+                         src="~/images/cases/@email.ImageFile"
+                         alt="@email.Subject — sample scam email from @email.FromEmail"
+                         width="836"
+                         height="470"
+                         loading="lazy" />
+                </a>
+                <details class="case-email-text">
+                    <summary>Show email text</summary>
+                    <dl class="detail-list">
+                        <div>
+                            <dt>From</dt>
+                            <dd>
+                                @email.FromName &lt;@email.FromEmail&gt;
+                                @if (email.IsStudentReply)
+                                {
+                                    <span class="badge badge-neutral">Sent</span>
+                                }
+                            </dd>
+                        </div>
+                        <div><dt>To</dt><dd>@email.To</dd></div>
+                        <div><dt>Date</dt><dd>@email.Date</dd></div>
+                        <div><dt>Subject</dt><dd>@email.Subject</dd></div>
+                        <div>
+                            <dt>Body</dt>
+                            <dd><pre class="case-email-body">@email.Body</pre></dd>
+                        </div>
+                    </dl>
+                </details>
+            </article>
+        }
+    </div>
+</section>
+
+<section class="section case-guidance" aria-labelledby="guidance-title">
+    <h2 id="guidance-title" class="visually-hidden">Guidance</h2>
+    <div class="case-guidance-grid">
+        <article class="card">
+            <h3>Red flags</h3>
+            <ul class="reason-list">
+                @foreach (var flag in Model.RedFlags)
+                {
+                    <li><span class="badge badge-high">@flag</span></li>
+                }
+            </ul>
+        </article>
+        <article class="card">
+            <h3>What to do</h3>
+            <ul class="reason-list">
+                @foreach (var tip in Model.WhatToDo)
+                {
+                    <li>@tip</li>
+                }
+            </ul>
+        </article>
+    </div>
+</section>
+
+<section class="card" aria-labelledby="joblens-actions-title">
+    <h2 id="joblens-actions-title">What JobLens says</h2>
+    <div class="case-actions">
+        <a class="btn btn-secondary"
+           asp-controller="CheckRecruiter"
+           asp-action="Index"
+           asp-route-email="@Model.RecruiterEmail">Check this recruiter</a>
+        <a class="btn btn-secondary"
+           asp-controller="Chat"
+           asp-action="Index"
+           asp-route-q="@Model.ChatQuestion">Ask JobLens</a>
+        <a class="btn btn-primary"
+           asp-controller="OfferAnalyzer"
+           asp-action="Index"
+           asp-route-caseId="@Model.Id">Analyze this offer</a>
+    </div>
+</section>
+
+<nav class="case-pager" aria-label="Case studies">
+    @if (previous is not null)
+    {
+        <a class="btn btn-secondary" asp-action="Details" asp-route-id="@previous.Id">← Previous</a>
+    }
+    <a class="btn-link" asp-action="Index">All case studies</a>
+    @if (next is not null)
+    {
+        <a class="btn btn-secondary" asp-action="Details" asp-route-id="@next.Id">Next →</a>
+    }
+</nav>
+
+<p class="help case-disclaimer">Sample emails created for education. People, addresses and messages are fictional.</p>

@@ -253,7 +253,7 @@ Everything that talks to SQLite, the network or files.
 
 HTTP, views and the MCP server.
 
-**Controllers:** `HomeController`, `AccountController`, `CheckRecruiterController`, `OfferAnalyzerController`, `JobsController`, `JobPostingsController`, `ScamReportsController`, `CompaniesController`, `RecruitersController`, `InterviewReviewsController`, `DashboardController`, `ChatController`, `ApplicationsController`, `EmailDraftsController`, `ResumeController`, `AboutController`.
+**Controllers:** `HomeController`, `AccountController`, `CheckRecruiterController`, `OfferAnalyzerController`, `JobsController`, `JobPostingsController`, `CaseStudiesController`, `ScamReportsController`, `CompaniesController`, `RecruitersController`, `InterviewReviewsController`, `DashboardController`, `ChatController`, `ApplicationsController`, `EmailDraftsController`, `ResumeController`, `AboutController`.
 
 **MCP tools (`Mcp/`):** `ScamTools`, `JobTools`, `DomainTools`, `LiveJobTools` — 10 read-only tools (section 7).
 
@@ -829,6 +829,7 @@ sequenceDiagram
 | `/CheckRecruiter` | Check a recruiter email | Public (rate-limited) |
 | `/OfferAnalyzer` | Analyze an offer (text or PDF/DOCX) | Public (rate-limited) |
 | `/Jobs?tab=live\|joblens` | Live openings + JobLens postings | Public |
+| `/CaseStudies`, `/CaseStudies/{id}` | Sample scam email case studies (images + red flags) | Public |
 | `/ScamReports`, `/Companies`, `/Recruiters`, `/InterviewReviews` | Community CRUD (Index, Details, Create, Edit, Delete) | Read public; writes per role |
 | `/ScamReports/Approve/{id}`, `/ScamReports/Reject/{id}` | Moderation (POST) | Moderator |
 | `/JobPostings/Create`, `/Edit`, `/Delete` | Posting CRUD | Moderator |

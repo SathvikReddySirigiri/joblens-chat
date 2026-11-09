@@ -1,6 +1,7 @@
 using JobLens.Application.Dtos;
 using JobLens.Application.Services;
 using JobLens.Web.Security;
+using JobLens.Application.Dtos.Pages;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -9,7 +10,17 @@ namespace JobLens.Web.Controllers;
 public sealed class OfferAnalyzerController(OfferAnalyzerService analyzer) : Controller
 {
     [HttpGet("/OfferAnalyzer")]
-    public IActionResult Index() => View(new OfferAnalyzerPageVm());
+    public IActionResult Index(string? caseId)
+    {
+        var page = new OfferAnalyzerPageVm();
+        var study = CaseStudyCatalog.Find(caseId);
+        if (study is not null)
+        {
+            page.Text = study.OfferText;
+        }
+
+        return View(page);
+    }
 
     [HttpPost("/OfferAnalyzer")]
     [ValidateAntiForgeryToken]

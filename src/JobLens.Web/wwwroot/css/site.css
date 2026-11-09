@@ -1548,6 +1548,82 @@ blockquote {
   margin-top: var(--space-5);
 }
 
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--space-5);
+}
+
+.case-card-title {
+  margin: var(--space-3) 0 var(--space-2);
+  font-size: 1.125rem;
+}
+
+.case-thumb-link {
+  display: block;
+}
+
+.case-thumb,
+.case-email-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.case-steps {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.case-step h3 {
+  margin-top: 0;
+}
+
+.case-email-text {
+  margin-top: var(--space-3);
+}
+
+.case-email-body {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.case-guidance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.case-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.case-pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: var(--space-5) 0;
+}
+
+.case-disclaimer {
+  margin-bottom: var(--space-6);
+}
+
+@media (max-width: 720px) {
+  .case-guidance-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .alert-neutral {
   color: var(--muted);
   background: var(--border);

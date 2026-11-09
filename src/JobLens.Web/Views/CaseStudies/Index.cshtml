@@ -1,0 +1,32 @@
+@model IReadOnlyList<CaseStudy>
+@{
+    ViewData["Title"] = "Case studies";
+    ViewData["PageTitle"] = "Case studies";
+    ViewData["PageSubtitle"] = "Sample scam email threads that show how look-alike domains, fees, and rushed offers unfold.";
+}
+<section class="page-header">
+    <partial name="_PageHeader" />
+</section>
+
+<div class="case-grid">
+    @foreach (var study in Model)
+    {
+        var thumb = study.Emails.LastOrDefault()?.ImageFile ?? study.Emails[0].ImageFile;
+        <article class="card case-card">
+            <a class="case-thumb-link" asp-action="Details" asp-route-id="@study.Id" aria-label="Read @study.Title">
+                <img class="case-thumb"
+                     src="~/images/cases/@thumb"
+                     alt=""
+                     width="836"
+                     height="470"
+                     loading="lazy" />
+            </a>
+            <h2 class="case-card-title">
+                <a asp-action="Details" asp-route-id="@study.Id">@study.Title</a>
+            </h2>
+            <p><span class="badge badge-high">@study.ScamType</span></p>
+            <p class="help">@study.Summary</p>
+            <a class="btn-link" asp-action="Details" asp-route-id="@study.Id">Read the case →</a>
+        </article>
+    }
+</div>

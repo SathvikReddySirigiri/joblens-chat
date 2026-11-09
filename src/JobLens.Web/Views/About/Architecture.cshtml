@@ -41,7 +41,7 @@ flowchart TB
         </pre>
     </div>
     <ol class="help" aria-label="Text alternative for the architecture flowchart">
-        <li>Browser calls MVC controllers for CRUD, checks, dashboard, Jobs (two tabs), and chat UI.</li>
+        <li>Browser calls MVC controllers for CRUD, checks, dashboard, Jobs (two tabs), Case studies, and chat UI.</li>
         <li>Controllers call Application services; services call Infrastructure repositories; SQL stays in repositories against SQLite.</li>
         <li>Chat page uses ChatOrchestrator → MCP HTTP client → <code>/mcp</code> (optional <code>X-Api-Key</code>) → read-only MCP tools → Application services.</li>
         <li>Infrastructure also calls RDAP, SEC EDGAR, and USAJOBS for live Jobs; ChatOrchestrator may call Azure OpenAI when configured.</li>

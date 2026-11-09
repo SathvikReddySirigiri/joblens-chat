@@ -16,7 +16,7 @@
         var controller = ViewContext.RouteData.Values["controller"]?.ToString();
         var action = ViewContext.RouteData.Values["action"]?.ToString();
         var checkSection = controller is "CheckRecruiter" or "OfferAnalyzer";
-        var communitySection = controller is "ScamReports" or "Companies" or "Recruiters" or "InterviewReviews";
+        var communitySection = controller is "CaseStudies" or "ScamReports" or "Companies" or "Recruiters" or "InterviewReviews";
         var jobsSection = controller is "Jobs" or "JobPostings";
         var myJobLensSection = controller is "Applications" or "EmailDrafts" or "Resume";
         var aboutSection = controller is "About";
@@ -47,6 +47,7 @@
                     <li class="nav-item" data-dropdown>
                         <button class="nav-link @(communitySection ? "active" : null)" type="button" data-dropdown-button aria-expanded="false" aria-controls="community-menu">Community <span class="nav-caret" aria-hidden="true">▾</span></button>
                         <div id="community-menu" class="dropdown-panel" data-dropdown-panel hidden>
+                            <a class="nav-link @(controller == "CaseStudies" ? "active" : null)" asp-controller="CaseStudies" asp-action="Index">Case studies</a>
                             <a class="nav-link @(controller == "ScamReports" ? "active" : null)" asp-controller="ScamReports" asp-action="Index">Scam Reports</a>
                             <a class="nav-link @(controller == "Companies" ? "active" : null)" asp-controller="Companies" asp-action="Index">Companies</a>
                             <a class="nav-link @(controller == "Recruiters" ? "active" : null)" asp-controller="Recruiters" asp-action="Index">Recruiters</a>
