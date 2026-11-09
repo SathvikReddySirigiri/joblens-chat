@@ -12,16 +12,6 @@ JobLens helps college students and university career centers spot fake recruiter
 
 ---
 
-## Team
-
-| Member | Role | Main contributions |
-|---|---|---|
-| **Naga Pavan Sathvik Reddy Sirigiri** | MCP & Backend Lead | Clean Architecture, SQLite data layer, MCP server and tools, chatbot, external APIs, Azure deployment |
-| **Isabella Cuello Penaloza** | Data & Analytics Lead | Seed data and known answers, CRUD rules and validation, Scam Insights dashboard, testing of CRUD and roles |
-| **Lakshmi Reethika Guduri** | MVC & Experience + Testing & Documentation Lead | Razor views and UX, Jobs and My JobLens pages, chatbot and security testing, documentation |
-
----
-
 ## The problem
 
 - **Fake recruiters** copy real company names and write from look-alike domains such as `hr@amaz0n-careers.net`.
