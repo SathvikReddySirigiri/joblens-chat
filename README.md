@@ -129,6 +129,15 @@ Forwarded headers (`X-Forwarded-For` / `X-Forwarded-Proto`) are enabled for App 
 
 Linux App Service, .NET 10. Use **Deployment Center** (or zip deploy). Do **not** add a GitHub Actions workflow in this repo — Azure creates one when you connect Deployment Center.
 
+After the Web App exists, apply production App Settings from local user-secrets (plus freshly generated seed/MCP secrets):
+
+```powershell
+az login
+./scripts/azure-appsettings.ps1 -AppName <your-app-name>
+```
+
+Optional: `-ResourceGroup rg-joblens` (default). The script prints the new moderator/student passwords and MCP access key **once** — save them in a password manager. It never writes secrets into the repo.
+
 **Startup command:** `dotnet JobLens.Web.dll`
 
 **Health check path:** `/healthz` (returns `ok` when SQLite answers `SELECT 1`)
