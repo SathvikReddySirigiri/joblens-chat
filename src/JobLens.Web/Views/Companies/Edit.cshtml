@@ -1,9 +1,10 @@
 @model CompanyFormVm
 @{
     ViewData["Title"] = "Edit company";
+    ViewData["PageTitle"] = "Edit company";
 }
 <section class="page-header">
-    <h1>Edit company</h1>
+    <partial name="_PageHeader" />
 </section>
 <section class="card">
     <form method="post" asp-action="Edit" asp-route-id="@Model.CompanyId">

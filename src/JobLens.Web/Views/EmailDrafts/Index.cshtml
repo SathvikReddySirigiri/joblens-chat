@@ -2,12 +2,11 @@
 @model EmailDraftPageVm
 @{
     ViewData["Title"] = "Email drafts";
+    ViewData["PageTitle"] = "Email drafts";
+    ViewData["PageSubtitle"] = "AI-assisted recruiter emails. JobLens never sends email — copy the draft or open your mail app.";
 }
 <section class="page-header">
-    <div class="page-heading">
-        <h1>Email drafts</h1>
-        <p class="help">AI-assisted recruiter emails. JobLens never sends email — copy the draft or open your mail app.</p>
-    </div>
+    <partial name="_PageHeader" />
 </section>
 
 <section class="card">

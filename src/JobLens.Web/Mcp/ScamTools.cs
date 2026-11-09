@@ -45,9 +45,10 @@ public sealed class ScamTools(IScamAnalyticsRepository repository, RecruiterRisk
         CancellationToken cancellationToken)
     {
         const string tool = "get_domain_report";
+        var timer = McpToolLog.Start();
         if (!DomainNormalizer.TryNormalizeDomain(domain, out var host, out var error))
         {
-            Log(tool, 0, ("domain", domain));
+            McpToolLog.Information(logger, tool, new { domain }, timer);
             return error;
         }
 
@@ -55,7 +56,7 @@ public sealed class ScamTools(IScamAnalyticsRepository repository, RecruiterRisk
             .Where(report => string.Equals(report.Status, ReportStatus.Approved, StringComparison.Ordinal))
             .Take(20)
             .ToList();
-        Log(tool, reports.Count, ("domain", host));
+        McpToolLog.Information(logger, tool, new { domain = host }, timer);
 
         if (reports.Count == 0)
         {
@@ -87,12 +88,13 @@ public sealed class ScamTools(IScamAnalyticsRepository repository, RecruiterRisk
         CancellationToken cancellationToken = default)
     {
         const string tool = "search_scam_reports";
+        var timer = McpToolLog.Start();
         if (!TryChoice(scamType, ScamTypes, "scamType", out var scam, out var error)
             || !TryChoice(channel, Channels, "channel", out var channelValue, out error)
             || !TryChoice(status, Statuses, "status", out var statusValue, out error)
             || !TryDateRange(fromDate, toDate, out var from, out var to, out error))
         {
-            Log(tool, 0, ("scamType", scamType), ("companyName", companyName), ("channel", channel), ("status", status), ("fromDate", fromDate), ("toDate", toDate));
+            McpToolLog.Information(logger, tool, new { scamType, companyName, channel, status, fromDate, toDate }, timer);
             return error!;
         }
 
@@ -100,7 +102,7 @@ public sealed class ScamTools(IScamAnalyticsRepository repository, RecruiterRisk
         if (statusValue is not null
             && !string.Equals(statusValue, ReportStatus.Approved, StringComparison.Ordinal))
         {
-            Log(tool, 0, ("scamType", scam), ("companyName", company), ("channel", channelValue), ("status", statusValue), ("fromDate", from), ("toDate", to));
+            McpToolLog.Information(logger, tool, new { scamType = scam, companyName = company, channel = channelValue, status = statusValue, fromDate = from, toDate = to }, timer);
             return Json(new
             {
                 filters = new { scamType = scam, companyName = company, channel = channelValue, status = statusValue, fromDate = from, toDate = to },
@@ -118,7 +120,7 @@ public sealed class ScamTools(IScamAnalyticsRepository repository, RecruiterRisk
             from,
             to,
             cancellationToken);
-        Log(tool, reports.Count, ("scamType", scam), ("companyName", company), ("channel", channelValue), ("status", ReportStatus.Approved), ("fromDate", from), ("toDate", to));
+        McpToolLog.Information(logger, tool, new { scamType = scam, companyName = company, channel = channelValue, status = ReportStatus.Approved, fromDate = from, toDate = to }, timer);
 
         if (reports.Count == 0)
         {
@@ -147,14 +149,15 @@ public sealed class ScamTools(IScamAnalyticsRepository repository, RecruiterRisk
         CancellationToken cancellationToken = default)
     {
         const string tool = "summarize_scams";
+        var timer = McpToolLog.Start();
         if (!TryDateRange(fromDate, toDate, out var from, out var to, out var error))
         {
-            Log(tool, 0, ("fromDate", fromDate), ("toDate", toDate));
+            McpToolLog.Information(logger, tool, new { fromDate, toDate }, timer);
             return error!;
         }
 
         var summary = await repository.SummarizeAsync(from, to, cancellationToken);
-        Log(tool, summary.TotalReports, ("fromDate", from), ("toDate", to));
+        McpToolLog.Information(logger, tool, new { fromDate = from, toDate = to }, timer);
         return Json(summary);
     }
 
@@ -166,15 +169,16 @@ public sealed class ScamTools(IScamAnalyticsRepository repository, RecruiterRisk
         CancellationToken cancellationToken = default)
     {
         const string tool = "top_impersonated_companies";
+        var timer = McpToolLog.Start();
         if (!TryDate(fromDate, "fromDate", out var from, out var error))
         {
-            Log(tool, 0, ("count", count.ToString(CultureInfo.InvariantCulture)), ("fromDate", fromDate));
+            McpToolLog.Information(logger, tool, new { count, fromDate }, timer);
             return error!;
         }
 
         var take = Math.Clamp(count, 1, 10);
         var companies = await repository.TopImpersonatedCompaniesAsync(take, from, cancellationToken);
-        Log(tool, companies.Count, ("count", take.ToString(CultureInfo.InvariantCulture)), ("fromDate", from));
+        McpToolLog.Information(logger, tool, new { count = take, fromDate = from }, timer);
         return Json(new
         {
             count = take,
@@ -191,32 +195,16 @@ public sealed class ScamTools(IScamAnalyticsRepository repository, RecruiterRisk
         CancellationToken cancellationToken)
     {
         const string tool = "check_recruiter_email";
+        var timer = McpToolLog.Start();
         if (!TryEmail(email, out var trimmed, out var error))
         {
-            Log(tool, 0, ("domain", DomainNormalizer.DomainOfEmail(email ?? "")));
+            McpToolLog.Information(logger, tool, new { email = McpToolLog.RedactEmail(email), domain = DomainNormalizer.DomainOfEmail(email ?? "") }, timer);
             return error;
         }
 
         var result = await riskService.CheckAsync(trimmed, cancellationToken);
-        Log(tool, 1, ("domain", DomainNormalizer.DomainOfEmail(trimmed)));
+        McpToolLog.Information(logger, tool, new { email = McpToolLog.RedactEmail(trimmed), domain = DomainNormalizer.DomainOfEmail(trimmed) }, timer);
         return Json(result);
-    }
-
-    private void Log(string tool, int rowCount, params (string Name, string? Value)[] arguments)
-    {
-        var sanitized = string.Join(", ", arguments.Select(argument => $"{argument.Name}={Shorten(argument.Value)}"));
-        logger.LogInformation("MCP tool {Tool} args ({Arguments}) rows {RowCount}", tool, sanitized, rowCount);
-    }
-
-    private static string Shorten(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return "";
-        }
-
-        var compact = value.Trim().Replace("\r", " ", StringComparison.Ordinal).Replace("\n", " ", StringComparison.Ordinal);
-        return compact.Length <= 60 ? compact : compact[..60];
     }
 
     private static string Json(object value) => JsonSerializer.Serialize(value, JsonOptions);

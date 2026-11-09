@@ -1,12 +1,11 @@
 @model JobApplicationFormVm
 @{
     ViewData["Title"] = "Track a job";
+    ViewData["PageTitle"] = "Track a job";
+    ViewData["PageSubtitle"] = "Save a role to your pipeline and optionally check the recruiter email for risk.";
 }
 <section class="page-header">
-    <div class="page-heading">
-        <h1>Track a job</h1>
-        <p class="help">Save a role to your pipeline and optionally check the recruiter email for risk.</p>
-    </div>
+    <partial name="_PageHeader" />
 </section>
 <section class="card">
     <form method="post" asp-action="Create">

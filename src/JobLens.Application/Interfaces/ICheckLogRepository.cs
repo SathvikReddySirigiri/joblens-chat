@@ -8,4 +8,5 @@ public interface ICheckLogRepository
     Task<int> AddAsync(CheckLog log, CancellationToken cancellationToken);
     Task<IReadOnlyList<VerdictMonthCount>> CountsByVerdictPerMonthAsync(CancellationToken cancellationToken);
     Task<IReadOnlyList<CheckLog>> RecentChecksAsync(int limit, CancellationToken cancellationToken);
+    Task<IReadOnlyList<CheckLog>> RecentForUserAsync(int userId, int limit, CancellationToken cancellationToken);
 }

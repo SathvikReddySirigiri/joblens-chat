@@ -8,7 +8,7 @@
 }
 
 <section class="card">
-    <form method="get" asp-controller="Jobs" asp-action="Index" class="live-filters" aria-label="Live job filters">
+    <form method="get" asp-controller="Jobs" asp-action="Index" class="filter-bar" aria-label="Live job filters">
         <input type="hidden" name="tab" value="@JobsPageVm.LiveTab" />
         <div class="field">
             <label for="keyword">Keyword</label>
@@ -120,7 +120,9 @@
                 <input id="companyName" name="companyName" value="@search.CompanyName" maxlength="80" placeholder="Company name" />
             </div>
         }
-        <button class="btn btn-primary" type="submit">Search live jobs</button>
+        <div class="filter-actions">
+            <button class="btn btn-primary" type="submit">Search live jobs</button>
+        </div>
     </form>
 </section>
 
@@ -160,14 +162,15 @@
         {
             var job = listing.Job;
             var trust = listing.Trust;
+            var hasScamReports = trust.ApprovedScamReports > 0;
             <article class="card live-job-card">
                 <header class="live-job-header">
                     <h2 class="live-job-title">@job.Title</h2>
-                    <p class="live-job-company">@job.CompanyName</p>
-                    <p class="help">
+                    <p class="live-meta">
+                        <span>@job.CompanyName</span>
                         @if (!string.IsNullOrWhiteSpace(job.Locations))
                         {
-                            <span>@job.Locations</span>
+                            <span>· @job.Locations</span>
                         }
                         @if (!string.IsNullOrWhiteSpace(job.PublishedDate))
                         {
@@ -182,97 +185,108 @@
                             <span>· @job.PayRange</span>
                         }
                     </p>
-                    <div class="chip-row">
-                        @if (job.IsRemote)
-                        {
-                            <span class="badge badge-neutral">Remote</span>
-                        }
-                        @if (!string.IsNullOrWhiteSpace(job.Levels))
-                        {
-                            <span class="badge badge-neutral">@job.Levels</span>
-                        }
-                        @if (!string.IsNullOrWhiteSpace(job.Categories))
-                        {
-                            <span class="badge badge-neutral">@job.Categories</span>
-                        }
-                    </div>
                 </header>
+
+                <div class="chip-row">
+                    @if (job.IsRemote)
+                    {
+                        <span class="badge badge-neutral">Remote</span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(job.Levels))
+                    {
+                        <span class="badge badge-neutral">@job.Levels</span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(job.Categories))
+                    {
+                        <span class="badge badge-neutral">@job.Categories</span>
+                    }
+                </div>
 
                 @if (!string.IsNullOrWhiteSpace(job.DescriptionSnippet))
                 {
                     <p class="live-job-snippet">@job.DescriptionSnippet</p>
                 }
 
-                <p class="header-actions">
-                    @if (!string.IsNullOrWhiteSpace(job.ApplyUrl))
-                    {
-                        <a class="btn btn-primary"
-                           href="@job.ApplyUrl"
-                           target="_blank"
-                           rel="noopener noreferrer nofollow">View &amp; apply</a>
-                    }
-                    @if (User.Identity?.IsAuthenticated == true)
-                    {
-                        <a class="btn btn-secondary"
-                           asp-controller="Applications"
-                           asp-action="Create"
-                           asp-route-company="@job.CompanyName"
-                           asp-route-title="@job.Title"
-                           asp-route-url="@job.ApplyUrl"
-                           asp-route-source="LiveJobs">Track this job</a>
-                        <form method="post" asp-controller="Resume" asp-action="Match" class="inline-form">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="jobTitle" value="@job.Title" />
-                            <input type="hidden" name="companyName" value="@job.CompanyName" />
-                            <input type="hidden" name="jobText" value="@(job.DescriptionSnippet) @(job.Categories) @(job.Levels)" />
-                            <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Jobs", new { tab = JobsPageVm.LiveTab })" />
-                            <button class="btn btn-secondary" type="submit">Match my resume</button>
-                        </form>
-                    }
-                </p>
+                <footer class="live-job-footer">
+                    <div class="live-trust">
+                        <details>
+                            <summary class="live-trust-summary">
+                                @if (trust.IsOfficialGovSource)
+                                {
+                                    <span class="live-trust-badge ok">✓ Official .gov source</span>
+                                }
+                                else if (hasScamReports)
+                                {
+                                    <span class="live-trust-badge warn">⚠ @trust.ApprovedScamReports scam reports</span>
+                                }
+                                else if (!string.IsNullOrWhiteSpace(trust.MatchedCompany))
+                                {
+                                    <span class="live-trust-badge ok">Matched: @trust.MatchedCompany</span>
+                                }
+                                else
+                                {
+                                    <span class="live-trust-badge">No company match</span>
+                                }
+                            </summary>
+                            <div class="live-trust-body">
+                                @if (!string.IsNullOrWhiteSpace(trust.OfficialDomain))
+                                {
+                                    <p class="help">Official domain: @trust.OfficialDomain</p>
+                                }
+                                <ul>
+                                    @foreach (var note in trust.Notes)
+                                    {
+                                        <li>@note</li>
+                                    }
+                                </ul>
+                                <div class="live-trust-links">
+                                    <a class="btn-link" asp-controller="CheckRecruiter" asp-action="Index">Check recruiter</a>
+                                    @if (listing.MatchedCompanyId is int companyId)
+                                    {
+                                        <a class="btn-link" asp-controller="ScamReports" asp-action="Create" asp-route-company="@companyId">Report scam</a>
+                                    }
+                                    else if (!trust.IsOfficialGovSource)
+                                    {
+                                        <a class="btn-link" asp-controller="ScamReports" asp-action="Create">Report scam</a>
+                                    }
+                                </div>
+                            </div>
+                        </details>
+                    </div>
 
-                <aside class="trust-card" aria-label="JobLens trust signals">
-                    <h3>JobLens trust</h3>
-                    @if (trust.IsOfficialGovSource)
-                    {
-                        <p><span class="badge badge-low">Official .gov source</span></p>
-                    }
-                    else if (!string.IsNullOrWhiteSpace(trust.MatchedCompany))
-                    {
-                        <p>
-                            Matched company: <strong>@trust.MatchedCompany</strong>
-                            @if (!string.IsNullOrWhiteSpace(trust.OfficialDomain))
-                            {
-                                <span class="badge badge-low">@trust.OfficialDomain</span>
-                            }
-                        </p>
-                        @if (trust.ApprovedScamReports > 0)
+                    <div class="live-job-actions">
+                        @if (!string.IsNullOrWhiteSpace(job.ApplyUrl))
                         {
-                            <p class="alert alert-error" role="status">@trust.ApprovedScamReports approved scam reports impersonate this company.</p>
+                            <a class="btn btn-primary"
+                               href="@job.ApplyUrl"
+                               target="_blank"
+                               rel="noopener noreferrer nofollow">Apply ↗</a>
                         }
-                    }
-                    else
-                    {
-                        <p class="help">No JobLens company match.</p>
-                    }
-                    <ul class="reason-list">
-                        @foreach (var note in trust.Notes)
+                        @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <li>@note</li>
-                        }
-                    </ul>
-                    <div class="header-actions">
-                        <a class="btn btn-secondary" asp-controller="CheckRecruiter" asp-action="Index">Check a recruiter</a>
-                        @if (listing.MatchedCompanyId is int companyId)
-                        {
-                            <a class="btn btn-secondary" asp-controller="ScamReports" asp-action="Create" asp-route-company="@companyId">Report a scam</a>
-                        }
-                        else if (!trust.IsOfficialGovSource)
-                        {
-                            <a class="btn btn-secondary" asp-controller="ScamReports" asp-action="Create">Report a scam</a>
+                            <a class="btn btn-secondary"
+                               asp-controller="Applications"
+                               asp-action="Create"
+                               asp-route-company="@job.CompanyName"
+                               asp-route-title="@job.Title"
+                               asp-route-url="@job.ApplyUrl"
+                               asp-route-source="LiveJobs">Track</a>
+                            <details class="card-more">
+                                <summary aria-label="More actions">⋯</summary>
+                                <div class="card-more-panel">
+                                    <form method="post" asp-controller="Resume" asp-action="Match">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="jobTitle" value="@job.Title" />
+                                        <input type="hidden" name="companyName" value="@job.CompanyName" />
+                                        <input type="hidden" name="jobText" value="@(job.DescriptionSnippet) @(job.Categories) @(job.Levels)" />
+                                        <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Jobs", new { tab = JobsPageVm.LiveTab })" />
+                                        <button type="submit">Match my resume</button>
+                                    </form>
+                                </div>
+                            </details>
                         }
                     </div>
-                </aside>
+                </footer>
             </article>
         }
     </div>

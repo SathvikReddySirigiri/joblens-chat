@@ -1,6 +1,8 @@
-@model DataCounts
+@model HomePageVm
 @{
     ViewData["Title"] = "Home";
+    var stats = Model.Stats;
+    var redFlag = Model.RedFlagOfWeek;
 }
 
 <section class="hero home-hero" aria-labelledby="home-hero-title">
@@ -15,7 +17,7 @@
                 <button class="btn btn-primary" type="submit">Check</button>
             </form>
             <div class="header-actions home-hero-actions">
-                <a class="btn btn-primary-outline" asp-controller="OfferAnalyzer" asp-action="Index">Analyze an offer</a>
+                <a class="btn btn-secondary" asp-controller="OfferAnalyzer" asp-action="Index">Analyze an offer</a>
                 <a class="btn btn-secondary" asp-controller="Chat" asp-action="Index">Ask JobLens</a>
             </div>
         </div>
@@ -40,105 +42,210 @@
     </div>
 </section>
 
-<section class="stats-strip" aria-label="Live database counts">
-    <div class="stat-card">
-        <p class="stat-label">Scam reports</p>
-        <p class="stat-value">@Model.ScamReports</p>
-    </div>
-    <div class="stat-card">
+@if (Model.StudentWeek is { } student)
+{
+    <section class="card home-panel" aria-labelledby="your-week-title">
+        <h2 id="your-week-title">Your week</h2>
+        <div class="home-week-grid">
+            <div>
+                <h3>Follow-ups due (@student.FollowUpsDueCount)</h3>
+                @if (student.NextFollowUps.Count == 0)
+                {
+                    <p class="help">No follow-ups due right now.</p>
+                }
+                else
+                {
+                    <ul class="home-list">
+                        @foreach (var item in student.NextFollowUps)
+                        {
+                            <li>
+                                <a asp-controller="Applications" asp-action="Details" asp-route-id="@item.ApplicationId">@item.CompanyName · @item.RoleTitle</a>
+                                <span class="help">@item.NextFollowUpDate</span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+            <div>
+                <h3>High-risk applications</h3>
+                @if (student.HighRiskApplications.Count == 0)
+                {
+                    <p class="help">No High risk applications in your pipeline.</p>
+                }
+                else
+                {
+                    <ul class="home-list">
+                        @foreach (var item in student.HighRiskApplications)
+                        {
+                            <li>
+                                <a asp-controller="Applications" asp-action="Details" asp-route-id="@item.ApplicationId">@item.CompanyName · @item.RoleTitle</a>
+                                <span class="badge badge-high">@item.RiskVerdict</span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+            <div>
+                <h3>Resume privacy</h3>
+                @if (!student.HasResume)
+                {
+                    <p class="help"><a asp-controller="Resume" asp-action="Index">Upload your resume</a> for a privacy check before you apply.</p>
+                }
+                else if (student.ResumePrivacyIssueCount is int issues && issues > 0)
+                {
+                    <p><a asp-controller="Resume" asp-action="Index">@issues privacy issue@(issues == 1 ? "" : "s")</a> on your saved resume.</p>
+                }
+                else
+                {
+                    <p class="help">No privacy issues on your saved resume.</p>
+                }
+            </div>
+        </div>
+        <div class="header-actions">
+            <a class="btn btn-primary" asp-controller="Applications" asp-action="Create">Track a job</a>
+            <a class="btn btn-secondary" asp-controller="EmailDrafts" asp-action="Index">Draft email</a>
+            <a class="btn btn-secondary" asp-controller="CheckRecruiter" asp-action="Index">Check recruiter</a>
+        </div>
+    </section>
+}
+else if (Model.ModeratorWeek is { } moderator)
+{
+    <section class="card home-panel" aria-labelledby="mod-week-title">
+        <h2 id="mod-week-title">Moderation</h2>
+        <p>
+            <a asp-controller="ScamReports" asp-action="Index" asp-route-status="Pending">@moderator.PendingReports reports waiting for review</a>
+            · @moderator.NewReportsThisWeek new reports this week
+        </p>
+        <div class="header-actions">
+            <a class="btn btn-primary" asp-controller="ScamReports" asp-action="Index" asp-route-status="Pending">Open queue</a>
+            <a class="btn btn-secondary" asp-controller="Dashboard" asp-action="Index">Open dashboard</a>
+        </div>
+    </section>
+}
+
+<section class="stats-grid" aria-label="Impact stats">
+    <article class="stat-card">
         <p class="stat-label">Approved reports</p>
-        <p class="stat-value">@Model.Approved</p>
-    </div>
-    <div class="stat-card">
-        <p class="stat-label">Companies tracked</p>
-        <p class="stat-value">@Model.Companies</p>
-    </div>
-    <div class="stat-card">
+        <p class="stat-value">@stats.ApprovedReports</p>
+    </article>
+    <article class="stat-card">
+        <p class="stat-label">Companies impersonated</p>
+        <p class="stat-value">@stats.CompaniesImpersonated</p>
+    </article>
+    <article class="stat-card">
+        <p class="stat-label">$ requested by scammers</p>
+        <p class="stat-value">@stats.AmountFormatted</p>
+    </article>
+    <article class="stat-card">
         <p class="stat-label">Recruiter checks run</p>
-        <p class="stat-value">@Model.CheckLogs</p>
-    </div>
+        <p class="stat-value">@stats.RecruiterChecks</p>
+    </article>
 </section>
 
-<section class="section" aria-labelledby="features-title">
-    <h2 id="features-title">What JobLens does</h2>
-    <div class="feature-grid">
-        <a class="feature-card" asp-controller="CheckRecruiter" asp-action="Index">
-            <span class="feature-icon" aria-hidden="true">✉</span>
-            <h3>Check Recruiter</h3>
-            <p>Score a recruiter email against domains, look-alikes, and approved reports.</p>
-        </a>
-        <a class="feature-card" asp-controller="OfferAnalyzer" asp-action="Index">
-            <span class="feature-icon" aria-hidden="true">📄</span>
-            <h3>Offer Analyzer</h3>
-            <p>Paste or upload an offer letter; redacted text is scored for common scam patterns.</p>
-        </a>
-        <a class="feature-card" asp-controller="ScamReports" asp-action="Index">
-            <span class="feature-icon" aria-hidden="true">📋</span>
-            <h3>Scam Reports</h3>
-            <p>Browse community reports; students can submit; moderators approve or reject.</p>
-        </a>
-        <a class="feature-card" asp-controller="Jobs" asp-action="Index">
-            <span class="feature-icon" aria-hidden="true">💼</span>
-            <h3>Jobs</h3>
-            <p>Two tabs: live openings from USAJOBS (or The Muse) with trust signals, and JobLens-curated postings with Smart Search.</p>
-        </a>
-        <a class="feature-card" asp-controller="Dashboard" asp-action="Index">
-            <span class="feature-icon" aria-hidden="true">📊</span>
-            <h3>Scam Insights Dashboard</h3>
-            <p>Live charts for trends, companies, channels, and money requested.</p>
-        </a>
-        <a class="feature-card" asp-controller="Chat" asp-action="Index">
-            <span class="feature-icon" aria-hidden="true">💬</span>
-            <h3>Ask JobLens</h3>
-            <p>Ask questions grounded only in read-only MCP tools over the database.</p>
-        </a>
+<section class="section" aria-labelledby="alerts-title">
+    <div class="section-heading">
+        <h2 id="alerts-title">Latest scam alerts</h2>
+        <a asp-controller="ScamReports" asp-action="Index" asp-route-status="Approved">View all reports →</a>
     </div>
+    @if (Model.LatestAlerts.Count == 0)
+    {
+        <p class="help">No approved reports yet.</p>
+    }
+    else
+    {
+        <div class="alert-grid">
+            @foreach (var alert in Model.LatestAlerts)
+            {
+                <article class="card">
+                    <h3><a asp-controller="ScamReports" asp-action="Details" asp-route-id="@alert.ReportId">@alert.CompanyName</a></h3>
+                    <p class="help">@alert.Domain · @alert.RelativeDate</p>
+                    <div class="chip-row">
+                        <span class="badge badge-neutral">@alert.ScamType</span>
+                        @if (alert.AmountRequestedUsd > 0)
+                        {
+                            <span class="badge badge-medium">@alert.AmountRequestedUsd.ToString("$#,##0.##")</span>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
+    }
 </section>
 
-<section class="section" aria-labelledby="how-title">
-    <h2 id="how-title">How it works</h2>
-    <ol class="how-steps">
-        <li class="card">
-            <span class="step">1</span>
-            <h3>Enter a recruiter or offer</h3>
-            <p>Start with an email, claimed company, or offer text from a student or staff member.</p>
+<section class="section" aria-labelledby="path-title">
+    <h2 id="path-title">Your path to a safe job</h2>
+    <ol class="path-steps">
+        <li class="card path-step">
+            <span class="step" aria-hidden="true">1</span>
+            <h3>Find a job</h3>
+            <p>Browse live openings and JobLens postings with trust signals.</p>
+            <a asp-controller="Jobs" asp-action="Index">Jobs</a>
         </li>
-        <li class="card">
-            <span class="step">2</span>
-            <h3>JobLens checks the evidence</h3>
-            <p>We compare domains, community reports, and live registry panels (RDAP and SEC EDGAR).</p>
+        <li class="card path-step">
+            <span class="step" aria-hidden="true">2</span>
+            <h3>Check it</h3>
+            <p>Score the recruiter email and scan offer text before you reply.</p>
+            <a asp-controller="CheckRecruiter" asp-action="Index">Check Recruiter</a>
+            <span aria-hidden="true"> · </span>
+            <a asp-controller="OfferAnalyzer" asp-action="Index">Offer Analyzer</a>
         </li>
-        <li class="card">
-            <span class="step">3</span>
-            <h3>Clear verdict and next steps</h3>
-            <p>See a risk score, reasons, and what to do before anyone replies or sends money.</p>
+        <li class="card path-step">
+            <span class="step" aria-hidden="true">3</span>
+            <h3>Apply safely</h3>
+            <p>Run a resume privacy check and draft careful outreach.</p>
+            <a asp-controller="Resume" asp-action="Index">My Resume</a>
+            <span aria-hidden="true"> · </span>
+            <a asp-controller="EmailDrafts" asp-action="Index">Email drafts</a>
+        </li>
+        <li class="card path-step">
+            <span class="step" aria-hidden="true">4</span>
+            <h3>Track it</h3>
+            <p>Save roles, follow-ups, and risk signals in one pipeline.</p>
+            <a asp-controller="Applications" asp-action="Index">My Applications</a>
         </li>
     </ol>
 </section>
 
-<section class="section" aria-labelledby="audience-title">
-    <h2 id="audience-title">Built for</h2>
-    <div class="audience-grid">
-        <article class="card">
-            <h3>Students</h3>
-            <p>Check a cold outreach email or sketchy offer before you share documents or deposit a check.</p>
-        </article>
-        <article class="card">
-            <h3>Career-center moderators</h3>
-            <p>Review pending reports, manage reference data, and see trends on the dashboard.</p>
-        </article>
-        <article class="card">
-            <h3>Employers</h3>
-            <p>Understand how impersonation shows up in reports that use your company name as cover.</p>
-        </article>
-    </div>
+<section class="section" aria-labelledby="red-flag-title">
+    <h2 id="red-flag-title">Red flag of the week</h2>
+    <article class="card red-flag-card">
+        <h3>@redFlag.Name</h3>
+        <p>@redFlag.HowItWorks</p>
+        <h4>Watch for</h4>
+        <ul class="reason-list">
+            @foreach (var flag in redFlag.RedFlags)
+            {
+                <li>@flag</li>
+            }
+        </ul>
+        <h4>What to do</h4>
+        <p>@redFlag.WhatToDo</p>
+        <a class="btn btn-secondary"
+           asp-controller="Chat"
+           asp-action="Index"
+           asp-route-q="@redFlag.ChatQuestion">Ask JobLens about this</a>
+    </article>
 </section>
 
-<section class="cta-band" aria-labelledby="cta-title">
-    <h2 id="cta-title">Got a suspicious recruiter message?</h2>
-    <p>Run a check in seconds, or file a report for the career center to review.</p>
-    <div class="header-actions">
-        <a class="btn btn-primary" asp-controller="CheckRecruiter" asp-action="Index">Check Recruiter</a>
-        <a class="btn btn-secondary" asp-controller="ScamReports" asp-action="Create">Report a scam</a>
-    </div>
+<section class="section" aria-labelledby="sources-title">
+    <h2 id="sources-title">Trusted data sources</h2>
+    <ul class="source-chip-row" aria-label="Data sources">
+        <li><a class="source-chip" title="Live domain registration lookups" asp-controller="About" asp-action="Architecture">RDAP</a></li>
+        <li><a class="source-chip" title="SEC company registry matching" asp-controller="About" asp-action="Architecture">SEC EDGAR</a></li>
+        <li><a class="source-chip" title="Federal job openings feed" asp-controller="About" asp-action="Architecture">USAJOBS</a></li>
+        <li><a class="source-chip" title="Grounded chat answers when configured" asp-controller="About" asp-action="Architecture">Azure OpenAI</a></li>
+        <li><a class="source-chip" title="Read-only MCP tools over SQLite" asp-controller="About" asp-action="Architecture">MCP</a></li>
+    </ul>
+</section>
+
+<section class="section" aria-labelledby="centers-title">
+    <h2 id="centers-title">For career centers</h2>
+    <article class="card">
+        <ul class="reason-list">
+            <li>Moderate community scam reports before they appear in student tools.</li>
+            <li>Watch campus trends on the scam insights dashboard.</li>
+            <li>Ask JobLens questions grounded in MCP tools over the shared database.</li>
+        </ul>
+        <a class="btn btn-primary" asp-controller="Dashboard" asp-action="Index">Open dashboard</a>
+    </article>
 </section>

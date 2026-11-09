@@ -1,9 +1,10 @@
 @model JobPostingFormVm
 @{
     ViewData["Title"] = "Edit job posting";
+    ViewData["PageTitle"] = "Edit job posting";
 }
 <section class="page-header">
-    <h1>Edit job posting</h1>
+    <partial name="_PageHeader" />
 </section>
 <section class="card">
     <form method="post" asp-action="Edit" asp-route-id="@Model.PostingId">

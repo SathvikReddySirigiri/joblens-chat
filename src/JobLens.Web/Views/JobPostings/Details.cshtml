@@ -1,16 +1,15 @@
 @model JobPosting
 @{
     ViewData["Title"] = Model.Title;
+    ViewData["PageTitle"] = Model.Title;
+    ViewData["PageSubtitle"] = $"{Model.CompanyName} · {Model.PostedDate}";
     var company = ViewBag.Company as Company;
     var activity = (CompanyActivitySummary)ViewBag.Activity;
 }
 <partial name="_Alerts" />
 <section class="page-header">
-    <div class="page-heading">
-        <h1>@Model.Title</h1>
-        <p class="help">@Model.CompanyName · @Model.PostedDate</p>
-    </div>
-    <div class="form-actions">
+    <partial name="_PageHeader" />
+    <div class="header-actions">
         @if (User.Identity?.IsAuthenticated == true)
         {
             <a class="btn btn-primary"

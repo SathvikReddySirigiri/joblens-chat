@@ -13,4 +13,8 @@ public interface IScamAnalyticsRepository
     Task<IReadOnlyList<Company>> GetCompaniesAsync(CancellationToken cancellationToken);
     Task<int> CountApprovedReportsForDomainAsync(string domain, CancellationToken cancellationToken);
     Task<DataCounts> GetCountsAsync(CancellationToken cancellationToken);
+    Task<(int ApprovedReports, int CompaniesImpersonated, double AmountRequestedUsd, int RecruiterChecks)> GetHomeImpactStatsAsync(CancellationToken cancellationToken);
+    Task<IReadOnlyList<ScamReport>> GetLatestApprovedReportsAsync(int limit, CancellationToken cancellationToken);
+    Task<int> CountPendingReportsAsync(CancellationToken cancellationToken);
+    Task<int> CountReportsSinceAsync(string fromDateInclusive, CancellationToken cancellationToken);
 }

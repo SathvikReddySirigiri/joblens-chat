@@ -6,4 +6,5 @@ public sealed record CheckLog(
     string InputSummary,
     int RiskScore,
     string Verdict,
-    string CreatedAt);
+    string CreatedAt,
+    int? UserId = null);

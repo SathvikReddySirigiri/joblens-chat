@@ -245,6 +245,66 @@ public sealed class ScamAnalyticsRepository : IScamAnalyticsRepository
             reader.GetInt32(10));
     }
 
+    public async Task<(int ApprovedReports, int CompaniesImpersonated, double AmountRequestedUsd, int RecruiterChecks)> GetHomeImpactStatsAsync(
+        CancellationToken cancellationToken)
+    {
+        await using var connection = await OpenAsync(cancellationToken);
+        await using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT
+                (SELECT COUNT(*) FROM ScamReports WHERE Status = 'Approved'),
+                (SELECT COUNT(DISTINCT CompanyId) FROM ScamReports WHERE Status = 'Approved'),
+                (SELECT COALESCE(SUM(AmountRequestedUsd), 0) FROM ScamReports WHERE Status = 'Approved'),
+                (SELECT COUNT(*) FROM CheckLogs WHERE CheckType = 'Recruiter');
+            """;
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        await reader.ReadAsync(cancellationToken);
+        return (
+            reader.GetInt32(0),
+            reader.GetInt32(1),
+            reader.GetDouble(2),
+            reader.GetInt32(3));
+    }
+
+    public async Task<IReadOnlyList<ScamReport>> GetLatestApprovedReportsAsync(int limit, CancellationToken cancellationToken)
+    {
+        var size = Math.Clamp(limit, 1, 20);
+        await using var connection = await OpenAsync(cancellationToken);
+        await using var command = connection.CreateCommand();
+        command.CommandText = $"""
+            {ReportSelect}
+            WHERE r.Status = 'Approved'
+            ORDER BY r.ReportedDate DESC, r.ReportId DESC
+            LIMIT $limit;
+            """;
+        command.Parameters.AddWithValue("$limit", size);
+        await using var reader = await command.ExecuteReaderAsync(cancellationToken);
+        return await ReadReportsAsync(reader, cancellationToken);
+    }
+
+    public async Task<int> CountPendingReportsAsync(CancellationToken cancellationToken)
+    {
+        await using var connection = await OpenAsync(cancellationToken);
+        await using var command = connection.CreateCommand();
+        command.CommandText = "SELECT COUNT(*) FROM ScamReports WHERE Status = 'Pending';";
+        var value = await command.ExecuteScalarAsync(cancellationToken);
+        return Convert.ToInt32(value, System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    public async Task<int> CountReportsSinceAsync(string fromDateInclusive, CancellationToken cancellationToken)
+    {
+        await using var connection = await OpenAsync(cancellationToken);
+        await using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT COUNT(*)
+            FROM ScamReports
+            WHERE ReportedDate >= $fromDate;
+            """;
+        command.Parameters.AddWithValue("$fromDate", Clean(fromDateInclusive));
+        var value = await command.ExecuteScalarAsync(cancellationToken);
+        return Convert.ToInt32(value, System.Globalization.CultureInfo.InvariantCulture);
+    }
+
     private async Task<IReadOnlyList<CategoryCount>> ReadCategoriesAsync(
         SqliteConnection connection,
         string column,

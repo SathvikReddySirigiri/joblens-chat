@@ -1,15 +1,14 @@
 @model Company
 @{
     ViewData["Title"] = Model.Name;
+    ViewData["PageTitle"] = Model.Name;
+    ViewData["PageSubtitle"] = $"{Model.OfficialDomain} · {Model.Industry} · {Model.HqState}";
     var activity = (CompanyActivitySummary)ViewBag.Activity;
 }
 <partial name="_Alerts" />
 <section class="page-header">
-    <div class="page-heading">
-        <h1>@Model.Name</h1>
-        <p class="help">@Model.OfficialDomain · @Model.Industry · @Model.HqState</p>
-    </div>
-    <div class="form-actions">
+    <partial name="_PageHeader" />
+    <div class="header-actions">
         @if (ViewBag.IsModerator == true)
         {
             <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.CompanyId">Edit</a>

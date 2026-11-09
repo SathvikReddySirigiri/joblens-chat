@@ -1,12 +1,11 @@
 @model JobApplicationFormVm
 @{
     ViewData["Title"] = "Edit application";
+    ViewData["PageTitle"] = "Edit application";
+    ViewData["PageSubtitle"] = $"{Model.CompanyName} · {Model.RoleTitle}";
 }
 <section class="page-header">
-    <div class="page-heading">
-        <h1>Edit application</h1>
-        <p class="help">@Model.CompanyName · @Model.RoleTitle</p>
-    </div>
+    <partial name="_PageHeader" />
 </section>
 <section class="card">
     <form method="post" asp-action="Edit">

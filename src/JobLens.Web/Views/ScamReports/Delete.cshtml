@@ -1,11 +1,12 @@
 @model ScamReport
 @{
     ViewData["Title"] = "Delete scam report";
+    ViewData["PageTitle"] = "Delete this report?";
+    ViewData["PageSubtitle"] = $"{Model.RecruiterEmail} · {Model.ScamType} · {Model.ReportedDate}. This cannot be undone.";
 }
 <partial name="_Alerts" />
 <section class="page-header">
-    <h1>Delete this report?</h1>
-    <p class="help">@Model.RecruiterEmail · @Model.ScamType · @Model.ReportedDate. This cannot be undone.</p>
+    <partial name="_PageHeader" />
 </section>
 <section class="card">
     <form method="post" asp-action="DeleteConfirmed" asp-route-id="@Model.ReportId">

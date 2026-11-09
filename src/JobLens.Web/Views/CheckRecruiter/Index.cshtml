@@ -1,7 +1,10 @@
 @model CheckRecruiterPageVm
+@using JobLens.Application.Dtos.Pages
 @{
     ViewData["Title"] = "Check Recruiter";
     var companies = ViewBag.Companies as IReadOnlyList<Company> ?? Array.Empty<Company>();
+    var recent = ViewBag.RecentChecks as IReadOnlyList<RecentCheckItem> ?? Array.Empty<RecentCheckItem>();
+    var isSignedIn = ViewBag.IsSignedIn as bool? == true;
     var result = Model.Result;
     string Mark(string tone) => tone switch
     {
@@ -39,6 +42,35 @@
         <button class="btn btn-primary" type="submit">Check</button>
     </form>
 </section>
+@if (isSignedIn)
+{
+    <section class="card" aria-labelledby="recent-checks-title">
+        <h2 id="recent-checks-title">Recently checked</h2>
+        @if (recent.Count == 0)
+        {
+            <p class="help">Your last five recruiter checks will appear here.</p>
+        }
+        else
+        {
+            <ul class="home-list">
+                @foreach (var check in recent)
+                {
+                    var badge = check.Verdict switch
+                    {
+                        "HIGH" => "badge-high",
+                        "MEDIUM" => "badge-medium",
+                        _ => "badge-low",
+                    };
+                    <li>
+                        <span>@check.Domain</span>
+                        <span class="badge @badge">@check.Verdict</span>
+                        <span class="help">@check.CreatedAt</span>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+}
 @if (result is not null)
 {
     <section class="card verdict-card" aria-labelledby="verdict-title">
@@ -137,7 +169,22 @@
             <p>Do not reply or send money. Report the message and tell the career center.</p>
         }
         <div class="form-actions">
-            <a class="btn btn-primary" asp-controller="ScamReports" asp-action="Create" asp-route-email="@result.Email" asp-route-company="@Model.CompanyId">Report this scam</a>
+            @if (result.Verdict is "HIGH" or "MEDIUM")
+            {
+                var companyId = Model.CompanyId ?? result.MatchedCompanyId;
+                var reportUrl = Url.Action("Create", "ScamReports", new { email = result.Email, company = companyId });
+                if (isSignedIn)
+                {
+                    <a class="btn btn-primary" href="@reportUrl">Report this recruiter</a>
+                }
+                else
+                {
+                    <a class="btn btn-primary"
+                       asp-controller="Account"
+                       asp-action="Login"
+                       asp-route-returnUrl="@reportUrl">Report this recruiter</a>
+                }
+            }
             <a class="btn btn-secondary" asp-controller="Chat" asp-action="Index">Ask JobLens</a>
         </div>
     </section>

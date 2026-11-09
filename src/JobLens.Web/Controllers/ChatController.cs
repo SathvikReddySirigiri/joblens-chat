@@ -45,9 +45,15 @@ public sealed class ChatController(ChatOrchestrator orchestrator, ILogger<ChatCo
     ];
 
     [HttpGet]
-    public IActionResult Index()
+    public IActionResult Index(string? q)
     {
-        return View(BuildModel());
+        var model = BuildModel();
+        if (!string.IsNullOrWhiteSpace(q))
+        {
+            model.Question = q.Trim();
+        }
+
+        return View(model);
     }
 
     [HttpPost]

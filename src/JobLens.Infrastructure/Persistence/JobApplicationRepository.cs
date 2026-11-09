@@ -70,6 +70,28 @@ public sealed class JobApplicationRepository : IJobApplicationRepository
         return new PageResult<JobApplication>(items, Math.Max(page, 1), limit, total);
     }
 
+    public async Task<IReadOnlyList<JobApplication>> ListForExportAsync(
+        int userId,
+        string? status,
+        string? search,
+        CancellationToken cancellationToken)
+    {
+        var term = Clean(search);
+        var statusFilter = string.IsNullOrWhiteSpace(status) ? "" : status.Trim();
+        await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);
+        await using var command = connection.CreateCommand();
+        command.CommandText = $"""
+            {SelectSql}
+            WHERE UserId = $userId
+              AND ($status = '' OR Status = $status)
+              AND ($search = '' OR CompanyName LIKE $like OR RoleTitle LIKE $like OR IFNULL(Notes, '') LIKE $like)
+            ORDER BY UpdatedAt DESC, ApplicationId DESC
+            LIMIT 2000;
+            """;
+        BindBrowseFilters(command, userId, statusFilter, term);
+        return await ReadListAsync(command, cancellationToken);
+    }
+
     public async Task<JobApplication?> GetByIdForUserAsync(int applicationId, int userId, CancellationToken cancellationToken)
     {
         await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);

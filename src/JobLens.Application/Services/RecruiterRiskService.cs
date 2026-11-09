@@ -46,6 +46,7 @@ public sealed class RecruiterRiskService(IScamAnalyticsRepository repository, IR
         var score = 10;
         string? matchedCompany = null;
         string? officialDomain = null;
+        int? matchedCompanyId = null;
         var matchedRule = false;
 
         var official = companies.FirstOrDefault(company => IsOfficial(domain, company.OfficialDomain));
@@ -53,6 +54,7 @@ public sealed class RecruiterRiskService(IScamAnalyticsRepository repository, IR
         {
             score -= 40;
             matchedCompany = official.Name;
+            matchedCompanyId = official.CompanyId;
             officialDomain = official.OfficialDomain;
             reasons.Add(new RiskReason("good", $"Matches the official domain of {official.Name} ({official.OfficialDomain})"));
             matchedRule = true;
@@ -73,6 +75,7 @@ public sealed class RecruiterRiskService(IScamAnalyticsRepository repository, IR
                 score += 40;
                 isLookalike = true;
                 matchedCompany = lookalike.Company.Name;
+                matchedCompanyId = lookalike.Company.CompanyId;
                 officialDomain = lookalike.Company.OfficialDomain;
                 reasons.Add(new RiskReason("bad", $"Look-alike of {lookalike.Company.OfficialDomain}"));
                 matchedRule = true;
@@ -144,7 +147,8 @@ public sealed class RecruiterRiskService(IScamAnalyticsRepository repository, IR
             approved,
             reasons,
             liveRdap,
-            edgarResult);
+            edgarResult,
+            matchedCompanyId);
     }
 
     internal static (int Points, RiskReason? Reason) RdapAdjustment(

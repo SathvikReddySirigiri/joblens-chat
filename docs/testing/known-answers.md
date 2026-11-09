@@ -3,6 +3,7 @@
 ## Counts
 - Companies: 20 · ScamReports: 120 · Approved 85 / Pending 23 / Rejected 12
 - Recruiters: 130 · JobPostings: 70 · InterviewReviews: 50 · CheckLogs: 100 · Users: 5
+- JobApplications: 12 (seeded) · Resumes: 0
 - Total money requested: $94,026.00 · Average per report: $783.55 (all 120 reports, including $0 ones)
 
 ## By scam type

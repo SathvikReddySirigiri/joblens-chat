@@ -25,8 +25,8 @@ public sealed class CheckLogRepository : ICheckLogRepository
         await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);
         await using var command = connection.CreateCommand();
         command.CommandText = """
-            INSERT INTO CheckLogs (CheckType, InputSummary, RiskScore, Verdict, CreatedAt)
-            VALUES ($type, $summary, $score, $verdict, $createdAt);
+            INSERT INTO CheckLogs (CheckType, InputSummary, RiskScore, Verdict, CreatedAt, UserId)
+            VALUES ($type, $summary, $score, $verdict, $createdAt, $userId);
             SELECT last_insert_rowid();
             """;
         command.Parameters.AddWithValue("$type", log.CheckType);
@@ -34,8 +34,9 @@ public sealed class CheckLogRepository : ICheckLogRepository
         command.Parameters.AddWithValue("$score", log.RiskScore);
         command.Parameters.AddWithValue("$verdict", log.Verdict);
         command.Parameters.AddWithValue("$createdAt", log.CreatedAt);
-        var id = await command.ExecuteScalarAsync(cancellationToken);
-        return Convert.ToInt32(id, System.Globalization.CultureInfo.InvariantCulture);
+        command.Parameters.AddWithValue("$userId", log.UserId is int id ? id : DBNull.Value);
+        var idValue = await command.ExecuteScalarAsync(cancellationToken);
+        return Convert.ToInt32(idValue, System.Globalization.CultureInfo.InvariantCulture);
     }
 
     public async Task<IReadOnlyList<VerdictMonthCount>> CountsByVerdictPerMonthAsync(CancellationToken cancellationToken)
@@ -59,17 +60,26 @@ public sealed class CheckLogRepository : ICheckLogRepository
         return rows;
     }
 
-    public async Task<IReadOnlyList<CheckLog>> RecentChecksAsync(int limit, CancellationToken cancellationToken)
+    public Task<IReadOnlyList<CheckLog>> RecentChecksAsync(int limit, CancellationToken cancellationToken) =>
+        RecentCoreAsync(userId: null, limit, cancellationToken);
+
+    public Task<IReadOnlyList<CheckLog>> RecentForUserAsync(int userId, int limit, CancellationToken cancellationToken) =>
+        RecentCoreAsync(userId, limit, cancellationToken);
+
+    private async Task<IReadOnlyList<CheckLog>> RecentCoreAsync(int? userId, int limit, CancellationToken cancellationToken)
     {
         var size = Math.Clamp(limit, 1, 20);
         await using var connection = await SqliteConnections.OpenAsync(_connectionString, cancellationToken);
         await using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT CheckId, CheckType, InputSummary, RiskScore, Verdict, CreatedAt
+            SELECT CheckId, CheckType, InputSummary, RiskScore, Verdict, CreatedAt, UserId
             FROM CheckLogs
+            WHERE ($filterUser = 0 OR UserId = $userId)
             ORDER BY CreatedAt DESC, CheckId DESC
             LIMIT $limit;
             """;
+        command.Parameters.AddWithValue("$filterUser", userId.HasValue ? 1 : 0);
+        command.Parameters.AddWithValue("$userId", userId ?? 0);
         command.Parameters.AddWithValue("$limit", size);
         var rows = new List<CheckLog>();
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
@@ -81,7 +91,8 @@ public sealed class CheckLogRepository : ICheckLogRepository
                 reader.GetString(2),
                 reader.GetInt32(3),
                 reader.GetString(4),
-                reader.GetString(5)));
+                reader.GetString(5),
+                reader.IsDBNull(6) ? null : reader.GetInt32(6)));
         }
 
         return rows;

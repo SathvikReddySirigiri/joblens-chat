@@ -21,19 +21,15 @@ public sealed class DomainTools(IRdapClient rdap, ILogger<DomainTools> logger)
         CancellationToken cancellationToken)
     {
         const string tool = "lookup_domain_registration";
+        var timer = McpToolLog.Start();
         if (!DomainNormalizer.TryNormalizeDomain(domain, out var host, out var error))
         {
-            logger.LogInformation("MCP tool {Tool} domain {Domain} found {Found} cache {FromCache}", tool, domain, false, false);
+            McpToolLog.Information(logger, tool, new { domain }, timer);
             return error;
         }
 
         var result = await rdap.LookupAsync(host, cancellationToken);
-        logger.LogInformation(
-            "MCP tool {Tool} domain {Domain} found {Found} cache {FromCache}",
-            tool,
-            host,
-            result.Found,
-            result.FromCache);
+        McpToolLog.Information(logger, tool, new { domain = host }, timer);
         return JsonSerializer.Serialize(result, JsonOptions);
     }
 }

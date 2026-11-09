@@ -1,9 +1,10 @@
 @model InterviewReviewFormVm
 @{
     ViewData["Title"] = "Edit interview review";
+    ViewData["PageTitle"] = "Edit interview review";
 }
 <section class="page-header">
-    <h1>Edit interview review</h1>
+    <partial name="_PageHeader" />
 </section>
 <section class="card">
     <form method="post" asp-action="Edit" asp-route-id="@Model.ReviewId">

@@ -1,16 +1,15 @@
 @model ScamReport
 @{
     ViewData["Title"] = "Scam report";
+    ViewData["PageTitle"] = $"Report {Model.ReportId}";
+    ViewData["PageSubtitle"] = $"{Model.CompanyName} · {Model.ReportedDate}";
     var recruiter = ViewBag.Recruiter as Recruiter;
     var related = ViewBag.Related as IReadOnlyList<ScamReport> ?? Array.Empty<ScamReport>();
 }
 <partial name="_Alerts" />
 <section class="page-header">
-    <div class="page-heading">
-        <h1>Report @Model.ReportId</h1>
-        <p class="help">@Model.CompanyName · @Model.ReportedDate</p>
-    </div>
-    <div class="form-actions">
+    <partial name="_PageHeader" />
+    <div class="header-actions">
         @if (ViewBag.CanEdit == true)
         {
             <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.ReportId">Edit</a>

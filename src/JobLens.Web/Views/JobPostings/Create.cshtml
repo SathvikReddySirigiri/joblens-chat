@@ -1,9 +1,10 @@
 @model JobPostingFormVm
 @{
     ViewData["Title"] = "Add job posting";
+    ViewData["PageTitle"] = "Add job posting";
 }
 <section class="page-header">
-    <h1>Add job posting</h1>
+    <partial name="_PageHeader" />
 </section>
 <section class="card">
     <form method="post">

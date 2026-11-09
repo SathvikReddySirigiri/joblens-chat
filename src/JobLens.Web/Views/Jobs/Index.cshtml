@@ -5,20 +5,20 @@
     ViewData["PageSubtitle"] = "Live openings and JobLens-curated postings — every listing comes with scam checks.";
     var liveSelected = Model.IsLiveTab;
 }
-<section class="page-header jobs-page-header">
+<section class="page-header">
     <partial name="_PageHeader" />
 </section>
 
 <div class="jobs-tabs" data-jobs-tabs>
     <div class="tab-list" role="tablist" aria-label="Jobs sources">
-        <a class="btn @(liveSelected ? "btn-primary" : "btn-secondary")"
+        <a class="tab"
            role="tab"
            id="tab-live"
            href="@Url.Action("Index", "Jobs", new { tab = JobsPageVm.LiveTab })"
            aria-selected="@(liveSelected ? "true" : "false")"
            aria-controls="panel-live"
            tabindex="@(liveSelected ? "0" : "-1")">Live openings</a>
-        <a class="btn @(!liveSelected ? "btn-primary" : "btn-secondary")"
+        <a class="tab"
            role="tab"
            id="tab-joblens"
            href="@Url.Action("Index", "Jobs", new { tab = JobsPageVm.JobLensTab })"

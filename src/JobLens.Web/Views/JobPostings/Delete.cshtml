@@ -1,11 +1,12 @@
 @model JobPosting
 @{
     ViewData["Title"] = "Delete job posting";
+    ViewData["PageTitle"] = "Delete this posting?";
+    ViewData["PageSubtitle"] = $"{Model.Title} · {Model.CompanyName} · {Model.PostedDate}. This cannot be undone.";
 }
 <partial name="_Alerts" />
 <section class="page-header">
-    <h1>Delete this posting?</h1>
-    <p class="help">@Model.Title · @Model.CompanyName · @Model.PostedDate. This cannot be undone.</p>
+    <partial name="_PageHeader" />
 </section>
 <section class="card">
     <form method="post" asp-action="DeleteConfirmed" asp-route-id="@Model.PostingId">

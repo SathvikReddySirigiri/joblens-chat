@@ -1,6 +1,8 @@
 @model ChatViewModel
 @{
     ViewData["Title"] = "Ask JobLens";
+    ViewData["PageTitle"] = "Ask JobLens";
+    ViewData["PageSubtitle"] = "Ask questions grounded only in read-only MCP tools over the JobLens database.";
     var toolDescriptions = new Dictionary<string, string>(StringComparer.Ordinal)
     {
         ["get_domain_report"] = "Reports filed for one exact recruiter domain.",
@@ -16,13 +18,15 @@
     };
 }
 
-<div class="chat-layout">
-    <section class="chat-main" aria-labelledby="chat-title">
-        <header class="chat-header">
-            <h1 id="chat-title">Ask JobLens</h1>
-            <p class="mode-badge @(Model.IsAiMode ? "badge-low" : "badge-medium")">@Model.ProviderLabel</p>
-        </header>
+<section class="page-header">
+    <partial name="_PageHeader" />
+    <div class="header-actions">
+        <p class="mode-badge @(Model.IsAiMode ? "badge-low" : "badge-medium")">@Model.ProviderLabel</p>
+    </div>
+</section>
 
+<div class="chat-layout">
+    <section class="chat-main">
         <div class="transcript" aria-live="polite">
             @if (Model.Turns.Count == 0)
             {

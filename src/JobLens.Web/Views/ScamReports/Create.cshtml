@@ -1,10 +1,11 @@
 @model ScamReportFormVm
 @{
     ViewData["Title"] = "Add scam report";
+    ViewData["PageTitle"] = "Add scam report";
+    ViewData["PageSubtitle"] = "New reports start as Pending.";
 }
 <section class="page-header">
-    <h1>Add scam report</h1>
-    <p class="help">New reports start as Pending.</p>
+    <partial name="_PageHeader" />
 </section>
 <section class="card">
     <form method="post">

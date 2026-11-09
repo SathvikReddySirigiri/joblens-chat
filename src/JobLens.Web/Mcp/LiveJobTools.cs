@@ -30,6 +30,7 @@ public sealed class LiveJobTools(
         CancellationToken cancellationToken = default)
     {
         const string tool = "search_live_jobs";
+        var timer = McpToolLog.Start();
         var page = await liveJobs.SearchAsync(
             new LiveJobsQuery(
                 keyword,
@@ -67,14 +68,11 @@ public sealed class LiveJobTools(
             },
         }).ToList();
 
-        logger.LogInformation(
-            "MCP tool {Tool} provider {Provider} keyword {Keyword} location {Location} category {Category} rows {RowCount}",
+        McpToolLog.Information(
+            logger,
             tool,
-            provider.Name,
-            keyword,
-            location,
-            category,
-            items.Count);
+            new { keyword, location, category, level, hiringPath, remoteOnly, provider = provider.Name },
+            timer);
 
         return JsonSerializer.Serialize(new
         {

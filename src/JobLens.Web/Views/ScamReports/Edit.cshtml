@@ -1,10 +1,11 @@
 @model ScamReportFormVm
 @{
     ViewData["Title"] = "Edit scam report";
+    ViewData["PageTitle"] = "Edit scam report";
+    ViewData["PageSubtitle"] = "Status stays as it is. The domain is taken from the email again.";
 }
 <section class="page-header">
-    <h1>Edit scam report</h1>
-    <p class="help">Status stays as it is. The domain is taken from the email again.</p>
+    <partial name="_PageHeader" />
 </section>
 <section class="card">
     <form method="post" asp-action="Edit" asp-route-id="@Model.ReportId">

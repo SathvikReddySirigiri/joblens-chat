@@ -1,16 +1,15 @@
 @model Recruiter
 @{
     ViewData["Title"] = Model.Email;
+    ViewData["PageTitle"] = Model.Email;
+    ViewData["PageSubtitle"] = $"Domain {Model.Domain} · first seen {Model.FirstSeen}";
     var verified = !string.IsNullOrEmpty(Model.CompanyOfficialDomain)
         && string.Equals(Model.Domain, Model.CompanyOfficialDomain, StringComparison.OrdinalIgnoreCase);
 }
 <partial name="_Alerts" />
 <section class="page-header">
-    <div class="page-heading">
-        <h1>@Model.Email</h1>
-        <p class="help">Domain @Model.Domain · first seen @Model.FirstSeen</p>
-    </div>
-    <div class="form-actions">
+    <partial name="_PageHeader" />
+    <div class="header-actions">
         @if (ViewBag.IsModerator == true)
         {
             <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@Model.RecruiterId">Edit</a>

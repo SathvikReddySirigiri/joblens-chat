@@ -1,11 +1,12 @@
 @model RegisterFormVm
 @{
     ViewData["Title"] = "Register";
+    ViewData["PageTitle"] = "Create a student account";
+    ViewData["PageSubtitle"] = "Registration creates a Student role. Moderators are provisioned by staff, not through this form.";
 }
 
 <section class="page-header">
-    <h1>Create a student account</h1>
-    <p class="help">Registration creates a Student role. Moderators are provisioned by staff, not through this form.</p>
+    <partial name="_PageHeader" />
 </section>
 
 <section class="card auth-card">

@@ -40,13 +40,15 @@
 }
 
 <section class="card">
-    <form method="post" asp-controller="Jobs" asp-action="Ask" class="toolbar" aria-label="Plain English search">
+    <form method="post" asp-controller="Jobs" asp-action="Ask" class="filter-bar" aria-label="Plain English search">
         <div class="field">
             <label for="q">Ask in plain English</label>
             <input id="q" name="q" maxlength="200" value="@ViewBag.Question" />
             <p class="help">For example: paid remote internships in FL over $20 an hour, skip companies with scam reports.</p>
         </div>
-        <button class="btn btn-primary" type="submit">Search</button>
+        <div class="filter-actions">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
     </form>
     @if (ViewBag.Asked as bool? == true)
     {
@@ -84,7 +86,7 @@
     }
 </section>
 <section class="card">
-    <form method="get" asp-controller="Jobs" asp-action="Index" class="toolbar" aria-label="Filter postings">
+    <form method="get" asp-controller="Jobs" asp-action="Index" class="filter-bar" aria-label="Filter postings">
         <input type="hidden" name="tab" value="@JobsPageVm.JobLensTab" />
         <div class="field">
             <label for="search">Search</label>
@@ -155,7 +157,7 @@
             <label for="state">State</label>
             <input id="state" name="state" maxlength="2" value="@ViewBag.State" />
         </div>
-        <div class="form-actions">
+        <div class="filter-actions">
             <button class="btn btn-primary" type="submit">Apply</button>
             <a class="btn btn-secondary" asp-controller="Jobs" asp-action="Index" asp-route-tab="@JobsPageVm.JobLensTab">Clear</a>
         </div>
@@ -170,7 +172,7 @@
 }
 else
 {
-    <div class="table-wrap">
+    <div class="table-wrap joblens-table-wrap">
         <table class="data-table">
             <thead>
                 <tr>
@@ -224,6 +226,74 @@ else
                 }
             </tbody>
         </table>
+    </div>
+
+    <div class="live-job-list joblens-card-list" aria-label="JobLens postings">
+        @foreach (var posting in page.Items)
+        {
+            <article class="card live-job-card joblens-row-card">
+                <header class="live-job-header">
+                    <h2 class="live-job-title">@posting.Title</h2>
+                    <p class="live-meta">
+                        <span>@posting.CompanyName</span>
+                        @if (!string.IsNullOrWhiteSpace(posting.Location))
+                        {
+                            <span>· @posting.Location</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(posting.State))
+                        {
+                            <span>· @posting.State</span>
+                        }
+                        <span>· Posted @posting.PostedDate</span>
+                    </p>
+                </header>
+                <div class="chip-row">
+                    @if (posting.IsRemote)
+                    {
+                        <span class="badge badge-neutral">Remote</span>
+                    }
+                    <span class="badge badge-neutral">@(posting.IsPaid && posting.PayRatePerHour is not null ? posting.PayRatePerHour.Value.ToString("$#,##0.00") + "/hr" : "Unpaid")</span>
+                    @if (posting.HasApprovedScamReports)
+                    {
+                        <span class="badge badge-high">Scam warning</span>
+                    }
+                </div>
+                <footer class="live-job-footer">
+                    <div class="live-trust">
+                        @if (posting.HasApprovedScamReports)
+                        {
+                            <span class="live-trust-badge warn">⚠ Scam reports on file</span>
+                        }
+                        else
+                        {
+                            <span class="live-trust-badge ok">JobLens curated</span>
+                        }
+                    </div>
+                    <div class="live-job-actions">
+                        <a class="btn btn-primary" asp-controller="JobPostings" asp-action="Details" asp-route-id="@posting.PostingId">Details</a>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <a class="btn btn-secondary"
+                               asp-controller="Applications"
+                               asp-action="Create"
+                               asp-route-company="@posting.CompanyName"
+                               asp-route-title="@posting.Title"
+                               asp-route-source="JobLensPosting">Track</a>
+                        }
+                        @if (ViewBag.IsModerator == true)
+                        {
+                            <details class="card-more">
+                                <summary aria-label="More actions">⋯</summary>
+                                <div class="card-more-panel">
+                                    <a asp-controller="JobPostings" asp-action="Edit" asp-route-id="@posting.PostingId">Edit</a>
+                                    <a asp-controller="JobPostings" asp-action="Delete" asp-route-id="@posting.PostingId">Delete</a>
+                                </div>
+                            </details>
+                        }
+                    </div>
+                </footer>
+            </article>
+        }
     </div>
     <partial name="_Pager" />
 }

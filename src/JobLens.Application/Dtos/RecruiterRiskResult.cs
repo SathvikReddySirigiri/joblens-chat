@@ -10,4 +10,5 @@ public sealed record RecruiterRiskResult(
     int ApprovedReportCount,
     IReadOnlyList<RiskReason> Reasons,
     RdapResult? Rdap = null,
-    EdgarResult? Edgar = null);
+    EdgarResult? Edgar = null,
+    int? MatchedCompanyId = null);

@@ -1,11 +1,12 @@
 @model Recruiter
 @{
     ViewData["Title"] = "Delete recruiter";
+    ViewData["PageTitle"] = "Delete this recruiter?";
+    ViewData["PageSubtitle"] = $"{Model.Email} · {Model.Domain}. Related scam reports stay in the report list.";
 }
 <partial name="_Alerts" />
 <section class="page-header">
-    <h1>Delete this recruiter?</h1>
-    <p class="help">@Model.Email · @Model.Domain. Related scam reports stay in the report list.</p>
+    <partial name="_PageHeader" />
 </section>
 <section class="card">
     <form method="post" asp-action="DeleteConfirmed" asp-route-id="@Model.RecruiterId">

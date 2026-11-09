@@ -12,6 +12,12 @@ public interface IJobApplicationRepository
         int page,
         CancellationToken cancellationToken);
 
+    Task<IReadOnlyList<JobApplication>> ListForExportAsync(
+        int userId,
+        string? status,
+        string? search,
+        CancellationToken cancellationToken);
+
     Task<JobApplication?> GetByIdForUserAsync(int applicationId, int userId, CancellationToken cancellationToken);
 
     Task<IReadOnlyList<JobApplicationStatusCount>> CountByStatusAsync(int userId, CancellationToken cancellationToken);

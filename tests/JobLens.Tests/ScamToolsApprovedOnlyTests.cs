@@ -132,5 +132,18 @@ public sealed class ScamToolsApprovedOnlyTests
 
         public Task<DataCounts> GetCountsAsync(CancellationToken cancellationToken) =>
             throw new NotSupportedException();
+
+        public Task<(int ApprovedReports, int CompaniesImpersonated, double AmountRequestedUsd, int RecruiterChecks)> GetHomeImpactStatsAsync(
+            CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<IReadOnlyList<ScamReport>> GetLatestApprovedReportsAsync(int limit, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<int> CountPendingReportsAsync(CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public Task<int> CountReportsSinceAsync(string fromDateInclusive, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
     }
 }

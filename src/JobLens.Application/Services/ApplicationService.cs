@@ -179,6 +179,31 @@ public sealed class ApplicationService(
         return deleted ? ServiceResult.Ok(applicationId) : ServiceResult.Fail("Application not found.");
     }
 
+    public async Task<string> ExportCsvAsync(
+        ActingUser actor,
+        string? status,
+        string? search,
+        CancellationToken cancellationToken)
+    {
+        var rows = await applications.ListForExportAsync(actor.UserId, status, search, cancellationToken);
+        var headers = new[]
+        {
+            "Company", "Role", "Status", "Source", "AppliedDate", "NextFollowUp", "RiskVerdict", "JobUrl",
+        };
+        var csvRows = rows.Select(row => (IReadOnlyList<string?>)new string?[]
+        {
+            row.CompanyName,
+            row.RoleTitle,
+            row.Status,
+            row.Source,
+            row.AppliedDate,
+            row.NextFollowUpDate,
+            row.RiskVerdict,
+            row.JobUrl,
+        });
+        return CsvExport.Build(headers, csvRows);
+    }
+
     internal static JobApplicationPipeline BuildPipeline(IReadOnlyList<JobApplicationStatusCount> counts)
     {
         var lookup = counts.ToDictionary(row => row.Status, row => row.Count, StringComparer.OrdinalIgnoreCase);

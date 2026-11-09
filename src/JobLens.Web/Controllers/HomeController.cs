@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using JobLens.Application.Services;
+using JobLens.Web.Security;
 using JobLens.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,8 @@ public sealed class HomeController(HomeService home, IWebHostEnvironment environ
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
         ViewData["Title"] = "Home";
-        return View(await home.GetCountsAsync(cancellationToken));
+        var actor = ActingUserFactory.TryCreate(User);
+        return View(await home.GetPageAsync(actor, cancellationToken));
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

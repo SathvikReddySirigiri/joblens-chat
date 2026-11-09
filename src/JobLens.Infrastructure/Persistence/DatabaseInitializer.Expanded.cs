@@ -53,6 +53,14 @@ public static partial class DatabaseInitializer
             cancellationToken);
     }
 
+    private static Task EnsureCheckLogUserIdAsync(SqliteConnection connection, CancellationToken cancellationToken) =>
+        AddColumnIfMissingAsync(
+            connection,
+            "CheckLogs",
+            "UserId",
+            "ALTER TABLE CheckLogs ADD COLUMN UserId INTEGER NULL REFERENCES Users(UserId);",
+            cancellationToken);
+
     private static async Task AddColumnIfMissingAsync(
         SqliteConnection connection,
         string table,

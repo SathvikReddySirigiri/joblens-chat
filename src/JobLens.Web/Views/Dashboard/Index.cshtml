@@ -1,6 +1,8 @@
 @model JobLens.Application.Dtos.Dashboard.DashboardData
 @{
     ViewData["Title"] = "Scam Insights Dashboard";
+    ViewData["PageTitle"] = "Scam Insights Dashboard";
+    ViewData["PageSubtitle"] = "Totals and trends from the synthetic scam reports, job postings, and recruiter checks.";
     var updated = DateTime.UtcNow;
     string Money(double value) => Math.Abs(value % 1) < 0.001
         ? value.ToString("$#,##0")
@@ -9,11 +11,7 @@
 }
 
 <section class="page-header">
-    <div class="page-heading">
-        <h1>Scam Insights Dashboard</h1>
-        <p class="help">Totals and trends from the synthetic scam reports, job postings, and recruiter checks.</p>
-        <p class="help">Last updated <time id="dashboard-updated" datetime="@updated.ToString("yyyy-MM-ddTHH:mm:ssZ")">@updated.ToString("yyyy-MM-dd HH:mm") UTC</time></p>
-    </div>
+    <partial name="_PageHeader" />
     <div class="header-actions">
         <label for="dashboard-range">Date range</label>
         <select id="dashboard-range">
@@ -24,6 +22,7 @@
         <button type="button" class="btn btn-secondary" id="dashboard-refresh">Refresh</button>
     </div>
 </section>
+<p class="help">Last updated <time id="dashboard-updated" datetime="@updated.ToString("yyyy-MM-ddTHH:mm:ssZ")">@updated.ToString("yyyy-MM-dd HH:mm") UTC</time></p>
 <p class="help">Live from the JobLens database — changes on the Scam Reports page appear here immediately.</p>
 <div id="dashboard-error" class="alert alert-error" hidden>Couldn't load dashboard data</div>
 
@@ -59,40 +58,40 @@
 }
 else if (ViewBag.TotalApplications is int totalApplications)
 {
-    <section class="kpi-grid" aria-label="Moderator application totals">
-        <article class="card kpi">
-            <h2>Applications tracked</h2>
-            <p class="kpi-value">@totalApplications</p>
+    <section class="stats-grid" aria-label="Moderator application totals">
+        <article class="stat-card">
+            <p class="stat-label">Applications tracked</p>
+            <p class="stat-value">@totalApplications</p>
             <p class="help">Site-wide count across all students.</p>
         </article>
     </section>
 }
 
-<section class="kpi-grid" aria-label="Key figures">
-    <article class="card kpi">
-        <h2>Total reports</h2>
-        <p class="kpi-value" id="kpi-total">@Model.Kpis.TotalReports</p>
+<section class="stats-grid" aria-label="Key figures">
+    <article class="stat-card">
+        <p class="stat-label">Total reports</p>
+        <p class="stat-value" id="kpi-total">@Model.Kpis.TotalReports</p>
     </article>
-    <article class="card kpi">
-        <h2>Pending review</h2>
-        <p class="kpi-value"><a id="kpi-pending" asp-controller="ScamReports" asp-action="Index" asp-route-status="Pending">@Model.Kpis.PendingReports</a></p>
+    <article class="stat-card">
+        <p class="stat-label">Pending review</p>
+        <p class="stat-value"><a id="kpi-pending" asp-controller="ScamReports" asp-action="Index" asp-route-status="Pending">@Model.Kpis.PendingReports</a></p>
     </article>
-    <article class="card kpi">
-        <h2>Approval rate</h2>
-        <p class="kpi-value" id="kpi-approval">@Percent(Model.Kpis.ApprovalRate)</p>
+    <article class="stat-card">
+        <p class="stat-label">Approval rate</p>
+        <p class="stat-value" id="kpi-approval">@Percent(Model.Kpis.ApprovalRate)</p>
         <p class="help">Approved divided by approved plus rejected.</p>
     </article>
-    <article class="card kpi">
-        <h2>Money requested</h2>
-        <p class="kpi-value" id="kpi-money">@Money(Model.Kpis.TotalAmountRequestedUsd)</p>
+    <article class="stat-card">
+        <p class="stat-label">Money requested</p>
+        <p class="stat-value" id="kpi-money">@Money(Model.Kpis.TotalAmountRequestedUsd)</p>
     </article>
-    <article class="card kpi">
-        <h2>Checks this month</h2>
-        <p class="kpi-value" id="kpi-checks">@Model.Kpis.ChecksThisMonth</p>
+    <article class="stat-card">
+        <p class="stat-label">Checks this month</p>
+        <p class="stat-value" id="kpi-checks">@Model.Kpis.ChecksThisMonth</p>
     </article>
-    <article class="card kpi">
-        <h2>High-risk checks</h2>
-        <p class="kpi-value" id="kpi-high">@Percent(Model.Kpis.HighRiskCheckPct)</p>
+    <article class="stat-card">
+        <p class="stat-label">High-risk checks</p>
+        <p class="stat-value" id="kpi-high">@Percent(Model.Kpis.HighRiskCheckPct)</p>
         <p class="help">HIGH verdicts divided by all checks in this range.</p>
     </article>
 </section>

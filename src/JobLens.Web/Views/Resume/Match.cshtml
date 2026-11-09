@@ -1,29 +1,21 @@
 @model ResumeMatchResult
 @{
     ViewData["Title"] = "Resume match";
+    ViewData["PageTitle"] = "Resume match";
     var title = ViewBag.JobTitle as string;
     var company = ViewBag.CompanyName as string;
     var returnUrl = ViewBag.ReturnUrl as string ?? Url.Action("Index");
+    ViewData["PageSubtitle"] = !string.IsNullOrWhiteSpace(title) || !string.IsNullOrWhiteSpace(company)
+        ? $"{title ?? "Role"}{(string.IsNullOrWhiteSpace(company) ? "" : " · " + company)}"
+        : "Skills from your saved resume compared to this job description.";
 }
 <section class="page-header">
-    <div class="page-heading">
-        <h1>Resume match</h1>
-        <p class="help">
-            @if (!string.IsNullOrWhiteSpace(title) || !string.IsNullOrWhiteSpace(company))
-            {
-                <span>@(title ?? "Role")@(string.IsNullOrWhiteSpace(company) ? "" : " · " + company)</span>
-            }
-            else
-            {
-                <span>Skills from your saved resume compared to this job description.</span>
-            }
-        </p>
-    </div>
+    <partial name="_PageHeader" />
 </section>
 
-<section class="card kpi">
-    <h2>Match score</h2>
-    <p class="kpi-value">@Model.ScorePercent%</p>
+<section class="stat-card">
+    <p class="stat-label">Match score</p>
+    <p class="stat-value">@Model.ScorePercent%</p>
     <p class="help">@Model.MatchedSkills.Count of @Model.RequiredSkills.Count catalog skills found in the job text also appear on your resume.</p>
 </section>
 

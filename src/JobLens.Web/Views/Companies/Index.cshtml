@@ -20,12 +20,12 @@
     }
 </section>
 <section class="card">
-    <form method="get" class="toolbar" aria-label="Filter companies">
+    <form method="get" class="filter-bar" aria-label="Filter companies">
         <div class="field">
             <label for="search">Search</label>
             <input id="search" name="search" value="@ViewBag.Search" />
         </div>
-        <div class="form-actions">
+        <div class="filter-actions">
             <button class="btn btn-primary" type="submit">Apply</button>
             <a class="btn btn-secondary" asp-action="Index">Clear</a>
         </div>

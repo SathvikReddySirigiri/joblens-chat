@@ -1,12 +1,11 @@
 @model ResumePageModel
 @{
     ViewData["Title"] = "My Resume";
+    ViewData["PageTitle"] = "My Resume";
+    ViewData["PageSubtitle"] = "Upload a PDF or DOCX for a privacy check, skill extraction, and job match. JobLens never saves the original file.";
 }
 <section class="page-header">
-    <div class="page-heading">
-        <h1>My Resume</h1>
-        <p class="help">Upload a PDF or DOCX for a privacy check, skill extraction, and job match. JobLens never saves the original file.</p>
-    </div>
+    <partial name="_PageHeader" />
 </section>
 
 <section class="card">

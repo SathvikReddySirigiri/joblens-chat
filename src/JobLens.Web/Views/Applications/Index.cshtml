@@ -1,6 +1,8 @@
 @using JobLens.Domain.Constants
 @{
     ViewData["Title"] = "My Applications";
+    ViewData["PageTitle"] = "My Applications";
+    ViewData["PageSubtitle"] = "Track roles you saved or applied to, follow-ups, and recruiter risk signals.";
     var page = (PageResult<JobApplicationListItem>)ViewBag.Page;
     var pipeline = (JobApplicationPipeline)ViewBag.Pipeline;
     var tabs = ViewBag.StatusTabs as IReadOnlyList<JobApplicationStatusCount> ?? Array.Empty<JobApplicationStatusCount>();
@@ -12,48 +14,53 @@
 }
 
 <section class="page-header">
-    <div class="page-heading">
-        <h1>My Applications</h1>
-        <p class="help">Track roles you saved or applied to, follow-ups, and recruiter risk signals.</p>
-    </div>
+    <partial name="_PageHeader" />
     <div class="header-actions">
+        <a class="btn btn-secondary"
+           asp-action="Export"
+           asp-route-status="@ViewBag.Status"
+           asp-route-search="@ViewBag.Search">Export CSV</a>
         <a class="btn btn-primary" asp-action="Create">Track a job</a>
     </div>
 </section>
 
-<section class="kpi-grid" aria-label="Pipeline summary">
-    <article class="card kpi">
-        <h2>Applied</h2>
-        <p class="kpi-value">@pipeline.Applied</p>
+<section class="stats-grid" aria-label="Pipeline summary">
+    <article class="stat-card">
+        <p class="stat-label">Applied</p>
+        <p class="stat-value">@pipeline.Applied</p>
     </article>
-    <article class="card kpi">
-        <h2>Interviewing</h2>
-        <p class="kpi-value">@pipeline.Interviewing</p>
+    <article class="stat-card">
+        <p class="stat-label">Interviewing</p>
+        <p class="stat-value">@pipeline.Interviewing</p>
     </article>
-    <article class="card kpi">
-        <h2>Offers</h2>
-        <p class="kpi-value">@pipeline.Offers</p>
+    <article class="stat-card">
+        <p class="stat-label">Offers</p>
+        <p class="stat-value">@pipeline.Offers</p>
     </article>
-    <article class="card kpi">
-        <h2>Response rate</h2>
-        <p class="kpi-value">@pipeline.ResponseRatePercent.ToString("0.#")%</p>
+    <article class="stat-card">
+        <p class="stat-label">Response rate</p>
+        <p class="stat-value">@pipeline.ResponseRatePercent.ToString("0.#")%</p>
     </article>
 </section>
 
 <section class="card">
-    <nav class="tab-list" aria-label="Filter by status">
-        <a class="nav-link @(string.IsNullOrWhiteSpace(ViewBag.Status as string) ? "active" : null)"
+    <div class="tab-list" role="tablist" aria-label="Filter by status">
+        <a class="tab"
+           role="tab"
+           aria-selected="@(string.IsNullOrWhiteSpace(ViewBag.Status as string) ? "true" : "false")"
            asp-action="Index"
            asp-route-search="@ViewBag.Search">All (@totalAll)</a>
         @foreach (var tab in tabs)
         {
-            <a class="nav-link @(string.Equals(ViewBag.Status as string, tab.Status, StringComparison.OrdinalIgnoreCase) ? "active" : null)"
+            <a class="tab"
+               role="tab"
+               aria-selected="@(string.Equals(ViewBag.Status as string, tab.Status, StringComparison.OrdinalIgnoreCase) ? "true" : "false")"
                asp-action="Index"
                asp-route-status="@tab.Status"
                asp-route-search="@ViewBag.Search">@tab.Status (@tab.Count)</a>
         }
-    </nav>
-    <form method="get" class="toolbar" aria-label="Search applications">
+    </div>
+    <form method="get" class="filter-bar" aria-label="Search applications">
         @if (!string.IsNullOrWhiteSpace(ViewBag.Status as string))
         {
             <input type="hidden" name="status" value="@ViewBag.Status" />
@@ -62,7 +69,9 @@
             <label for="search">Search</label>
             <input id="search" name="search" value="@ViewBag.Search" maxlength="120" placeholder="Company, role, or notes" />
         </div>
-        <button class="btn btn-primary" type="submit">Search</button>
+        <div class="filter-actions">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
     </form>
 </section>
 

@@ -152,6 +152,24 @@ public sealed class ApplicationsController(ApplicationService applications) : Co
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Export(
+        string? status,
+        string? search,
+        CancellationToken cancellationToken)
+    {
+        var csv = await applications.ExportCsvAsync(
+            ActingUserFactory.Require(User),
+            status,
+            search,
+            cancellationToken);
+        var bytes = System.Text.Encoding.UTF8.GetPreamble()
+            .Concat(System.Text.Encoding.UTF8.GetBytes(csv))
+            .ToArray();
+        var stamp = DateTime.UtcNow.ToString("yyyyMMdd");
+        return File(bytes, "text/csv; charset=utf-8", $"joblens-applications-{stamp}.csv");
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> QuickStatus(

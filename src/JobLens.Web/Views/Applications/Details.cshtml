@@ -2,14 +2,13 @@
 @model JobApplication
 @{
     ViewData["Title"] = Model.RoleTitle;
+    ViewData["PageTitle"] = Model.RoleTitle;
+    ViewData["PageSubtitle"] = $"{Model.CompanyName} · {Model.Status}";
     var followUpDue = ViewBag.FollowUpDue as bool? == true;
 }
 <section class="page-header">
-    <div class="page-heading">
-        <h1>@Model.RoleTitle</h1>
-        <p class="help">@Model.CompanyName · @Model.Status</p>
-    </div>
-    <div class="form-actions">
+    <partial name="_PageHeader" />
+    <div class="header-actions">
         <a class="btn btn-primary"
            asp-controller="EmailDrafts"
            asp-action="Index"

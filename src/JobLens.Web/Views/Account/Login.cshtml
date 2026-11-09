@@ -2,12 +2,13 @@
 @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostEnvironment
 @{
     ViewData["Title"] = "Log in";
+    ViewData["PageTitle"] = "Log in";
+    ViewData["PageSubtitle"] = "Sign in with your JobLens account to report scams and manage your own records.";
     var isDev = HostEnvironment.IsDevelopment();
 }
 
 <section class="page-header">
-    <h1>Log in</h1>
-    <p class="help">Sign in with your JobLens account to report scams and manage your own records.</p>
+    <partial name="_PageHeader" />
 </section>
 
 <section class="card auth-card">

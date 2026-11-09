@@ -117,7 +117,8 @@ public static partial class DatabaseInitializer
                 InputSummary TEXT NOT NULL,
                 RiskScore INTEGER NOT NULL CHECK (RiskScore BETWEEN 0 AND 100),
                 Verdict TEXT NOT NULL CHECK (Verdict IN ('LOW', 'MEDIUM', 'HIGH')),
-                CreatedAt TEXT NOT NULL
+                CreatedAt TEXT NOT NULL,
+                UserId INTEGER NULL REFERENCES Users(UserId) ON DELETE SET NULL
             );
 
             CREATE INDEX IF NOT EXISTS IX_JobPostings_CompanyId ON JobPostings(CompanyId);
@@ -186,6 +187,7 @@ public static partial class DatabaseInitializer
         await command.ExecuteNonQueryAsync(cancellationToken);
         await EnsureDescriptionColumnAsync(connection, cancellationToken);
         await EnsureOwnershipColumnsAsync(connection, cancellationToken);
+        await EnsureCheckLogUserIdAsync(connection, cancellationToken);
     }
 
     internal static async Task CreateEmptyDatabaseAsync(string path, CancellationToken cancellationToken = default)
