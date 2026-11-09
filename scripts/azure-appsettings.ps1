@@ -1,17 +1,14 @@
-#Requires -Version 5.1
 <#
 .SYNOPSIS
-  Apply JobLens Azure App Service settings from local user-secrets + freshly generated production secrets.
-
+  Apply JobLens Azure App Service settings from local user-secrets plus freshly generated production secrets.
 .DESCRIPTION
-  Does not print secret values except the three newly generated production secrets at the end.
-  Never commits or writes secrets to disk.
-
-.PARAMETER ResourceGroup
-  Azure resource group (default: rg-joblens).
-
-.PARAMETER AppName
-  Azure Web App name (required).
+  Reads AI / EDGAR / USAJOBS values from `dotnet user-secrets` (memory only), generates new production
+  passwords and an MCP access key, and applies everything to the Web App with the Azure CLI.
+  Nothing is written to disk or committed. Only the three newly generated values are printed once at the end.
+  ASCII only on purpose (Windows PowerShell 5.1 reads BOM-less files as ANSI).
+.EXAMPLE
+  az login
+  powershell -ExecutionPolicy Bypass -File scripts/azure-appsettings.ps1 -AppName joblens-ism6225
 #>
 [CmdletBinding()]
 param(
@@ -23,287 +20,195 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-function Test-AzCliReady {
-    if (-not (Get-Command az -ErrorAction SilentlyContinue)) {
-        throw "Azure CLI (az) is not installed. Install it (e.g. winget install Microsoft.AzureCLI), then run az login."
-    }
-
-    & az account show --output none 2>$null
+# Run az with an explicit argument array (no PowerShell parameter binding, no splatting surprises).
+function Invoke-Az {
+    param([string[]] $Arguments)
+    & az @Arguments
     if ($LASTEXITCODE -ne 0) {
-        throw "Azure CLI is not logged in. Run: az login"
+        throw ("Azure CLI command failed (exit {0}): az {1} {2} ..." -f $LASTEXITCODE, $Arguments[0], $Arguments[1])
     }
 }
 
 function Get-UserSecretsMap {
     param([string] $ProjectPath)
-
     $map = @{}
+    $previous = $ErrorActionPreference; $ErrorActionPreference = "Continue"
     $raw = & dotnet user-secrets list --project $ProjectPath 2>$null
-    if ($LASTEXITCODE -ne 0 -or $null -eq $raw) {
-        return $map
-    }
-
+    $ErrorActionPreference = $previous
+    if ($LASTEXITCODE -ne 0 -or $null -eq $raw) { return $map }
     foreach ($line in @($raw)) {
         if ([string]::IsNullOrWhiteSpace($line)) { continue }
         $idx = $line.IndexOf(" = ")
         if ($idx -lt 1) { continue }
-        $key = $line.Substring(0, $idx).Trim()
-        $value = $line.Substring($idx + 3)
-        if ($key.Length -gt 0) {
-            $map[$key] = $value
-        }
+        $map[$line.Substring(0, $idx).Trim()] = $line.Substring($idx + 3).Trim()
     }
-
     return $map
 }
 
 function ConvertFrom-SecureStringPlain {
     param([System.Security.SecureString] $Secure)
-
     $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($Secure)
-    try {
-        return [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr)
-    }
-    finally {
-        if ($bstr -ne [IntPtr]::Zero) {
-            [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
-        }
-    }
+    try { return [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr) }
+    finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
 }
 
 function Read-RequiredValue {
-    param(
-        [string] $Label,
-        [hashtable] $Secrets,
-        [string] $Key,
-        [switch] $AsSecureString
-    )
-
+    param([hashtable] $Secrets, [string] $Key, [switch] $Secret)
     if ($Secrets.ContainsKey($Key) -and -not [string]::IsNullOrWhiteSpace([string]$Secrets[$Key])) {
         return [string]$Secrets[$Key]
     }
-
-    Write-Host "Missing user-secret '$Key'. Enter $Label:" -ForegroundColor Yellow
-    if ($AsSecureString) {
-        $secure = Read-Host -AsSecureString
-        return (ConvertFrom-SecureStringPlain -Secure $secure)
+    Write-Host ("Missing user-secret '{0}'. Enter the value:" -f $Key) -ForegroundColor Yellow
+    if ($Secret) {
+        $value = ConvertFrom-SecureStringPlain -Secure (Read-Host -AsSecureString)
+    } else {
+        $value = Read-Host
     }
-
-    $plain = Read-Host
-    if ([string]::IsNullOrWhiteSpace($plain)) {
-        throw "A value is required for $Key."
-    }
-    return $plain.Trim()
+    if ([string]::IsNullOrWhiteSpace($value)) { throw ("A value is required for {0}." -f $Key) }
+    return $value.Trim()
 }
 
-function Fill-RandomBytes {
-    param([byte[]] $Buffer)
-
-    # RandomNumberGenerator.Fill is not available in Windows PowerShell 5.1.
+function Get-RandomBytes {
+    param([int] $Count)
+    $bytes = New-Object byte[] $Count
     $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
-    try {
-        $rng.GetBytes($Buffer)
-    }
-    finally {
-        $rng.Dispose()
-    }
+    try { $rng.GetBytes($bytes) } finally { $rng.Dispose() }
+    return ,$bytes
 }
 
+# Symbols limited to "-" and "_" so cmd.exe (az.cmd) never rewrites the value (no % ! ^ & | < > ").
 function New-CryptoPassword {
-    param(
-        [int] $Length = 20,
-        [string] $Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#%*-_"
-    )
-
-    $upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    $lower = "abcdefghijklmnopqrstuvwxyz"
-    $digit = "0123456789"
-    $symbol = "!#%*-_"
-
-    $bytes = New-Object byte[] $Length
-    Fill-RandomBytes -Buffer $bytes
-
+    param([int] $Length = 20)
+    $upper = "ABCDEFGHJKLMNPQRSTUVWXYZ"
+    $lower = "abcdefghijkmnopqrstuvwxyz"
+    $digit = "23456789"
+    $symbol = "-_"
+    $all = $upper + $lower + $digit + $symbol
+    $bytes = Get-RandomBytes -Count ($Length * 2)
     $chars = New-Object char[] $Length
-    for ($i = 0; $i -lt $Length; $i++) {
-        $chars[$i] = $Alphabet[$bytes[$i] % $Alphabet.Length]
-    }
-
-    # Guarantee at least one of each required class (overwrite first four slots with fresh RNG picks).
-    $classes = @($upper, $lower, $digit, $symbol)
-    $pickBytes = New-Object byte[] 4
-    Fill-RandomBytes -Buffer $pickBytes
-    for ($i = 0; $i -lt 4; $i++) {
-        $set = $classes[$i]
-        $chars[$i] = $set[$pickBytes[$i] % $set.Length]
-    }
-
-    # Shuffle so required chars are not always at the front.
+    for ($i = 0; $i -lt $Length; $i++) { $chars[$i] = $all[$bytes[$i] % $all.Length] }
+    $sets = @($upper, $lower, $digit, $symbol)
+    for ($i = 0; $i -lt 4; $i++) { $chars[$i] = $sets[$i][$bytes[$Length + $i] % $sets[$i].Length] }
     for ($i = $Length - 1; $i -gt 0; $i--) {
-        $swapByte = New-Object byte[] 1
-        Fill-RandomBytes -Buffer $swapByte
-        $j = $swapByte[0] % ($i + 1)
-        $tmp = $chars[$i]
-        $chars[$i] = $chars[$j]
-        $chars[$j] = $tmp
+        $j = $bytes[$Length + 4 + ($i % ($Length - 4))] % ($i + 1)
+        $tmp = $chars[$i]; $chars[$i] = $chars[$j]; $chars[$j] = $tmp
     }
-
     return -join $chars
 }
 
 function New-CryptoAccessKey {
     param([int] $Length = 48)
-
     $alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    $bytes = New-Object byte[] $Length
-    Fill-RandomBytes -Buffer $bytes
+    $bytes = Get-RandomBytes -Count $Length
     $chars = New-Object char[] $Length
-    for ($i = 0; $i -lt $Length; $i++) {
-        $chars[$i] = $alphabet[$bytes[$i] % $alphabet.Length]
-    }
+    for ($i = 0; $i -lt $Length; $i++) { $chars[$i] = $alphabet[$bytes[$i] % $alphabet.Length] }
     return -join $chars
 }
 
-function Invoke-AzQuiet {
-    param([Parameter(ValueFromRemainingArguments = $true)][object[]] $AzArgs)
-
-    & az @AzArgs
-    if ($LASTEXITCODE -ne 0) {
-        throw "Azure CLI command failed (exit $LASTEXITCODE)."
-    }
-}
-
-# --- main ---
+# --- Preconditions -----------------------------------------------------------------------------------
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $webProject = Join-Path $repoRoot "src\JobLens.Web"
 if (-not (Test-Path -LiteralPath $webProject)) {
-    throw "Could not find JobLens.Web at $webProject. Run this script from the repo (./scripts/azure-appsettings.ps1)."
+    throw ("Could not find src\JobLens.Web under {0}. Run from the repo: scripts\azure-appsettings.ps1" -f $repoRoot)
 }
-
-Test-AzCliReady
-
-$domain = (& az webapp show -g $ResourceGroup -n $AppName --query defaultHostName -o tsv).Trim()
-if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($domain)) {
-    throw "Could not read defaultHostName for web app '$AppName' in resource group '$ResourceGroup'."
+if (-not (Get-Command az -ErrorAction SilentlyContinue)) {
+    throw "Azure CLI (az) is not installed. Run: winget install Microsoft.AzureCLI  (then reopen the terminal and run az login)"
 }
+# Windows PowerShell 5.1 turns redirected native stderr into errors under "Stop", so relax it for these checks.
+$ErrorActionPreference = "Continue"
+& az account show --output none 2>$null
+$loggedIn = ($LASTEXITCODE -eq 0)
+$domain = ""
+if ($loggedIn) {
+    $domain = [string](& az webapp show -g $ResourceGroup -n $AppName --query defaultHostName -o tsv 2>$null)
+}
+$showExit = $LASTEXITCODE
+$ErrorActionPreference = "Stop"
+if (-not $loggedIn) { throw "Azure CLI is not logged in. Run: az login" }
+$domain = $domain.Trim()
+if ($showExit -ne 0 -or [string]::IsNullOrWhiteSpace($domain)) {
+    throw ("Web app '{0}' was not found in resource group '{1}'. Check -AppName (the app name, not the full domain)." -f $AppName, $ResourceGroup)
+}
+Write-Host ("Web app found: https://{0}" -f $domain) -ForegroundColor Green
 
-$localSecrets = Get-UserSecretsMap -ProjectPath $webProject
+# --- Values ------------------------------------------------------------------------------------------
+$local = Get-UserSecretsMap -ProjectPath $webProject
 
-$aiProvider = "AzureOpenAI"
-$aiModel = if ($localSecrets.ContainsKey("Ai:Model") -and $localSecrets["Ai:Model"]) { [string]$localSecrets["Ai:Model"] } else { "gpt-4.1-mini-1" }
-$aiDisplayName = if ($localSecrets.ContainsKey("Ai:DisplayName") -and $localSecrets["Ai:DisplayName"]) { [string]$localSecrets["Ai:DisplayName"] } else { "Azure OpenAI gpt-4.1-mini" }
-$aiEndpoint = Read-RequiredValue -Label "Ai:Endpoint" -Secrets $localSecrets -Key "Ai:Endpoint"
-$aiApiKey = Read-RequiredValue -Label "Ai:ApiKey" -Secrets $localSecrets -Key "Ai:ApiKey" -AsSecureString
-$edgarUserAgent = Read-RequiredValue -Label "Edgar:UserAgent" -Secrets $localSecrets -Key "Edgar:UserAgent"
-$usaJobsApiKey = Read-RequiredValue -Label "Jobs:UsaJobs:ApiKey" -Secrets $localSecrets -Key "Jobs:UsaJobs:ApiKey" -AsSecureString
-$usaJobsUserAgent = Read-RequiredValue -Label "Jobs:UsaJobs:UserAgent" -Secrets $localSecrets -Key "Jobs:UsaJobs:UserAgent"
+$aiModel = "gpt-4.1-mini-1"
+if ($local.ContainsKey("Ai:Model") -and $local["Ai:Model"]) { $aiModel = [string]$local["Ai:Model"] }
+$aiDisplayName = "Azure OpenAI gpt-4.1-mini"
+if ($local.ContainsKey("Ai:DisplayName") -and $local["Ai:DisplayName"]) { $aiDisplayName = [string]$local["Ai:DisplayName"] }
+
+$aiEndpoint       = Read-RequiredValue -Secrets $local -Key "Ai:Endpoint"
+$aiApiKey         = Read-RequiredValue -Secrets $local -Key "Ai:ApiKey" -Secret
+$edgarUserAgent   = Read-RequiredValue -Secrets $local -Key "Edgar:UserAgent"
+$usaJobsApiKey    = Read-RequiredValue -Secrets $local -Key "Jobs:UsaJobs:ApiKey" -Secret
+$usaJobsUserAgent = Read-RequiredValue -Secrets $local -Key "Jobs:UsaJobs:UserAgent"
 
 $seedModerator = New-CryptoPassword -Length 20
-$seedStudent = New-CryptoPassword -Length 20
-$mcpAccessKey = New-CryptoAccessKey -Length 48
+$seedStudent   = New-CryptoPassword -Length 20
+$mcpAccessKey  = New-CryptoAccessKey -Length 48
 
-$mcpEndpoint = "https://$domain/mcp"
-
-$settingPairs = @(
-    "ASPNETCORE_ENVIRONMENT=Production",
-    "AllowedHosts=$domain",
-    "WEBSITES_ENABLE_APP_SERVICE_STORAGE=true",
-    "Seed__ModeratorPassword=$seedModerator",
-    "Seed__StudentPassword=$seedStudent",
-    "Mcp__AccessKey=$mcpAccessKey",
-    "Mcp__Endpoint=$mcpEndpoint",
-    "Ai__Provider=$aiProvider",
-    "Ai__Endpoint=$aiEndpoint",
-    "Ai__Model=$aiModel",
-    "Ai__ApiKey=$aiApiKey",
-    "Ai__DisplayName=$aiDisplayName",
-    "Edgar__UserAgent=$edgarUserAgent",
-    "Jobs__UsaJobs__ApiKey=$usaJobsApiKey",
-    "Jobs__UsaJobs__UserAgent=$usaJobsUserAgent"
-)
-
-$settingNames = @(
-    "ASPNETCORE_ENVIRONMENT",
-    "AllowedHosts",
-    "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
-    "Seed__ModeratorPassword",
-    "Seed__StudentPassword",
-    "Mcp__AccessKey",
-    "Mcp__Endpoint",
-    "Ai__Provider",
-    "Ai__Endpoint",
-    "Ai__Model",
-    "Ai__ApiKey",
-    "Ai__DisplayName",
-    "Edgar__UserAgent",
-    "Jobs__UsaJobs__ApiKey",
-    "Jobs__UsaJobs__UserAgent"
-)
-
-# One call; do not Write-Host the argument list (contains secrets).
-Invoke-AzQuiet webapp config appsettings set -g $ResourceGroup -n $AppName --settings @settingPairs --output none
-
-Invoke-AzQuiet webapp config set -g $ResourceGroup -n $AppName `
-    --startup-file "dotnet JobLens.Web.dll" `
-    --min-tls-version "1.2" `
-    --ftps-state Disabled `
-    --generic-configurations '{"healthCheckPath":"/healthz"}' `
-    --output none
-
-Invoke-AzQuiet webapp update -g $ResourceGroup -n $AppName --https-only true --output none
-
-try {
-    Invoke-AzQuiet resource update -g $ResourceGroup `
-        --namespace Microsoft.Web `
-        --resource-type basicPublishingCredentialsPolicies `
-        --parent "sites/$AppName" `
-        --name scm `
-        --set properties.allow=false `
-        --output none
-}
-catch {
-    Write-Warning "Could not disable SCM basic auth: $($_.Exception.Message)"
+$settings = [ordered]@{
+    "ASPNETCORE_ENVIRONMENT"              = "Production"
+    "AllowedHosts"                        = $domain
+    "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "true"
+    "Seed__ModeratorPassword"             = $seedModerator
+    "Seed__StudentPassword"               = $seedStudent
+    "Mcp__AccessKey"                      = $mcpAccessKey
+    "Mcp__Endpoint"                       = ("https://{0}/mcp" -f $domain)
+    "Ai__Provider"                        = "AzureOpenAI"
+    "Ai__Endpoint"                        = $aiEndpoint
+    "Ai__Model"                           = $aiModel
+    "Ai__ApiKey"                          = $aiApiKey
+    "Ai__DisplayName"                     = $aiDisplayName
+    "Edgar__UserAgent"                    = $edgarUserAgent
+    "Jobs__UsaJobs__ApiKey"               = $usaJobsApiKey
+    "Jobs__UsaJobs__UserAgent"            = $usaJobsUserAgent
 }
 
-try {
-    Invoke-AzQuiet resource update -g $ResourceGroup `
-        --namespace Microsoft.Web `
-        --resource-type basicPublishingCredentialsPolicies `
-        --parent "sites/$AppName" `
-        --name ftp `
-        --set properties.allow=false `
-        --output none
-}
-catch {
-    Write-Warning "Could not disable FTP basic auth: $($_.Exception.Message)"
+# --- Apply -------------------------------------------------------------------------------------------
+Write-Host "Applying app settings..." -ForegroundColor Cyan
+$appSettingsArgs = @("webapp", "config", "appsettings", "set", "-g", $ResourceGroup, "-n", $AppName, "--output", "none", "--settings")
+foreach ($name in $settings.Keys) { $appSettingsArgs += ("{0}={1}" -f $name, $settings[$name]) }
+Invoke-Az -Arguments $appSettingsArgs
+
+Write-Host "Applying general settings (startup command, TLS 1.2, FTPS off, health check)..." -ForegroundColor Cyan
+Invoke-Az -Arguments @("webapp", "config", "set", "-g", $ResourceGroup, "-n", $AppName,
+    "--startup-file", "dotnet JobLens.Web.dll",
+    "--min-tls-version", "1.2",
+    "--ftps-state", "Disabled",
+    "--generic-configurations", "healthCheckPath=/healthz",
+    "--output", "none")
+Invoke-Az -Arguments @("webapp", "update", "-g", $ResourceGroup, "-n", $AppName, "--https-only", "true", "--output", "none")
+
+foreach ($kind in @("scm", "ftp")) {
+    try {
+        Invoke-Az -Arguments @("resource", "update", "-g", $ResourceGroup,
+            "--namespace", "Microsoft.Web", "--resource-type", "basicPublishingCredentialsPolicies",
+            "--parent", ("sites/{0}" -f $AppName), "--name", $kind,
+            "--set", "properties.allow=false", "--output", "none")
+    } catch {
+        Write-Warning ("Could not disable {0} basic auth (you can do it in Configuration > General settings)." -f $kind)
+    }
 }
 
-$appUrl = "https://$domain"
-
+# --- Report ------------------------------------------------------------------------------------------
 Write-Host ""
-Write-Host "App URL: $appUrl"
+Write-Host ("App URL: https://{0}" -f $domain) -ForegroundColor Green
 Write-Host "Settings applied (names only):"
-foreach ($name in $settingNames) {
-    Write-Host "  - $name"
-}
-
+foreach ($name in $settings.Keys) { Write-Host ("  - {0}" -f $name) }
 Write-Host ""
-Write-Host "============================================================" -ForegroundColor Cyan
-Write-Host "SAVE THESE NOW in a password manager — they are not stored anywhere else" -ForegroundColor Cyan
-Write-Host "============================================================" -ForegroundColor Cyan
-Write-Host "Seed__ModeratorPassword: $seedModerator"
-Write-Host "Seed__StudentPassword:   $seedStudent"
-Write-Host "Mcp__AccessKey:          $mcpAccessKey"
-Write-Host "============================================================" -ForegroundColor Cyan
+Write-Host "============================================================" -ForegroundColor Yellow
+Write-Host " SAVE THESE NOW in a password manager - not stored anywhere else" -ForegroundColor Yellow
+Write-Host "============================================================" -ForegroundColor Yellow
+Write-Host ("Moderator login : moderator@joblens.demo / {0}" -f $seedModerator)
+Write-Host ("Student login   : student1@joblens.demo  / {0}" -f $seedStudent)
+Write-Host ("MCP access key  : {0}" -f $mcpAccessKey)
+Write-Host "============================================================" -ForegroundColor Yellow
 
-# Clear sensitive in-memory values.
-$aiApiKey = $null
-$usaJobsApiKey = $null
-$seedModerator = $null
-$seedStudent = $null
-$mcpAccessKey = $null
-$settingPairs = $null
-$localSecrets = $null
+$aiApiKey = $null; $usaJobsApiKey = $null; $seedModerator = $null; $seedStudent = $null
+$mcpAccessKey = $null; $settings = $null; $appSettingsArgs = $null; $local = $null
 [GC]::Collect()
 
 Write-Host ""
-Write-Host "Next: Deployment Center -> GitHub -> main, then open https://$domain/healthz"
+Write-Host ("Next: Deployment Center -> GitHub -> main, then open https://{0}/healthz" -f $domain)
