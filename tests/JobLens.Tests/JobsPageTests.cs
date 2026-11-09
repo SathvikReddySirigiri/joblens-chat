@@ -22,29 +22,6 @@ public sealed class JobsPageTests
     }
 
     [Fact]
-    public void LiveJobs_index_redirects_to_Jobs_live_tab()
-    {
-        var controller = new LiveJobsController();
-        var result = Assert.IsType<RedirectToActionResult>(
-            controller.Index(
-                category: "IT",
-                categoryCode: null,
-                level: "Internship",
-                location: null,
-                companyName: null,
-                keyword: null,
-                hiringPath: "student",
-                remoteOnly: false,
-                page: 2));
-
-        Assert.Equal("Index", result.ActionName);
-        Assert.Equal("Jobs", result.ControllerName);
-        Assert.Equal(JobsPageVm.LiveTab, result.RouteValues!["tab"]);
-        Assert.Equal("IT", result.RouteValues["category"]);
-        Assert.Equal(2, result.RouteValues["page"]);
-    }
-
-    [Fact]
     public void JobPostings_index_redirects_to_Jobs_joblens_tab()
     {
         var controller = new JobPostingsController(

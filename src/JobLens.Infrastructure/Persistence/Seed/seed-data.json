@@ -1515,7 +1515,7 @@
       "isPaid": 1,
       "payRatePerHour": 32,
       "postedDate": "2026-06-03",
-      "description": "Data Analyst Intern with Amazon in Seattle, WA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with Amazon in Seattle, WA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Amazon",
@@ -1526,7 +1526,7 @@
       "isPaid": 1,
       "payRatePerHour": 40,
       "postedDate": "2026-08-14",
-      "description": "Software Engineering Intern with Amazon in Austin, TX. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Software Engineering Intern with Amazon in Austin, TX. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Amazon",
@@ -1537,7 +1537,7 @@
       "isPaid": 1,
       "payRatePerHour": 27,
       "postedDate": "2026-10-02",
-      "description": "Business Analyst with Amazon in Seattle, WA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Amazon in Seattle, WA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Microsoft",
@@ -1548,7 +1548,7 @@
       "isPaid": 1,
       "payRatePerHour": 38,
       "postedDate": "2026-06-18",
-      "description": "Cybersecurity Intern with Microsoft in Redmond, WA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with Microsoft in Redmond, WA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Microsoft",
@@ -1559,7 +1559,7 @@
       "isPaid": 1,
       "payRatePerHour": 45,
       "postedDate": "2026-09-09",
-      "description": "Software Engineer with Microsoft in Austin, TX. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Software Engineer with Microsoft in Austin, TX. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Microsoft",
@@ -1570,7 +1570,7 @@
       "isPaid": 0,
       "payRatePerHour": null,
       "postedDate": "2026-07-07",
-      "description": "Data Analyst Intern with Microsoft in Redmond, WA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with Microsoft in Redmond, WA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Google",
@@ -1581,7 +1581,7 @@
       "isPaid": 1,
       "payRatePerHour": 42,
       "postedDate": "2026-06-22",
-      "description": "Software Engineering Intern with Google in Mountain View, CA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Software Engineering Intern with Google in Mountain View, CA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Google",
@@ -1592,7 +1592,7 @@
       "isPaid": 1,
       "payRatePerHour": 36,
       "postedDate": "2026-09-15",
-      "description": "Cybersecurity Intern with Google in Austin, TX. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with Google in Austin, TX. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Google",
@@ -1603,7 +1603,7 @@
       "isPaid": 1,
       "payRatePerHour": 30,
       "postedDate": "2026-10-20",
-      "description": "Business Analyst with Google in San Francisco, CA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Google in San Francisco, CA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Deloitte",
@@ -1614,7 +1614,7 @@
       "isPaid": 1,
       "payRatePerHour": 29,
       "postedDate": "2026-06-11",
-      "description": "Business Analyst with Deloitte in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Deloitte in New York, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Deloitte",
@@ -1625,7 +1625,7 @@
       "isPaid": 1,
       "payRatePerHour": 24,
       "postedDate": "2026-08-03",
-      "description": "Data Analyst Intern with Deloitte in Chicago, IL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with Deloitte in Chicago, IL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Deloitte",
@@ -1636,7 +1636,7 @@
       "isPaid": 1,
       "payRatePerHour": 33,
       "postedDate": "2026-10-08",
-      "description": "Cybersecurity Intern with Deloitte in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with Deloitte in New York, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "JPMorgan Chase",
@@ -1647,7 +1647,7 @@
       "isPaid": 1,
       "payRatePerHour": 34,
       "postedDate": "2026-07-01",
-      "description": "Business Analyst with JPMorgan Chase in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with JPMorgan Chase in New York, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "JPMorgan Chase",
@@ -1658,7 +1658,7 @@
       "isPaid": 1,
       "payRatePerHour": 31,
       "postedDate": "2026-09-01",
-      "description": "Cybersecurity Intern with JPMorgan Chase in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with JPMorgan Chase in Tampa, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "JPMorgan Chase",
@@ -1669,7 +1669,7 @@
       "isPaid": 1,
       "payRatePerHour": 37,
       "postedDate": "2026-10-16",
-      "description": "Data Analyst with JPMorgan Chase in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst with JPMorgan Chase in New York, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Walmart",
@@ -1680,7 +1680,7 @@
       "isPaid": 1,
       "payRatePerHour": 22,
       "postedDate": "2026-06-25",
-      "description": "Data Analyst Intern with Walmart in Bentonville, AR. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with Walmart in Bentonville, AR. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Walmart",
@@ -1691,7 +1691,7 @@
       "isPaid": 1,
       "payRatePerHour": 21,
       "postedDate": "2026-08-19",
-      "description": "Business Analyst with Walmart in Dallas, TX. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Walmart in Dallas, TX. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Walmart",
@@ -1702,7 +1702,7 @@
       "isPaid": 0,
       "payRatePerHour": null,
       "postedDate": "2026-09-28",
-      "description": "Software Engineering Intern with Walmart in Bentonville, AR. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Software Engineering Intern with Walmart in Bentonville, AR. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Accenture",
@@ -1713,7 +1713,7 @@
       "isPaid": 1,
       "payRatePerHour": 28,
       "postedDate": "2026-07-14",
-      "description": "Business Analyst with Accenture in Chicago, IL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Accenture in Chicago, IL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Accenture",
@@ -1724,7 +1724,7 @@
       "isPaid": 1,
       "payRatePerHour": 30,
       "postedDate": "2026-08-27",
-      "description": "Cybersecurity Intern with Accenture in Chicago, IL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with Accenture in Chicago, IL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Accenture",
@@ -1735,7 +1735,7 @@
       "isPaid": 1,
       "payRatePerHour": 26,
       "postedDate": "2026-10-12",
-      "description": "Data Analyst Intern with Accenture in Austin, TX. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with Accenture in Austin, TX. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Raymond James",
@@ -1746,7 +1746,7 @@
       "isPaid": 1,
       "payRatePerHour": 25,
       "postedDate": "2026-06-30",
-      "description": "Business Analyst with Raymond James in St. Petersburg, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Raymond James in St. Petersburg, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Raymond James",
@@ -1757,7 +1757,7 @@
       "isPaid": 1,
       "payRatePerHour": 20,
       "postedDate": "2026-09-04",
-      "description": "Data Analyst Intern with Raymond James in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with Raymond James in Tampa, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Raymond James",
@@ -1768,7 +1768,7 @@
       "isPaid": 1,
       "payRatePerHour": 27,
       "postedDate": "2026-10-23",
-      "description": "Cybersecurity Intern with Raymond James in St. Petersburg, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with Raymond James in St. Petersburg, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Publix",
@@ -1779,7 +1779,7 @@
       "isPaid": 1,
       "payRatePerHour": 19,
       "postedDate": "2026-07-20",
-      "description": "Data Analyst Intern with Publix in Lakeland, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with Publix in Lakeland, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Publix",
@@ -1790,7 +1790,7 @@
       "isPaid": 0,
       "payRatePerHour": null,
       "postedDate": "2026-08-11",
-      "description": "Business Analyst with Publix in Lakeland, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Publix in Lakeland, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Publix",
@@ -1801,7 +1801,7 @@
       "isPaid": 1,
       "payRatePerHour": 23,
       "postedDate": "2026-10-05",
-      "description": "Software Engineering Intern with Publix in Jacksonville, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Software Engineering Intern with Publix in Jacksonville, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Moffitt Cancer Center",
@@ -1812,7 +1812,7 @@
       "isPaid": 1,
       "payRatePerHour": 24,
       "postedDate": "2026-06-08",
-      "description": "Data Analyst Intern with Moffitt Cancer Center in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with Moffitt Cancer Center in Tampa, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Moffitt Cancer Center",
@@ -1823,7 +1823,7 @@
       "isPaid": 1,
       "payRatePerHour": 26,
       "postedDate": "2026-09-18",
-      "description": "Cybersecurity Intern with Moffitt Cancer Center in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with Moffitt Cancer Center in Tampa, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Moffitt Cancer Center",
@@ -1834,7 +1834,7 @@
       "isPaid": 0,
       "payRatePerHour": null,
       "postedDate": "2026-10-27",
-      "description": "Business Analyst with Moffitt Cancer Center in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Moffitt Cancer Center in Tampa, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Amazon",
@@ -1845,7 +1845,7 @@
       "isPaid": 1,
       "payRatePerHour": 18,
       "postedDate": "2026-06-01",
-      "description": "Data Analyst Intern with Amazon in Seattle, WA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with Amazon in Seattle, WA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Microsoft",
@@ -1856,7 +1856,7 @@
       "isPaid": 1,
       "payRatePerHour": 21,
       "postedDate": "2026-06-05",
-      "description": "Software Engineering Intern with Microsoft in Redmond, WA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Software Engineering Intern with Microsoft in Redmond, WA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Google",
@@ -1867,7 +1867,7 @@
       "isPaid": 1,
       "payRatePerHour": 24,
       "postedDate": "2026-06-09",
-      "description": "Business Analyst with Google in Mountain View, CA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Google in Mountain View, CA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Deloitte",
@@ -1878,7 +1878,7 @@
       "isPaid": 1,
       "payRatePerHour": 27,
       "postedDate": "2026-06-13",
-      "description": "Cybersecurity Intern with Deloitte in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with Deloitte in New York, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "JPMorgan Chase",
@@ -1889,7 +1889,7 @@
       "isPaid": 0,
       "payRatePerHour": null,
       "postedDate": "2026-06-16",
-      "description": "Finance Intern with JPMorgan Chase in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Finance Intern with JPMorgan Chase in New York, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Walmart",
@@ -1900,7 +1900,7 @@
       "isPaid": 1,
       "payRatePerHour": 33,
       "postedDate": "2026-06-20",
-      "description": "Operations Analyst with Walmart in Bentonville, AR. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Operations Analyst with Walmart in Bentonville, AR. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Accenture",
@@ -1911,7 +1911,7 @@
       "isPaid": 1,
       "payRatePerHour": 36,
       "postedDate": "2026-06-24",
-      "description": "Data Analyst Intern with Accenture in Chicago, IL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with Accenture in Chicago, IL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Raymond James",
@@ -1922,7 +1922,7 @@
       "isPaid": 1,
       "payRatePerHour": 39,
       "postedDate": "2026-06-28",
-      "description": "Software Engineering Intern with Raymond James in St. Petersburg, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Software Engineering Intern with Raymond James in St. Petersburg, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Publix",
@@ -1933,7 +1933,7 @@
       "isPaid": 1,
       "payRatePerHour": 42,
       "postedDate": "2026-07-02",
-      "description": "Business Analyst with Publix in Lakeland, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Publix in Lakeland, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Moffitt Cancer Center",
@@ -1944,7 +1944,7 @@
       "isPaid": 0,
       "payRatePerHour": null,
       "postedDate": "2026-07-06",
-      "description": "Cybersecurity Intern with Moffitt Cancer Center in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with Moffitt Cancer Center in Tampa, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Apple",
@@ -1955,7 +1955,7 @@
       "isPaid": 1,
       "payRatePerHour": 20,
       "postedDate": "2026-07-10",
-      "description": "Finance Intern with Apple in Cupertino, CA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Finance Intern with Apple in Cupertino, CA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Apple",
@@ -1966,7 +1966,7 @@
       "isPaid": 1,
       "payRatePerHour": 23,
       "postedDate": "2026-07-14",
-      "description": "Operations Analyst with Apple in Cupertino, CA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Operations Analyst with Apple in Cupertino, CA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Apple",
@@ -1977,7 +1977,7 @@
       "isPaid": 1,
       "payRatePerHour": 26,
       "postedDate": "2026-07-17",
-      "description": "Data Analyst Intern with Apple in Cupertino, CA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with Apple in Cupertino, CA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Meta",
@@ -1988,7 +1988,7 @@
       "isPaid": 1,
       "payRatePerHour": 29,
       "postedDate": "2026-07-21",
-      "description": "Software Engineering Intern with Meta in Menlo Park, CA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Software Engineering Intern with Meta in Menlo Park, CA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Meta",
@@ -1999,7 +1999,7 @@
       "isPaid": 0,
       "payRatePerHour": null,
       "postedDate": "2026-07-25",
-      "description": "Business Analyst with Meta in Menlo Park, CA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Meta in Menlo Park, CA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Meta",
@@ -2010,7 +2010,7 @@
       "isPaid": 1,
       "payRatePerHour": 35,
       "postedDate": "2026-07-29",
-      "description": "Cybersecurity Intern with Meta in Menlo Park, CA. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with Meta in Menlo Park, CA. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "IBM",
@@ -2021,7 +2021,7 @@
       "isPaid": 1,
       "payRatePerHour": 38,
       "postedDate": "2026-08-02",
-      "description": "Finance Intern with IBM in Armonk, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Finance Intern with IBM in Armonk, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "IBM",
@@ -2032,7 +2032,7 @@
       "isPaid": 1,
       "payRatePerHour": 41,
       "postedDate": "2026-08-06",
-      "description": "Operations Analyst with IBM in Armonk, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Operations Analyst with IBM in Armonk, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "IBM",
@@ -2043,7 +2043,7 @@
       "isPaid": 1,
       "payRatePerHour": 44,
       "postedDate": "2026-08-10",
-      "description": "Data Analyst Intern with IBM in Armonk, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with IBM in Armonk, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "PwC",
@@ -2054,7 +2054,7 @@
       "isPaid": 0,
       "payRatePerHour": null,
       "postedDate": "2026-08-14",
-      "description": "Software Engineering Intern with PwC in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Software Engineering Intern with PwC in New York, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "PwC",
@@ -2065,7 +2065,7 @@
       "isPaid": 1,
       "payRatePerHour": 22,
       "postedDate": "2026-08-17",
-      "description": "Business Analyst with PwC in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with PwC in New York, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "PwC",
@@ -2076,7 +2076,7 @@
       "isPaid": 1,
       "payRatePerHour": 25,
       "postedDate": "2026-08-21",
-      "description": "Cybersecurity Intern with PwC in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with PwC in New York, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "EY",
@@ -2087,7 +2087,7 @@
       "isPaid": 1,
       "payRatePerHour": 28,
       "postedDate": "2026-08-25",
-      "description": "Finance Intern with EY in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Finance Intern with EY in New York, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "EY",
@@ -2098,7 +2098,7 @@
       "isPaid": 1,
       "payRatePerHour": 31,
       "postedDate": "2026-08-29",
-      "description": "Operations Analyst with EY in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Operations Analyst with EY in New York, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "EY",
@@ -2109,7 +2109,7 @@
       "isPaid": 0,
       "payRatePerHour": null,
       "postedDate": "2026-09-02",
-      "description": "Data Analyst Intern with EY in New York, NY. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with EY in New York, NY. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Bank of America",
@@ -2120,7 +2120,7 @@
       "isPaid": 1,
       "payRatePerHour": 37,
       "postedDate": "2026-09-06",
-      "description": "Software Engineering Intern with Bank of America in Charlotte, NC. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Software Engineering Intern with Bank of America in Charlotte, NC. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Bank of America",
@@ -2131,7 +2131,7 @@
       "isPaid": 1,
       "payRatePerHour": 40,
       "postedDate": "2026-09-10",
-      "description": "Business Analyst with Bank of America in Charlotte, NC. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Bank of America in Charlotte, NC. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Bank of America",
@@ -2142,7 +2142,7 @@
       "isPaid": 1,
       "payRatePerHour": 43,
       "postedDate": "2026-09-14",
-      "description": "Cybersecurity Intern with Bank of America in Charlotte, NC. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with Bank of America in Charlotte, NC. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Target",
@@ -2153,7 +2153,7 @@
       "isPaid": 1,
       "payRatePerHour": 18,
       "postedDate": "2026-09-17",
-      "description": "Finance Intern with Target in Minneapolis, MN. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Finance Intern with Target in Minneapolis, MN. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Target",
@@ -2164,7 +2164,7 @@
       "isPaid": 0,
       "payRatePerHour": null,
       "postedDate": "2026-09-21",
-      "description": "Operations Analyst with Target in Minneapolis, MN. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Operations Analyst with Target in Minneapolis, MN. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Target",
@@ -2175,7 +2175,7 @@
       "isPaid": 1,
       "payRatePerHour": 24,
       "postedDate": "2026-09-25",
-      "description": "Data Analyst Intern with Target in Minneapolis, MN. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with Target in Minneapolis, MN. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Lockheed Martin",
@@ -2186,7 +2186,7 @@
       "isPaid": 1,
       "payRatePerHour": 27,
       "postedDate": "2026-09-29",
-      "description": "Software Engineering Intern with Lockheed Martin in Bethesda, MD. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Software Engineering Intern with Lockheed Martin in Bethesda, MD. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Lockheed Martin",
@@ -2197,7 +2197,7 @@
       "isPaid": 1,
       "payRatePerHour": 30,
       "postedDate": "2026-10-03",
-      "description": "Business Analyst with Lockheed Martin in Bethesda, MD. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Lockheed Martin in Bethesda, MD. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Lockheed Martin",
@@ -2208,7 +2208,7 @@
       "isPaid": 1,
       "payRatePerHour": 33,
       "postedDate": "2026-10-07",
-      "description": "Cybersecurity Intern with Lockheed Martin in Bethesda, MD. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with Lockheed Martin in Bethesda, MD. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Tampa General Hospital",
@@ -2219,7 +2219,7 @@
       "isPaid": 0,
       "payRatePerHour": null,
       "postedDate": "2026-10-11",
-      "description": "Finance Intern with Tampa General Hospital in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Finance Intern with Tampa General Hospital in Tampa, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Tampa General Hospital",
@@ -2230,7 +2230,7 @@
       "isPaid": 1,
       "payRatePerHour": 39,
       "postedDate": "2026-10-15",
-      "description": "Operations Analyst with Tampa General Hospital in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Operations Analyst with Tampa General Hospital in Tampa, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Tampa General Hospital",
@@ -2241,7 +2241,7 @@
       "isPaid": 1,
       "payRatePerHour": 42,
       "postedDate": "2026-10-18",
-      "description": "Data Analyst Intern with Tampa General Hospital in Tampa, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Data Analyst Intern with Tampa General Hospital in Tampa, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Jabil",
@@ -2252,7 +2252,7 @@
       "isPaid": 1,
       "payRatePerHour": 45,
       "postedDate": "2026-10-22",
-      "description": "Software Engineering Intern with Jabil in St. Petersburg, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Software Engineering Intern with Jabil in St. Petersburg, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Jabil",
@@ -2263,7 +2263,7 @@
       "isPaid": 1,
       "payRatePerHour": 20,
       "postedDate": "2026-10-26",
-      "description": "Business Analyst with Jabil in St. Petersburg, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Business Analyst with Jabil in St. Petersburg, FL. Sample 2026 listing for the JobLens class dataset."
     },
     {
       "companyName": "Jabil",
@@ -2274,7 +2274,7 @@
       "isPaid": 0,
       "payRatePerHour": null,
       "postedDate": "2026-10-30",
-      "description": "Cybersecurity Intern with Jabil in St. Petersburg, FL. Synthetic 2026 listing for the JobLens class dataset."
+      "description": "Cybersecurity Intern with Jabil in St. Petersburg, FL. Sample 2026 listing for the JobLens class dataset."
     }
   ],
   "interviewReviews": [

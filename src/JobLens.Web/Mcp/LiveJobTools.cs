@@ -19,12 +19,11 @@ public sealed class LiveJobTools(
     };
 
     [McpServerTool(Name = "search_live_jobs")]
-    [Description("LIVE external job listings (USAJOBS or The Muse, depending on Jobs:Provider) with JobLens trust signals. Returns at most 10 openings. Live listings are not verified by JobLens; scam facts must still come from database tools.")]
+    [Description("LIVE external job listings from USAJOBS with JobLens trust signals. Returns at most 10 openings. Live listings are not verified by JobLens; scam facts must still come from database tools.")]
     public async Task<string> SearchLiveJobs(
-        [Description("Optional keyword (title/summary search for USAJOBS; title filter for The Muse).")] string? keyword = null,
+        [Description("Optional keyword for title/summary search.")] string? keyword = null,
         [Description("Optional location text, e.g. Tampa, FL.")] string? location = null,
-        [Description("Optional USAJOBS series code (e.g. 1560) or Muse category name.")] string? category = null,
-        [Description("Optional Muse level: Internship, Entry Level, Mid Level, or Senior Level.")] string? level = null,
+        [Description("Optional USAJOBS series code (e.g. 1560) or category label.")] string? category = null,
         [Description("Optional USAJOBS hiring path: student, graduates, or public.")] string? hiringPath = null,
         [Description("When true, only remote USAJOBS openings.")] bool remoteOnly = false,
         CancellationToken cancellationToken = default)
@@ -35,12 +34,10 @@ public sealed class LiveJobTools(
             new LiveJobsQuery(
                 keyword,
                 location,
-                category,
+                Category: category is { Length: > 0 } && !category.All(char.IsDigit) ? category : null,
                 CategoryCode: category is { Length: > 0 } && category.All(char.IsDigit) ? category : null,
-                level,
-                hiringPath,
-                remoteOnly,
-                CompanyName: null,
+                HiringPath: hiringPath,
+                RemoteOnly: remoteOnly,
                 Page: 1),
             cancellationToken);
         var items = page.Items.Take(10).Select(listing => new
@@ -71,7 +68,7 @@ public sealed class LiveJobTools(
         McpToolLog.Information(
             logger,
             tool,
-            new { keyword, location, category, level, hiringPath, remoteOnly, provider = provider.Name },
+            new { keyword, location, category, hiringPath, remoteOnly, provider = provider.Name },
             timer);
 
         return JsonSerializer.Serialize(new

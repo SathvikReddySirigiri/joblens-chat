@@ -104,14 +104,14 @@ public static class EmailDraftTypes
 
     public static readonly string[] All =
     [
+        VerifyRecruiter,
+        ReportScamToCareerCenter,
         FollowUpAfterApplying,
         ThankYouAfterInterview,
         AskForInterviewDetails,
-        VerifyRecruiter,
         AcceptOffer,
         DeclineOffer,
         WithdrawApplication,
-        ReportScamToCareerCenter,
     ];
 
     public static string DisplayName(string type) => type switch

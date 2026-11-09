@@ -1,4 +1,4 @@
-# Test Matrix (JobLens Chat)
+# Test Matrix (JobLens)
 
 Fill **Actual result**, **Pass/Fail**, and **Evaluator** during the grading run. Expected numbers come only from [known-answers.md](known-answers.md) and `SeedDataTests`. Where a live/Inspector value is required, expected says **fill from Inspector run**.
 

@@ -16,7 +16,6 @@ public sealed record ResumePageModel(
     ResumeSummary? Resume,
     IReadOnlyList<PrivacyFinding> Findings,
     IReadOnlyList<string> Skills,
-    IReadOnlyList<string> Tips,
     string? UploadError,
     ResumeMatchResult? Match);
 

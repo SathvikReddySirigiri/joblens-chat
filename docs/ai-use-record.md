@@ -1,4 +1,4 @@
-# AI Use Record (JobLens Chat)
+# AI Use Record (JobLens)
 
 Add one entry for each meaningful AI suggestion the team acts on. Copy the blank entry, fill it in, and keep newer entries under **Entries**. Summarize the suggestion. Do not paste secrets, keys, or full chat transcripts.
 

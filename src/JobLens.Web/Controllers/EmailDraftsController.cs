@@ -30,7 +30,7 @@ public sealed class EmailDraftsController(EmailDraftService drafts, ApplicationS
                 return NotFound();
             }
 
-            Prefill(page, app.ApplicationId, app.CompanyName, app.RoleTitle, app.RecruiterEmail);
+            Prefill(page, app.ApplicationId, app.CompanyName, app.RoleTitle, app.RecruiterEmail, app.RiskVerdict);
         }
 
         return View(page);
@@ -52,7 +52,7 @@ public sealed class EmailDraftsController(EmailDraftService drafts, ApplicationS
                 return NotFound();
             }
 
-            Prefill(form, app.ApplicationId, app.CompanyName, app.RoleTitle, app.RecruiterEmail);
+            Prefill(form, app.ApplicationId, app.CompanyName, app.RoleTitle, app.RecruiterEmail, app.RiskVerdict);
             return View(form);
         }
 
@@ -97,7 +97,6 @@ public sealed class EmailDraftsController(EmailDraftService drafts, ApplicationS
         CancellationToken cancellationToken)
     {
         var page = await applications.BrowseAsync(actor, status: null, search: null, page: 1, cancellationToken);
-        // Load a few pages worth for the dropdown without a dedicated list API.
         var items = page.Items.ToList();
         if (page.Total > page.PageSize)
         {
@@ -112,7 +111,8 @@ public sealed class EmailDraftsController(EmailDraftService drafts, ApplicationS
                 item.CompanyName,
                 item.RoleTitle,
                 item.RecruiterEmail,
-                null))
+                null,
+                item.RiskVerdict))
             .ToList();
     }
 
@@ -121,11 +121,24 @@ public sealed class EmailDraftsController(EmailDraftService drafts, ApplicationS
         int applicationId,
         string company,
         string role,
-        string? recruiterEmail)
+        string? recruiterEmail,
+        string? riskVerdict)
     {
         form.PrefillApplicationId = applicationId;
         form.CompanyName = company;
         form.RoleTitle = role;
         form.RecruiterEmail = recruiterEmail;
+        form.Type = DefaultTypeForRisk(riskVerdict);
+    }
+
+    internal static string DefaultTypeForRisk(string? riskVerdict)
+    {
+        if (string.Equals(riskVerdict, ApplicationRiskVerdicts.Medium, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(riskVerdict, ApplicationRiskVerdicts.High, StringComparison.OrdinalIgnoreCase))
+        {
+            return EmailDraftTypes.VerifyRecruiter;
+        }
+
+        return EmailDraftTypes.FollowUpAfterApplying;
     }
 }

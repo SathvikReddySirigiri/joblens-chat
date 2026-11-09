@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using JobLens.Domain.Constants;
 
 namespace JobLens.Application.Dtos.Pages;
 
@@ -7,7 +8,7 @@ public sealed class EmailDraftPageVm
     public int? PrefillApplicationId { get; set; }
 
     [Required]
-    public string Type { get; set; } = "FollowUpAfterApplying";
+    public string Type { get; set; } = EmailDraftTypes.FollowUpAfterApplying;
 
     [Required]
     public string Tone { get; set; } = "Professional";
@@ -47,4 +48,5 @@ public sealed record EmailDraftApplicationOption(
     string CompanyName,
     string RoleTitle,
     string? RecruiterEmail,
-    string? RecruiterName);
+    string? RecruiterName,
+    string? RiskVerdict = null);

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] · JobLens</title>
-    <meta name="description" content="JobLens helps university career-center staff and students verify recruiters and explore synthetic job-scam reports with answers grounded in data." />
+    <meta name="description" content="JobLens helps university career-center staff and students verify recruiters and explore sample job-scam reports with answers grounded in data." />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%233B82F6'/%3E%3Cpath d='M32 10 L48 18 V34 C48 44 40 52 32 56 C24 52 16 44 16 34 V18 Z' fill='%23FFFFFF'/%3E%3Cpath d='M26 32 L30 36 L40 24' stroke='%233B82F6' stroke-width='4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,7 +17,7 @@
         var action = ViewContext.RouteData.Values["action"]?.ToString();
         var checkSection = controller is "CheckRecruiter" or "OfferAnalyzer";
         var communitySection = controller is "ScamReports" or "Companies" or "Recruiters" or "InterviewReviews";
-        var jobsSection = controller is "Jobs" or "JobPostings" or "LiveJobs";
+        var jobsSection = controller is "Jobs" or "JobPostings";
         var myJobLensSection = controller is "Applications" or "EmailDrafts" or "Resume";
         var aboutSection = controller is "About";
         var year = DateTime.UtcNow.Year;
@@ -50,7 +50,7 @@
                             <a class="nav-link @(controller == "ScamReports" ? "active" : null)" asp-controller="ScamReports" asp-action="Index">Scam Reports</a>
                             <a class="nav-link @(controller == "Companies" ? "active" : null)" asp-controller="Companies" asp-action="Index">Companies</a>
                             <a class="nav-link @(controller == "Recruiters" ? "active" : null)" asp-controller="Recruiters" asp-action="Index">Recruiters</a>
-                            <a class="nav-link @(controller == "InterviewReviews" ? "active" : null)" asp-controller="InterviewReviews" asp-action="Index">Interview Reviews</a>
+                            <a class="nav-link @(controller == "InterviewReviews" ? "active" : null)" asp-controller="InterviewReviews" asp-action="Index">Interview experiences</a>
                         </div>
                     </li>
                     <li>

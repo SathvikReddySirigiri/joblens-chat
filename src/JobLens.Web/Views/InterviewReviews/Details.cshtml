@@ -22,7 +22,19 @@
     <p><partial name="_Stars" model="Model.Rating" /></p>
     <dl class="detail-list">
         <div><dt>Company</dt><dd><a asp-controller="Companies" asp-action="Details" asp-route-id="@Model.CompanyId">@Model.CompanyName</a></dd></div>
-        <div><dt>Legitimate</dt><dd>@(Model.WasLegit ? "Yes" : "No")</dd></div>
+        <div>
+            <dt>Interview status</dt>
+            <dd>
+                @if (!Model.WasLegit)
+                {
+                    <span class="badge badge-high">⚠ Suspicious</span>
+                }
+                else
+                {
+                    <span class="badge badge-low">Legitimate</span>
+                }
+            </dd>
+        </div>
         <div><dt>Experience</dt><dd>@Model.Experience</dd></div>
     </dl>
 </section>

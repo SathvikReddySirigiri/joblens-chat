@@ -21,7 +21,8 @@
         <div><dt>Approved reports</dt><dd>@activity.ApprovedReports</dd></div>
         <div><dt>Pending reports</dt><dd>@activity.PendingReports</dd></div>
         <div><dt>Job postings</dt><dd>@activity.Postings</dd></div>
-        <div><dt>Interview reviews</dt><dd>@activity.Reviews</dd></div>
+        <div><dt>Interview experiences</dt><dd>@activity.Reviews</dd></div>
+        <div><dt>Suspicious reports</dt><dd>@activity.SuspiciousReviews suspicious interview reports</dd></div>
         <div><dt>Average rating</dt><dd>@(activity.AverageRating is null ? "No reviews yet" : activity.AverageRating.Value.ToString("0.00"))</dd></div>
     </dl>
 </section>

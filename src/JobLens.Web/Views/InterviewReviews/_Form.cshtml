@@ -33,17 +33,13 @@
     <p class="help" id="experience-count">20 to 1000 characters.</p>
     <span asp-validation-for="Experience" class="field-error"></span>
 </div>
-<fieldset class="field">
-    <legend>Was this a legitimate interview?</legend>
-    <div class="check-row">
-        <input type="radio" id="WasLegitYes" name="WasLegit" value="true" checked="@(Model.WasLegit ? "checked" : null)" />
-        <label for="WasLegitYes">Yes</label>
-    </div>
-    <div class="check-row">
-        <input type="radio" id="WasLegitNo" name="WasLegit" value="false" checked="@(!Model.WasLegit ? "checked" : null)" />
-        <label for="WasLegitNo">No</label>
-    </div>
-</fieldset>
+<div class="field field-checkbox">
+    <label>
+        <input type="checkbox" name="WasLegit" value="true" checked="@(Model.WasLegit ? "checked" : null)" />
+        Was this a real, legitimate interview?
+    </label>
+    <p class="help">Uncheck if it looked like a scam (chat-only interview, fees, a check to deposit, SSN request)</p>
+</div>
 <div class="field">
     <label asp-for="ReviewDate">Review date</label>
     <input asp-for="ReviewDate" placeholder="yyyy-MM-dd" />

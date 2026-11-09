@@ -35,6 +35,7 @@ public sealed class SeedDataTests(ITestOutputHelper output)
             Assert.Equal(130, await ScalarAsync(connection, "SELECT COUNT(*) FROM Recruiters;"));
             Assert.Equal(70, await ScalarAsync(connection, "SELECT COUNT(*) FROM JobPostings;"));
             Assert.Equal(50, await ScalarAsync(connection, "SELECT COUNT(*) FROM InterviewReviews;"));
+            Assert.Equal(7, await ScalarAsync(connection, "SELECT COUNT(*) FROM InterviewReviews WHERE WasLegit = 0;"));
             Assert.Equal(100, await ScalarAsync(connection, "SELECT COUNT(*) FROM CheckLogs;"));
             Assert.Equal(5, await ScalarAsync(connection, "SELECT COUNT(*) FROM Users;"));
             Assert.Equal(12, await ScalarAsync(connection, "SELECT COUNT(*) FROM JobApplications;"));

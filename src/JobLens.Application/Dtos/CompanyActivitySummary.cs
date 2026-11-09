@@ -5,5 +5,6 @@ public sealed record CompanyActivitySummary(
     int PendingReports,
     int Postings,
     int Reviews,
-    double? AverageRating);
+    double? AverageRating,
+    int SuspiciousReviews = 0);
 

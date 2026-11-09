@@ -1,4 +1,4 @@
-# Team Record (JobLens Chat)
+# Team Record (JobLens)
 
 One row per person. Update the row when a role or ownership changes.
 
@@ -9,6 +9,6 @@ One row per person. Update the row when a role or ownership changes.
 ## How to fill a row
 
 - **Name:** the person on the team.
-- **Role:** their job on JobLens Chat (for example, frontend, API, testing, or docs).
+- **Role:** their job on JobLens (for example, frontend, API, testing, or docs).
 - **Owns:** the part of the product they are responsible for.
 - **Notes:** what they finished in the current phase, or a handoff note.

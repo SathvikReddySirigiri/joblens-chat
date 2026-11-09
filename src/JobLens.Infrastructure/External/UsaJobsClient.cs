@@ -67,6 +67,11 @@ public sealed partial class UsaJobsClient(
             if (response.StatusCode is HttpStatusCode.TooManyRequests or HttpStatusCode.Forbidden)
             {
                 LogHttpError(response.StatusCode, url, body);
+                if (cache.TryGetValue(cacheKey, out LiveJobsResult? stale) && stale is not null)
+                {
+                    return stale with { FromCache = true };
+                }
+
                 return Fail(query.Page, BusyMessage, $"HTTP {(int)response.StatusCode}");
             }
 
@@ -448,4 +453,9 @@ public sealed partial class UsaJobsClient(
 
     [GeneratedRegex("<[^>]+>", RegexOptions.CultureInvariant)]
     private static partial Regex HtmlTagPattern();
+}
+
+internal static class LiveJobsServiceNames
+{
+    public const string UsaJobs = "USAJOBS";
 }

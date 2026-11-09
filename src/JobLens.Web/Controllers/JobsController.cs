@@ -20,11 +20,8 @@ public sealed class JobsController(
     [EnableRateLimiting(LoginRateLimiting.ExpensivePolicyName)]
     public async Task<IActionResult> Index(
         string? tab,
-        string? category,
         string? categoryCode,
-        string? level,
         string? location,
-        string? companyName,
         string? keyword,
         string? hiringPath,
         bool remoteOnly = false,
@@ -47,13 +44,10 @@ public sealed class JobsController(
                 new LiveJobsQuery(
                     keyword,
                     location,
-                    category,
-                    categoryCode,
-                    level,
-                    hiringPath,
-                    remoteOnly,
-                    companyName,
-                    page),
+                    CategoryCode: categoryCode,
+                    HiringPath: hiringPath,
+                    RemoteOnly: remoteOnly,
+                    Page: page),
                 cancellationToken);
             return View(new JobsPageVm { Tab = JobsPageVm.LiveTab, Live = live });
         }

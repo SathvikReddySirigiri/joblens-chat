@@ -472,12 +472,6 @@ select:focus {
   font-weight: 600;
 }
 
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-5);
-}
-
 .card + .card { margin-top: var(--space-5); }
 
 .reason-list {
@@ -500,7 +494,6 @@ select:focus {
 
 @media (max-width: 900px) {
   .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .summary-grid { grid-template-columns: 1fr; }
   h1 { font-size: 2rem; }
 }
 
@@ -816,14 +809,6 @@ input[type="radio"] {
   gap: var(--space-2);
 }
 
-.summary-grid dt { color: var(--muted); }
-
-.summary-grid dd {
-  margin: var(--space-2) 0 0;
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
 @media (max-width: 720px) {
   .menu-toggle { display: inline-flex; }
 
@@ -1006,8 +991,7 @@ blockquote {
   margin: 0;
 }
 
-.stats-grid,
-.kpi-grid {
+.stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
   gap: var(--space-4);
@@ -1029,16 +1013,14 @@ blockquote {
   font-weight: 600;
 }
 
-.stat-value,
-.kpi-value {
+.stat-value {
   margin: var(--space-2) 0 0;
   font-size: 2rem;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
-.stat-value a,
-.kpi-value a {
+.stat-value a {
   color: var(--primary);
 }
 
@@ -1049,7 +1031,6 @@ blockquote {
   margin: var(--space-5) 0;
 }
 
-.kpi h2,
 .chart-card h2,
 .insights h2 {
   margin: 0 0 var(--space-2);
@@ -1350,11 +1331,6 @@ blockquote {
   gap: var(--space-3);
 }
 
-.footer-product {
-  font-weight: 600;
-  color: var(--text);
-}
-
 .footer-links {
   display: flex;
   flex-wrap: wrap;
@@ -1559,18 +1535,6 @@ blockquote {
 
 .joblens-row-card {
   display: grid;
-}
-
-.trust-card {
-  margin-top: var(--space-5);
-  padding: var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
-}
-
-.trust-card h3 {
-  margin-top: 0;
 }
 
 .live-pager {

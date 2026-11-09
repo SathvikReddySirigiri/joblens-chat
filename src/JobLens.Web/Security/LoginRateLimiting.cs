@@ -56,8 +56,7 @@ public static class LoginRateLimiting
         httpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
 
         var path = httpContext.Request.Path.Value ?? "";
-        if (path.StartsWith("/Jobs", StringComparison.OrdinalIgnoreCase)
-            || path.StartsWith("/LiveJobs", StringComparison.OrdinalIgnoreCase))
+        if (path.StartsWith("/Jobs", StringComparison.OrdinalIgnoreCase))
         {
             await RenderViewAsync(
                 httpContext,

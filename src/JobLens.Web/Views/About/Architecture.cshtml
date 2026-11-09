@@ -32,13 +32,11 @@ flowchart TB
     Rdap["RDAP registries"]
     Edgar["SEC EDGAR"]
     UsaJobs["USAJOBS API"]
-    Muse["The Muse jobs API"]
     Aoi["Azure OpenAI"]
   end
   Infra --> Rdap
   Infra --> Edgar
   Infra --> UsaJobs
-  Infra --> Muse
   Orch --> Aoi
         </pre>
     </div>
@@ -46,7 +44,7 @@ flowchart TB
         <li>Browser calls MVC controllers for CRUD, checks, dashboard, Jobs (two tabs), and chat UI.</li>
         <li>Controllers call Application services; services call Infrastructure repositories; SQL stays in repositories against SQLite.</li>
         <li>Chat page uses ChatOrchestrator → MCP HTTP client → <code>/mcp</code> (optional <code>X-Api-Key</code>) → read-only MCP tools → Application services.</li>
-        <li>Infrastructure also calls RDAP, SEC EDGAR, and USAJOBS (or The Muse) for live Jobs; ChatOrchestrator may call Azure OpenAI when configured.</li>
+        <li>Infrastructure also calls RDAP, SEC EDGAR, and USAJOBS for live Jobs; ChatOrchestrator may call Azure OpenAI when configured.</li>
         <li>Everything above runs in a single Azure App Service instance for class deployment.</li>
     </ol>
 </section>
@@ -142,7 +140,7 @@ flowchart TB
                 <tr>
                     <td><code>search_live_jobs</code></td>
                     <td>Read (external)</td>
-                    <td>Live openings from USAJOBS or The Muse (Jobs tab)</td>
+                    <td>Live openings from USAJOBS (Jobs tab)</td>
                     <td>Allow-listed filters; not stored</td>
                 </tr>
                 <tr>
@@ -175,12 +173,12 @@ flowchart TB
         <li>Cookie authentication with roles; login throttling (5 attempts / minute / IP); <code>/mcp</code> access key via <code>X-Api-Key</code>.</li>
         <li>Secrets in user-secrets locally and App Service settings in Azure—never in <code>appsettings.json</code> or Git.</li>
         <li>Offer Analyzer redacts PII before analysis; chat answers must use tool evidence; Demo fallback when no AI key.</li>
-        <li>Synthetic data only; wording treats reports as impersonation of companies, not accusations that those companies ran the scam.</li>
+        <li>Sample data only; wording treats reports as impersonation of companies, not accusations that those companies ran the scam.</li>
     </ul>
     <h3>Limitations</h3>
     <ul>
         <li>SQLite on a single App Service instance (not a multi-region shared database).</li>
-        <li>Training data is synthetic; results are for class demos, not production threat intel.</li>
+        <li>Training data is sample data for education; results are for class demos, not production threat intel.</li>
         <li>The language model can still misread tool output—UI and prompts push for grounded answers.</li>
     </ul>
     <h3>Fairness note</h3>

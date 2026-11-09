@@ -1,11 +1,7 @@
-using JobLens.Application.Dtos;
-using JobLens.Application.Interfaces;
 using JobLens.Application.Services;
 using JobLens.Domain.Skills;
 using JobLens.Infrastructure.Documents;
 using JobLens.Infrastructure.Persistence;
-using Microsoft.Extensions.AI;
-using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace JobLens.Tests;
@@ -130,9 +126,7 @@ public sealed class ResumeServiceTests
         new(
             new ResumeRepository(connectionString),
             new OfferTextExtractor(),
-            new PiiRedactor(),
-            new StubAiFactory(),
-            NullLogger<ResumeService>.Instance);
+            new PiiRedactor());
 
     private static byte[] BuildMinimalDocx(string text)
     {
@@ -152,15 +146,5 @@ public sealed class ResumeServiceTests
         }
 
         return stream.ToArray();
-    }
-
-    private sealed class StubAiFactory : IAiClientFactory
-    {
-        public bool IsConfigured => false;
-
-        public string Label => "Demo";
-
-        public IChatClient CreateClient(bool useFunctionInvocation) =>
-            throw new NotSupportedException();
     }
 }

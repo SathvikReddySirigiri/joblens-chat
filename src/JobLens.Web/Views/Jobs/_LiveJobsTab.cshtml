@@ -1,10 +1,8 @@
 @model LiveJobsPage
 @{
     var search = Model.Search;
-    var isUsaJobs = Model.ProviderName.Contains("USAJOBS", StringComparison.OrdinalIgnoreCase);
-    var museCategories = LiveJobsService.AllowedCategories;
-    var museLevels = LiveJobsService.AllowedLevels;
     var usaCategories = LiveJobsService.UsaJobsCategories;
+    var pageSize = 20;
 }
 
 <section class="card">
@@ -18,108 +16,65 @@
             <label for="location">Location</label>
             <input id="location" name="location" value="@search.Location" maxlength="60" placeholder="Tampa, FL or Remote" />
         </div>
-        @if (isUsaJobs)
-        {
-            <div class="field">
-                <label for="categoryCode">Category</label>
-                <select id="categoryCode" name="categoryCode">
-                    <option value="">Any category</option>
-                    @foreach (var category in usaCategories)
+        <div class="field">
+            <label for="categoryCode">Category</label>
+            <select id="categoryCode" name="categoryCode">
+                <option value="">Any category</option>
+                @foreach (var category in usaCategories)
+                {
+                    if (search.CategoryCode == category.Code)
                     {
-                        if (search.CategoryCode == category.Code)
-                        {
-                            <option value="@category.Code" selected>@category.Label (@category.Code)</option>
-                        }
-                        else
-                        {
-                            <option value="@category.Code">@category.Label (@category.Code)</option>
-                        }
-                    }
-                </select>
-            </div>
-            <div class="field">
-                <label for="hiringPath">Hiring path</label>
-                <select id="hiringPath" name="hiringPath">
-                    @if ((search.HiringPath ?? "student") == "student")
-                    {
-                        <option value="student" selected>Students &amp; interns</option>
+                        <option value="@category.Code" selected>@category.Label (@category.Code)</option>
                     }
                     else
                     {
-                        <option value="student">Students &amp; interns</option>
+                        <option value="@category.Code">@category.Label (@category.Code)</option>
                     }
-                    @if (search.HiringPath == "graduates")
-                    {
-                        <option value="graduates" selected>Recent graduates</option>
-                    }
-                    else
-                    {
-                        <option value="graduates">Recent graduates</option>
-                    }
-                    @if (search.HiringPath == "public")
-                    {
-                        <option value="public" selected>Open to the public</option>
-                    }
-                    else
-                    {
-                        <option value="public">Open to the public</option>
-                    }
-                </select>
-            </div>
-            <div class="field field-checkbox">
-                <label>
-                    @if (search.RemoteOnly)
-                    {
-                        <input type="checkbox" name="remoteOnly" value="true" checked />
-                    }
-                    else
-                    {
-                        <input type="checkbox" name="remoteOnly" value="true" />
-                    }
-                    Remote only
-                </label>
-            </div>
-        }
-        else
-        {
-            <div class="field">
-                <label for="category">Category</label>
-                <select id="category" name="category">
-                    <option value="">Any category</option>
-                    @foreach (var category in museCategories)
-                    {
-                        if (search.Category == category)
-                        {
-                            <option value="@category" selected>@category</option>
-                        }
-                        else
-                        {
-                            <option value="@category">@category</option>
-                        }
-                    }
-                </select>
-            </div>
-            <div class="field">
-                <label for="level">Level</label>
-                <select id="level" name="level">
-                    @foreach (var level in museLevels)
-                    {
-                        if ((search.Level ?? "Internship") == level)
-                        {
-                            <option value="@level" selected>@level</option>
-                        }
-                        else
-                        {
-                            <option value="@level">@level</option>
-                        }
-                    }
-                </select>
-            </div>
-            <div class="field">
-                <label for="companyName">Company</label>
-                <input id="companyName" name="companyName" value="@search.CompanyName" maxlength="80" placeholder="Company name" />
-            </div>
-        }
+                }
+            </select>
+        </div>
+        <div class="field">
+            <label for="hiringPath">Hiring path</label>
+            <select id="hiringPath" name="hiringPath">
+                @if ((search.HiringPath ?? "student") == "student")
+                {
+                    <option value="student" selected>Students &amp; interns</option>
+                }
+                else
+                {
+                    <option value="student">Students &amp; interns</option>
+                }
+                @if (search.HiringPath == "graduates")
+                {
+                    <option value="graduates" selected>Recent graduates</option>
+                }
+                else
+                {
+                    <option value="graduates">Recent graduates</option>
+                }
+                @if (search.HiringPath == "public")
+                {
+                    <option value="public" selected>Open to the public</option>
+                }
+                else
+                {
+                    <option value="public">Open to the public</option>
+                }
+            </select>
+        </div>
+        <div class="field field-checkbox">
+            <label>
+                @if (search.RemoteOnly)
+                {
+                    <input type="checkbox" name="remoteOnly" value="true" checked />
+                }
+                else
+                {
+                    <input type="checkbox" name="remoteOnly" value="true" />
+                }
+                Remote only
+            </label>
+        </div>
         <div class="filter-actions">
             <button class="btn btn-primary" type="submit">Search live jobs</button>
         </div>
@@ -143,7 +98,6 @@
 
 @if (Model.Items.Count > 0)
 {
-    var pageSize = isUsaJobs ? 20 : Math.Max(Model.Items.Count, 1);
     var from = ((Model.Page - 1) * pageSize) + 1;
     var to = from + Model.Items.Count - 1;
     var total = Model.Page < Model.PageCount
@@ -271,19 +225,6 @@
                                asp-route-title="@job.Title"
                                asp-route-url="@job.ApplyUrl"
                                asp-route-source="LiveJobs">Track</a>
-                            <details class="card-more">
-                                <summary aria-label="More actions">⋯</summary>
-                                <div class="card-more-panel">
-                                    <form method="post" asp-controller="Resume" asp-action="Match">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="jobTitle" value="@job.Title" />
-                                        <input type="hidden" name="companyName" value="@job.CompanyName" />
-                                        <input type="hidden" name="jobText" value="@(job.DescriptionSnippet) @(job.Categories) @(job.Levels)" />
-                                        <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Jobs", new { tab = JobsPageVm.LiveTab })" />
-                                        <button type="submit">Match my resume</button>
-                                    </form>
-                                </div>
-                            </details>
                         }
                     </div>
                 </footer>
@@ -298,11 +239,8 @@
                asp-controller="Jobs"
                asp-action="Index"
                asp-route-tab="@JobsPageVm.LiveTab"
-               asp-route-category="@search.Category"
                asp-route-categoryCode="@search.CategoryCode"
-               asp-route-level="@search.Level"
                asp-route-location="@search.Location"
-               asp-route-companyName="@search.CompanyName"
                asp-route-keyword="@search.Keyword"
                asp-route-hiringPath="@search.HiringPath"
                asp-route-remoteOnly="@(search.RemoteOnly ? "true" : null)"
@@ -314,11 +252,8 @@
                asp-controller="Jobs"
                asp-action="Index"
                asp-route-tab="@JobsPageVm.LiveTab"
-               asp-route-category="@search.Category"
                asp-route-categoryCode="@search.CategoryCode"
-               asp-route-level="@search.Level"
                asp-route-location="@search.Location"
-               asp-route-companyName="@search.CompanyName"
                asp-route-keyword="@search.Keyword"
                asp-route-hiringPath="@search.HiringPath"
                asp-route-remoteOnly="@(search.RemoteOnly ? "true" : null)"

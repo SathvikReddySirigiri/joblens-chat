@@ -1,16 +1,17 @@
 @using JobLens.Web.ViewModels
 @{
-    ViewData["Title"] = "Interview reviews";
+    ViewData["Title"] = "Interview experiences";
     var page = (PageResult<InterviewReview>)ViewBag.Page;
     ViewData["PagerPage"] = page.Page;
     ViewData["PagerSize"] = page.PageSize;
     ViewData["PagerTotal"] = page.Total;
     var companies = ViewBag.Companies as IReadOnlyList<Company> ?? Array.Empty<Company>();
     var legit = ViewBag.Legit as bool?;
+    var suspiciousOnly = legit == false;
 }
 @{
-    ViewData["PageTitle"] = "Interview reviews";
-    ViewData["PageSubtitle"] = "Student notes on whether an interview felt legitimate.";
+    ViewData["PageTitle"] = "Interview experiences";
+    ViewData["PageSubtitle"] = "Student notes on whether an interview felt legitimate — and flags when it looked like a scam.";
 }
 <section class="page-header">
     <partial name="_PageHeader" />
@@ -22,7 +23,7 @@
     }
 </section>
 <section class="card">
-    <form method="get" class="filter-bar" aria-label="Filter reviews">
+    <form method="get" class="filter-bar" aria-label="Filter interview experiences">
         <div class="field">
             <label for="company">Company</label>
             <select id="company" name="company">
@@ -57,27 +58,18 @@
                 }
             </select>
         </div>
-        <div class="field">
-            <label for="legit">Legitimate</label>
-            <select id="legit" name="legit">
-                <option value="">Any</option>
-                @if (legit == true)
+        <div class="field field-checkbox">
+            <label>
+                @if (suspiciousOnly)
                 {
-                    <option value="true" selected>Yes</option>
+                    <input type="checkbox" name="legit" value="false" checked />
                 }
                 else
                 {
-                    <option value="true">Yes</option>
+                    <input type="checkbox" name="legit" value="false" />
                 }
-                @if (legit == false)
-                {
-                    <option value="false" selected>No</option>
-                }
-                else
-                {
-                    <option value="false">No</option>
-                }
-            </select>
+                Suspicious only
+            </label>
         </div>
         <div class="filter-actions">
             <button class="btn btn-primary" type="submit">Apply</button>
@@ -88,7 +80,7 @@
 @if (page.Total == 0)
 {
     <section class="card empty-state">
-        <p>No reviews match these filters.</p>
+        <p>No interview experiences match these filters.</p>
         <a asp-action="Index">Clear filters</a>
     </section>
 }
@@ -102,7 +94,7 @@ else
                     <th scope="col">Company</th>
                     <th scope="col">Role</th>
                     <th scope="col">Rating</th>
-                    <th scope="col">Legitimate</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -114,7 +106,16 @@ else
                         <td>@review.CompanyName</td>
                         <td>@review.Role</td>
                         <td><partial name="_Stars" model="review.Rating" /></td>
-                        <td>@(review.WasLegit ? "Yes" : "No")</td>
+                        <td>
+                            @if (!review.WasLegit)
+                            {
+                                <span class="badge badge-high">⚠ Suspicious</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-low">Legitimate</span>
+                            }
+                        </td>
                         <td><a asp-action="Details" asp-route-id="@review.ReviewId">Details</a></td>
                     </tr>
                 }

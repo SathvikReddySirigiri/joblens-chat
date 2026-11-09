@@ -1,9 +1,7 @@
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using JobLens.Application.Dtos;
 using JobLens.Application.Services;
-using JobLens.Infrastructure;
 using JobLens.Infrastructure.External;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -95,35 +93,16 @@ public sealed class UsaJobsTests
     }
 
     [Fact]
-    public void Provider_selection_defaults_to_usajobs_and_honors_themuse()
-    {
-        var defaultConfig = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>())
-            .Build();
-        Assert.Equal(typeof(UsaJobsClient), DependencyInjection.ResolveLiveJobsProviderType(defaultConfig));
-
-        var usa = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["Jobs:Provider"] = "UsaJobs" })
-            .Build();
-        Assert.Equal(typeof(UsaJobsClient), DependencyInjection.ResolveLiveJobsProviderType(usa));
-
-        var muse = new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?> { ["Jobs:Provider"] = "TheMuse" })
-            .Build();
-        Assert.Equal(typeof(MuseJobsClient), DependencyInjection.ResolveLiveJobsProviderType(muse));
-    }
-
-    [Fact]
     public void Non_usajobs_apply_url_is_hidden()
     {
         Assert.Null(LiveJobsService.SafeApplyUrl("https://evil.example/apply", "USAJOBS"));
-        Assert.Null(LiveJobsService.SafeApplyUrl("https://themuse.com/jobs/1", "USAJOBS"));
+        Assert.Null(LiveJobsService.SafeApplyUrl("https://jobs.example.com/jobs/1", "USAJOBS"));
         Assert.Equal(
             "https://www.usajobs.gov/GetJob/ViewDetails/1",
             LiveJobsService.SafeApplyUrl("https://www.usajobs.gov/GetJob/ViewDetails/1", "USAJOBS"));
         Assert.Equal(
-            "https://www.themuse.com/jobs/1",
-            LiveJobsService.SafeApplyUrl("https://www.themuse.com/jobs/1", "The Muse"));
+            "https://careers.example.com/jobs/1",
+            LiveJobsService.SafeApplyUrl("https://careers.example.com/jobs/1", "Partner board"));
     }
 
     [Fact]
@@ -133,6 +112,7 @@ public sealed class UsaJobsTests
         var client = CreateClient(
             HttpStatusCode.OK,
             "{}",
+            cache,
             apiKey: null,
             userAgent: null);
         var result = await client.SearchAsync(new LiveJobsQuery(HiringPath: "student"), CancellationToken.None);
@@ -141,9 +121,37 @@ public sealed class UsaJobsTests
         Assert.False(result.FromCache);
     }
 
+    [Fact]
+    public async Task Http_429_returns_busy_message_and_prefers_cached_results()
+    {
+        var search = new LiveJobsQuery(HiringPath: "student", Page: 1);
+        using var cache = new MemoryCache(new MemoryCacheOptions { SizeLimit = 32 });
+        var client = CreateClient(HttpStatusCode.TooManyRequests, "{}", cache);
+
+        var busy = await client.SearchAsync(search, CancellationToken.None);
+        Assert.Equal(UsaJobsClient.BusyMessage, busy.Message);
+        Assert.Empty(busy.Items);
+        Assert.False(busy.FromCache);
+
+        cache.Set(
+            "usajobs|1||||student|0",
+            new LiveJobsResult(
+                [new LiveJob("9", "Cached Intern", "VA", "Remote", "GS-5", "IT", "snippet", null, "https://www.usajobs.gov/GetJob/ViewDetails/9")],
+                1,
+                1,
+                null,
+                false),
+            new MemoryCacheEntryOptions { Size = 1, AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30) });
+
+        var cached = await client.SearchAsync(search, CancellationToken.None);
+        Assert.True(cached.FromCache);
+        Assert.Equal("Cached Intern", cached.Items[0].Title);
+    }
+
     private static UsaJobsClient CreateClient(
         HttpStatusCode status,
         string body,
+        IMemoryCache? cache = null,
         string? apiKey = "test-key",
         string? userAgent = "tester@example.edu")
     {
@@ -160,7 +168,7 @@ public sealed class UsaJobsTests
             .Build();
         return new UsaJobsClient(
             http,
-            new MemoryCache(new MemoryCacheOptions { SizeLimit = 32 }),
+            cache ?? new MemoryCache(new MemoryCacheOptions { SizeLimit = 32 }),
             config,
             new FakeHostEnvironment(),
             NullLogger<UsaJobsClient>.Instance);

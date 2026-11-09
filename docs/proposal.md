@@ -1,4 +1,4 @@
-# JobLens Chat — Project Proposal (Checkpoint 1)
+# JobLens — Project Proposal (Checkpoint 1)
 ISM 6225 · App Dev for Analytics · Fall 2026
 Team: Naga Pavan Sathvik Reddy Sirigiri · Isabella Cuello Penaloza · Lakshmi Reethika Guduri
 
@@ -16,10 +16,10 @@ most?" or "Has this recruiter domain been reported before?"
 | Students (secondary) | Whether a specific recruiter email/domain is safe to reply to |
 
 ## 3. Solution
-JobLens Chat is a C# ASP.NET Core MVC web app with a chatbot. Users ask business questions in
+JobLens is a C# ASP.NET Core MVC web app with a chatbot. Users ask business questions in
 plain English. The chatbot connects as an MCP client to the app's own HTTP MCP server, discovers
 read-only tools at runtime, and answers ONLY from tool results that query a SQLite database of
-synthetic scam reports.
+sample scam reports.
 
 Why chat + tools adds value: staff get answers in seconds without SQL or dashboards, and every
 data claim is grounded in a controlled, parameterized query — the model never invents data or
@@ -37,7 +37,7 @@ runs arbitrary SQL.
 9. Is recruiting@google.com legitimate? (recruiter check — expected LOW risk)
 10. Has the domain safe-company-example.com been reported? (no-result case)
 
-## 5. Data model (SQLite, synthetic data only)
+## 5. Data model (SQLite, sample data only)
 ### Companies (10 rows)
 | Column | Type | Notes |
 |---|---|---|
@@ -57,7 +57,7 @@ runs arbitrary SQL.
 | ScamType | TEXT | NOT NULL — Fake check, Equipment purchase, Upfront fee, Chat-only interview, Identity theft, Fake staffing agency |
 | Channel | TEXT | NOT NULL — Email, Telegram, WhatsApp, LinkedIn, Text message |
 | AmountRequestedUsd | REAL | NOT NULL, CHECK ≥ 0 (0 if no money requested) |
-| DomainAgeDays | INTEGER | NOT NULL, CHECK ≥ 0 (synthetic) |
+| DomainAgeDays | INTEGER | NOT NULL, CHECK ≥ 0 (sample) |
 | Status | TEXT | NOT NULL — Pending, Approved, Rejected |
 | ReportedDate | TEXT | NOT NULL, ISO date (2026-01-01 to 2026-10-31) |
 
@@ -94,9 +94,9 @@ No execute_sql/run_query tool. No write tools.
 - Anti-forgery on POST; HTTPS; exact AllowedHosts on Azure.
 - Secrets (API key) only in User Secrets locally and Azure environment variables — never in Git.
 - Tests: prompt injection, SQL-like input, missing data, long input, model/tool failure.
-- Limitations: synthetic data; SQLite single-instance only.
+- Limitations: sample data; SQLite single-instance only.
 - Fairness/misuse: a legitimate company or recruiter could be wrongly associated with scams;
-  data is synthetic, only Approved reports drive rankings, and the bot advises verification
+  data is sample, only Approved reports drive rankings, and the bot advises verification
   rather than making accusations.
 
 ## 10. Architecture

@@ -8,28 +8,6 @@ namespace JobLens.Application.Services;
 public sealed partial class LiveJobsService(ILiveJobsProvider provider, ICompanyRepository companies)
 {
     public const string UsaJobsProviderName = "USAJOBS";
-    public const string MuseProviderName = "The Muse";
-
-    public static readonly string[] AllowedLevels =
-    [
-        "Internship",
-        "Entry Level",
-        "Mid Level",
-        "Senior Level",
-    ];
-
-    public static readonly string[] AllowedCategories =
-    [
-        "Data and Analytics",
-        "Data Science",
-        "Software Engineering",
-        "Accounting and Finance",
-        "Business Operations",
-        "Marketing",
-        "Project Management",
-        "IT",
-        "Healthcare",
-    ];
 
     public static readonly IReadOnlyList<(string Label, string Code)> UsaJobsCategories =
     [
@@ -43,10 +21,6 @@ public sealed partial class LiveJobsService(ILiveJobsProvider provider, ICompany
         ("Economics", "0110"),
         ("Business & Industry", "1101"),
     ];
-
-    public bool IsUsaJobs =>
-        provider.Name.Contains("USAJOBS", StringComparison.OrdinalIgnoreCase)
-        || provider.Name.Contains("USA Jobs", StringComparison.OrdinalIgnoreCase);
 
     public string ProviderName => provider.Name;
 
@@ -63,15 +37,9 @@ public sealed partial class LiveJobsService(ILiveJobsProvider provider, ICompany
         }
 
         var raw = await provider.SearchAsync(normalized, cancellationToken);
-        var keyword = normalized.Keyword?.Trim() ?? "";
-        // Muse keyword is client-side; USAJOBS already applied Keyword server-side.
-        var items = !IsUsaJobs && keyword.Length > 0
-            ? raw.Items.Where(job => job.Title.Contains(keyword, StringComparison.OrdinalIgnoreCase)).ToList()
-            : raw.Items;
-
         var companyList = await companies.GetAllAsync(cancellationToken);
-        var listings = new List<LiveJobListing>(items.Count);
-        foreach (var job in items)
+        var listings = new List<LiveJobListing>(raw.Items.Count);
+        foreach (var job in raw.Items)
         {
             var safeJob = job with { ApplyUrl = SafeApplyUrl(job.ApplyUrl, job.Source) ?? "" };
             var (trust, companyId) = await BuildTrustAsync(safeJob, companyList, cancellationToken);
@@ -122,7 +90,7 @@ public sealed partial class LiveJobsService(ILiveJobsProvider provider, ICompany
         return null;
     }
 
-    internal static LiveJobsQuery Normalize(LiveJobsQuery search, out string? error, bool usaJobs = false)
+    internal static LiveJobsQuery Normalize(LiveJobsQuery search, out string? error)
     {
         error = null;
         var page = Math.Clamp(search.Page <= 0 ? 1 : search.Page, 1, 5);
@@ -141,100 +109,54 @@ public sealed partial class LiveJobsService(ILiveJobsProvider provider, ICompany
             return search with { Page = page, Location = NullIfEmpty(location) };
         }
 
-        if (usaJobs)
+        string? categoryCode = null;
+        string? categoryLabel = null;
+        if (!string.IsNullOrWhiteSpace(search.CategoryCode))
         {
-            string? categoryCode = null;
-            string? categoryLabel = null;
-            if (!string.IsNullOrWhiteSpace(search.CategoryCode))
+            var match = UsaJobsCategories.FirstOrDefault(item =>
+                item.Code.Equals(search.CategoryCode.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (match.Code is null)
             {
-                var match = UsaJobsCategories.FirstOrDefault(item =>
-                    item.Code.Equals(search.CategoryCode.Trim(), StringComparison.OrdinalIgnoreCase));
-                if (match.Code is null)
-                {
-                    error = "Choose a category from the supported USAJOBS series list.";
-                    return search with { Page = page, Location = NullIfEmpty(location), Keyword = NullIfEmpty(keyword) };
-                }
-
-                categoryCode = match.Code;
-                categoryLabel = match.Label;
-            }
-            else if (!string.IsNullOrWhiteSpace(search.Category))
-            {
-                var match = UsaJobsCategories.FirstOrDefault(item =>
-                    item.Label.Equals(search.Category.Trim(), StringComparison.OrdinalIgnoreCase)
-                    || item.Code.Equals(search.Category.Trim(), StringComparison.OrdinalIgnoreCase));
-                if (match.Code is null)
-                {
-                    error = "Choose a category from the supported USAJOBS series list.";
-                    return search with { Page = page, Location = NullIfEmpty(location), Keyword = NullIfEmpty(keyword) };
-                }
-
-                categoryCode = match.Code;
-                categoryLabel = match.Label;
-            }
-
-            var hiringPath = string.IsNullOrWhiteSpace(search.HiringPath)
-                ? "student"
-                : search.HiringPath.Trim().ToLowerInvariant();
-            if (hiringPath is not ("student" or "graduates" or "public"))
-            {
-                error = "Hiring path must be Students & interns, Recent graduates, or open to the public.";
+                error = "Choose a category from the supported USAJOBS series list.";
                 return search with { Page = page, Location = NullIfEmpty(location), Keyword = NullIfEmpty(keyword) };
             }
 
-            return new LiveJobsQuery(
-                NullIfEmpty(keyword),
-                NullIfEmpty(location),
-                categoryLabel,
-                categoryCode,
-                Level: null,
-                hiringPath,
-                search.RemoteOnly,
-                CompanyName: null,
-                page);
+            categoryCode = match.Code;
+            categoryLabel = match.Label;
         }
-
-        var level = string.IsNullOrWhiteSpace(search.Level) ? "Internship" : search.Level.Trim();
-        if (!AllowedLevels.Contains(level, StringComparer.OrdinalIgnoreCase))
+        else if (!string.IsNullOrWhiteSpace(search.Category))
         {
-            error = "Level must be Internship, Entry Level, Mid Level, or Senior Level.";
-            return search with { Page = page, Level = "Internship" };
-        }
-
-        level = AllowedLevels.First(item => item.Equals(level, StringComparison.OrdinalIgnoreCase));
-
-        string? category = null;
-        if (!string.IsNullOrWhiteSpace(search.Category))
-        {
-            category = AllowedCategories.FirstOrDefault(item =>
-                item.Equals(search.Category.Trim(), StringComparison.OrdinalIgnoreCase));
-            if (category is null)
+            var match = UsaJobsCategories.FirstOrDefault(item =>
+                item.Label.Equals(search.Category.Trim(), StringComparison.OrdinalIgnoreCase)
+                || item.Code.Equals(search.Category.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (match.Code is null)
             {
-                error = "Choose a category from the supported JobLens list.";
-                return search with { Page = page, Level = level };
+                error = "Choose a category from the supported USAJOBS series list.";
+                return search with { Page = page, Location = NullIfEmpty(location), Keyword = NullIfEmpty(keyword) };
             }
+
+            categoryCode = match.Code;
+            categoryLabel = match.Label;
         }
 
-        var company = search.CompanyName?.Trim() ?? "";
-        if (company.Length > 80)
+        var hiringPath = string.IsNullOrWhiteSpace(search.HiringPath)
+            ? "student"
+            : search.HiringPath.Trim().ToLowerInvariant();
+        if (hiringPath is not ("student" or "graduates" or "public"))
         {
-            company = company[..80];
+            error = "Hiring path must be Students & interns, Recent graduates, or open to the public.";
+            return search with { Page = page, Location = NullIfEmpty(location), Keyword = NullIfEmpty(keyword) };
         }
 
         return new LiveJobsQuery(
             NullIfEmpty(keyword),
             NullIfEmpty(location),
-            category,
-            CategoryCode: null,
-            level,
-            HiringPath: null,
-            RemoteOnly: false,
-            NullIfEmpty(company),
+            categoryLabel,
+            categoryCode,
+            hiringPath,
+            search.RemoteOnly,
             page);
     }
-
-    internal LiveJobsQuery Normalize(LiveJobsQuery search, out string? error) =>
-        Normalize(search, out error, IsUsaJobs);
 
     internal static string NormalizeCompanyName(string name)
     {
