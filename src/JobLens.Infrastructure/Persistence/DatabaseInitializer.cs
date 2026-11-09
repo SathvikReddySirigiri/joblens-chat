@@ -15,10 +15,9 @@ public static partial class DatabaseInitializer
         CancellationToken cancellationToken = default)
     {
         var path = DatabasePath.Resolve(configuration, environment);
-        var connectionString = $"Data Source={path};Foreign Keys=True";
-
-        await using var connection = new SqliteConnection(connectionString);
-        await connection.OpenAsync(cancellationToken);
+        await using var connection = await SqliteConnections.OpenAsync(
+            SqliteConnections.ForPath(path),
+            cancellationToken);
         await CreateSchemaAsync(connection, cancellationToken);
         // Touch the embedded seed before any insert so a drifted file fails startup even when the database already exists.
         _ = SeedCatalog.Document;
@@ -198,8 +197,9 @@ public static partial class DatabaseInitializer
             Directory.CreateDirectory(folder);
         }
 
-        await using var connection = new SqliteConnection(SqliteConnections.ForPath(path));
-        await connection.OpenAsync(cancellationToken);
+        await using var connection = await SqliteConnections.OpenAsync(
+            SqliteConnections.ForPath(path),
+            cancellationToken);
         await CreateSchemaAsync(connection, cancellationToken);
     }
 

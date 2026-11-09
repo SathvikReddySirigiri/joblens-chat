@@ -18,7 +18,8 @@ public static class DatabasePath
             var home = Environment.GetEnvironmentVariable("HOME");
             if (!string.IsNullOrWhiteSpace(instanceId) && !string.IsNullOrWhiteSpace(home))
             {
-                // Azure replaces the app disk on restart. HOME/data is the persistent content share.
+                // Azure App Service: persist SQLite on HOME/data/JobLens/joblens.db (content share).
+                // Directory.CreateDirectory below creates the folder when missing.
                 path = Path.Combine(home, "data", "JobLens", "joblens.db");
             }
             else

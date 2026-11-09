@@ -5,7 +5,9 @@ using JobLens.Infrastructure.Persistence;
 using JobLens.Web.Chat;
 using JobLens.Web.Security;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.RateLimiting;
 using ModelContextProtocol.AspNetCore;
 using ModelContextProtocol.Server;
 
@@ -21,6 +23,18 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownIPNetworks.Clear();
     options.KnownProxies.Clear();
 });
+
+// On Azure, persist data-protection keys so auth cookies and antiforgery survive restarts.
+var websiteInstanceId = Environment.GetEnvironmentVariable("WEBSITE_INSTANCE_ID");
+var home = Environment.GetEnvironmentVariable("HOME");
+if (!string.IsNullOrWhiteSpace(websiteInstanceId) && !string.IsNullOrWhiteSpace(home))
+{
+    var keysPath = Path.Combine(home, "data", "JobLens", "keys");
+    Directory.CreateDirectory(keysPath);
+    builder.Services.AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo(keysPath))
+        .SetApplicationName("JobLens");
+}
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddDistributedMemoryCache();
@@ -78,9 +92,10 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-// Keep /mcp clients on raw status codes (401/503) instead of HTML error pages.
+// Keep /mcp and /healthz on raw status codes instead of HTML error pages.
 app.UseWhen(
-    context => !context.Request.Path.StartsWithSegments("/mcp"),
+    context => !context.Request.Path.StartsWithSegments("/mcp")
+        && !context.Request.Path.StartsWithSegments("/healthz"),
     branch => branch.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}"));
 app.UseMiddleware<McpAccessKeyMiddleware>();
 app.UseRateLimiter();
@@ -89,6 +104,16 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 McpAccessKeyStartup.WarnIfOpen(app);
+
+app.MapGet("/healthz", async (IConfiguration configuration, IWebHostEnvironment environment, CancellationToken cancellationToken) =>
+    {
+        var ok = await DatabaseHealth.TryPingAsync(configuration, environment, cancellationToken);
+        return ok
+            ? Results.Text("ok", "text/plain; charset=utf-8", statusCode: StatusCodes.Status200OK)
+            : Results.Text("unhealthy", "text/plain; charset=utf-8", statusCode: StatusCodes.Status503ServiceUnavailable);
+    })
+    .AllowAnonymous()
+    .DisableRateLimiting();
 
 app.MapMcp("/mcp");
 
@@ -105,3 +130,5 @@ await DatabaseInitializer.InitializeAsync(
     app.Lifetime.ApplicationStopping);
 
 app.Run();
+
+public partial class Program;

@@ -18,6 +18,7 @@ public sealed class McpAccessKeyMiddleware(RequestDelegate next)
         IConfiguration configuration,
         IWebHostEnvironment environment)
     {
+        // /healthz is a public readiness probe and must not require X-Api-Key.
         if (!context.Request.Path.StartsWithSegments("/mcp"))
         {
             await next(context);

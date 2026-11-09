@@ -125,6 +125,36 @@ Set these as application settings (double-underscore env form works too):
 
 Forwarded headers (`X-Forwarded-For` / `X-Forwarded-Proto`) are enabled for App Service. Auth cookies use `SecurePolicy=Always` outside Development. Expensive POSTs (Chat, Offer Analyzer, Check Recruiter) and Jobs GET (`/Jobs`) are limited to 10 requests/minute per IP.
 
+## Deploy to Azure
+
+Linux App Service, .NET 10. Use **Deployment Center** (or zip deploy). Do **not** add a GitHub Actions workflow in this repo — Azure creates one when you connect Deployment Center.
+
+**Startup command:** `dotnet JobLens.Web.dll`
+
+**Health check path:** `/healthz` (returns `ok` when SQLite answers `SELECT 1`)
+
+**App Settings (names only — set values in the Azure portal):**
+
+| Name |
+| --- |
+| `ASPNETCORE_ENVIRONMENT` |
+| `AllowedHosts` |
+| `WEBSITES_ENABLE_APP_SERVICE_STORAGE` |
+| `Seed__ModeratorPassword` |
+| `Seed__StudentPassword` |
+| `Mcp__AccessKey` |
+| `Mcp__Endpoint` |
+| `Ai__Provider` |
+| `Ai__Endpoint` |
+| `Ai__Model` |
+| `Ai__ApiKey` |
+| `Ai__DisplayName` |
+| `Edgar__UserAgent` |
+| `Jobs__UsaJobs__ApiKey` |
+| `Jobs__UsaJobs__UserAgent` |
+
+**Restart test:** after a successful deploy, open `/healthz`, sign in, then **Restart** the App Service and confirm `/healthz` still returns `ok` and an existing login/antiforgery cookie still works (data-protection keys live under `HOME/data/JobLens/keys`; SQLite under `HOME/data/JobLens/joblens.db`).
+
 ### Jobs (USAJOBS + JobLens postings)
 
 - Page: `/Jobs` — two tabs (`?tab=live` default, `?tab=joblens`). Legacy `/JobPostings` Index redirects into the JobLens tab; JobPostings CRUD routes stay unchanged.
